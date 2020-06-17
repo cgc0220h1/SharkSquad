@@ -1,6 +1,7 @@
 package com.concamap.controllers;
 
-import com.concamap.services.PostService;
+import com.concamap.model.DemoEntity;
+import com.concamap.services.DemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,19 +12,20 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/")
 public class DemoController {
-    private final PostService postService;
+    private final DemoService demoService;
 
     @Autowired
-    public DemoController(PostService postService) {
-        this.postService = postService;
+    public DemoController(DemoService demoService) {
+        this.demoService = demoService;
     }
 
     @GetMapping
     public ModelAndView showIndex() {
         ModelAndView modelAndView = new ModelAndView("index");
         modelAndView.addObject("message", "Xin chào");
-        modelAndView.addObject("posts", postService.findAll());
-        System.out.println(postService.findAll());
+        DemoEntity demoEntity = new DemoEntity();
+        demoEntity.setName("Duc");
+        System.out.println(demoEntity.getName());
         return modelAndView;
     }
 
