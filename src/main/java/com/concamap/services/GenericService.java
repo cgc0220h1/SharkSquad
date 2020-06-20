@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 public interface GenericService<T> {
     Page<T> findAllByStatus(Integer status, Pageable pageable);
 
-    T findById(Integer id);
+    T findById(Long id);
 
     T save(T model);
 
-    boolean delete(Integer id);
+    boolean delete(Long id);
 }

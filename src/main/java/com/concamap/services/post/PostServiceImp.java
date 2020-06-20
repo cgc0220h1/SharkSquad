@@ -18,21 +18,22 @@ public class PostServiceImp implements PostService {
 
     @Override
     public Page<Post> findAllByStatus(Integer status, Pageable pageable) {
-        return null;
+        return postRepository.findAllByStatusIs(status, pageable);
     }
 
     @Override
-    public Post findById(Integer id) {
-        return null;
+    public Post findById(Long id) {
+        return postRepository.findById(id).orElse(null);
     }
 
     @Override
-    public Post save(Post model) {
-        return null;
+    public Post save(Post post) {
+        return postRepository.save(post);
     }
 
     @Override
-    public boolean delete(Integer id) {
-        return false;
+    public boolean delete(Long id) {
+        postRepository.deleteById(id);
+        return !postRepository.existsById(id);
     }
 }
