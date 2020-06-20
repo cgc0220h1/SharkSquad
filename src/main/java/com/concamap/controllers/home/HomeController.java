@@ -1,4 +1,4 @@
-package com.concamap.controllers;
+package com.concamap.controllers.home;
 
 import com.concamap.component.post.PostComponent;
 import com.concamap.model.Category;
@@ -26,9 +26,6 @@ import java.util.*;
 @RequestMapping("/")
 @PropertySource({"classpath:config/status.properties", "classpath:config/homepage.properties"})
 public class HomeController {
-    @Value("${entity.exist}")
-    private int statusExist;
-
     @Value("${homepage.random-post.quantity}")
     private int randomPosts;
 
@@ -59,13 +56,13 @@ public class HomeController {
 
     @ModelAttribute("categoryList")
     public List<Category> categoryList() {
-        return categoryService.findAllByStatus(statusExist);
+        return categoryService.findAllExist(Sort.by("title").ascending());
     }
 
     @ModelAttribute("dateMap")
     public Map<Year, Set<Month>> dateMap() {
         Map<Year, Set<Month>> dateMap = new LinkedHashMap<>();
-        List<Post> postList = postService.findAllByStatus(statusExist, Sort.by("createdDate").descending());
+        List<Post> postList = postService.findAllExist(Sort.by("createdDate").descending());
         for (Post post : postList) {
             LocalDate postDate = post.getCreatedDate().toLocalDateTime().toLocalDate();
             Year postYear = Year.from(postDate);
@@ -81,7 +78,7 @@ public class HomeController {
 
     @ModelAttribute("randomPostList")
     public List<Post> randomPosts() {
-        List<Post> postList = postService.findRandomByStatus(statusExist, randomPosts);
+        List<Post> postList = postService.findExistRandom(randomPosts);
         for (Post post : postList) {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
         }
@@ -90,7 +87,7 @@ public class HomeController {
 
     @ModelAttribute("recentPostList")
     public List<Post> recentPosts() {
-        List<Post> postList = postService.findRecentPostByStatus(statusExist, recentPosts).getContent();
+        List<Post> postList = postService.findExistRecent(recentPosts).getContent();
         for (Post post : postList) {
             post.setContent(postComponent.summary(post.getContent(), summaryRecentWords, ""));
         }
@@ -100,7 +97,7 @@ public class HomeController {
     @GetMapping
     public ModelAndView showHomePage(Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("index");
-        Page<Post> postPage = postService.findAllByStatus(statusExist, pageable);
+        Page<Post> postPage = postService.findAllExist(pageable);
         for (Post post : postPage) {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
         }

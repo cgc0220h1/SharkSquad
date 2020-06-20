@@ -35,6 +35,10 @@ public class Category {
     @Column(name = "updated_date", nullable = false)
     private Timestamp updatedDate;
 
+    @Basic
+    @Column(name = "anchor_name", nullable = false, unique = true)
+    private String anchorName;
+
     @OneToMany(mappedBy = "category")
     private Collection<Post> posts;
 }

@@ -1,8 +1,11 @@
 package com.concamap.services.post;
 
+import com.concamap.model.Category;
 import com.concamap.model.Post;
 import com.concamap.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +20,16 @@ import java.util.Optional;
 import java.util.Random;
 
 @Service
+@PropertySource("classpath:config/status.properties")
 public class PostServiceImp implements PostService {
     public static final int START_INDEX = 1;
+
+    @Value("${entity.exist}")
+    private int statusExist;
+
+    @Value("${entity.deleted}")
+    private int statusDeleted;
+
     private final PostRepository postRepository;
 
     @Autowired
@@ -26,23 +37,9 @@ public class PostServiceImp implements PostService {
         this.postRepository = postRepository;
     }
 
-    @Override
-    public List<Post> findAllByStatus(int status, Sort sort) {
-        List<Post> postList = new LinkedList<>();
-        Iterable<Post> iterable = postRepository.findAllByStatus(status, sort);
-        for (Post post : iterable) {
-            postList.add(post);
-        }
-        return postList;
-    }
 
     @Override
-    public Page<Post> findAllByStatus(int status, Pageable pageable) {
-        return postRepository.findAllByStatus(status, pageable);
-    }
-
-    @Override
-    public List<Post> findRandomByStatus(int status, int quantity) {
+    public List<Post> findExistRandom(int quantity) {
         int count = 1;
         Random random = new Random();
         List<Post> postList = new LinkedList<>();
@@ -55,15 +52,65 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public Page<Post> findRecentPostByStatus(int status, int quantity) {
+    public Page<Post> findExistRecent(int quantity) {
         Pageable pageable = PageRequest.of(START_INDEX, quantity);
         Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
-        return postRepository.findAllByStatusAndCreatedDateBefore(status, currentTime, pageable);
+        return postRepository.findAllByStatusAndCreatedDateBefore(statusExist, currentTime, pageable);
     }
 
     @Override
-    public Post findByIdAndStatus(int id, int status) {
-        return postRepository.findByIdAndStatus(id, status).orElse(null);
+    public Page<Post> findExistByCategory(Category category, Pageable pageable) {
+        return postRepository.findByStatusAndCategory(statusExist, category, pageable);
+    }
+
+    @Override
+    public List<Post> findAllExist() {
+        List<Post> postList = new LinkedList<>();
+        Iterable<Post> iterable = postRepository.findAllByStatus(statusExist);
+        for (Post post : iterable) {
+            postList.add(post);
+        }
+        return postList;
+    }
+
+    @Override
+    public List<Post> findAllExist(Sort sort) {
+        List<Post> postList = new LinkedList<>();
+        Iterable<Post> iterable = postRepository.findAllByStatus(statusExist, sort);
+        for (Post post : iterable) {
+            postList.add(post);
+        }
+        return postList;
+    }
+
+    @Override
+    public Page<Post> findAllExist(Pageable pageable) {
+        return postRepository.findAllByStatus(statusExist, pageable);
+    }
+
+    @Override
+    public Post findExistById(int id) {
+        return postRepository.findByStatusAndId(statusExist, id).orElse(null);
+    }
+
+    @Override
+    public List<Post> findAllDeleted() {
+        return null;
+    }
+
+    @Override
+    public List<Post> findAllDeleted(Sort sort) {
+        return null;
+    }
+
+    @Override
+    public Page<Post> findAllDeleted(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Post findDeletedById(int id) {
+        return null;
     }
 
     @Override

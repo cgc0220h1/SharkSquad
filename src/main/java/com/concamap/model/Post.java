@@ -39,7 +39,11 @@ public class Post {
     @Column(name = "updated_date", nullable = false)
     private Timestamp updatedDate;
 
-    @OneToMany(mappedBy = "post")
+    @Basic
+    @Column(name = "anchor_name", nullable = false, unique = true)
+    private String anchorName;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private Collection<Attachment> attachments;
 
     @ManyToOne
@@ -49,4 +53,7 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private Users users;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    private Collection<Comment> comments;
 }

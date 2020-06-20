@@ -31,6 +31,6 @@ public class Roles {
     @Column(name = "updated_date", nullable = false)
     private Timestamp updatedDate;
 
-    @OneToMany(mappedBy = "rolesByRolesId")
-    private Collection<Users> usersById;
+    @OneToMany(mappedBy = "roles")
+    private Collection<Users> users;
 }

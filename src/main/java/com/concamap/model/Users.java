@@ -53,12 +53,12 @@ public class Users {
     private int status;
 
     @OneToMany(mappedBy = "users")
-    private Collection<Comment> commentsById;
+    private Collection<Comment> comments;
 
     @OneToMany(mappedBy = "users")
-    private Collection<Post> postsById;
+    private Collection<Post> posts;
 
     @ManyToOne
     @JoinColumn(name = "roles_id", referencedColumnName = "id", nullable = false)
-    private Roles rolesByRolesId;
+    private Roles roles;
 }
