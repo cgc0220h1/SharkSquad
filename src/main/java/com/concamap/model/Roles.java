@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import java.util.Collection;
 
 @Entity
-@Table(name = "roles", schema = "shark_squad", catalog = "d4p0ps6hhns57n")
+@Table(name = "roles", schema = "shark_squad")
 @Data
 public class Roles {
     @Id
