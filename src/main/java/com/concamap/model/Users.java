@@ -52,10 +52,10 @@ public class Users {
     @Column(name = "status", nullable = false)
     private int status;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "users")
     private Collection<Comment> commentsById;
 
-    @OneToMany(mappedBy = "usersByUserId")
+    @OneToMany(mappedBy = "users")
     private Collection<Post> postsById;
 
     @ManyToOne

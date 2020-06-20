@@ -35,6 +35,6 @@ public class Category {
     @Column(name = "updated_date", nullable = false)
     private Timestamp updatedDate;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "category")
     private Collection<Post> posts;
 }

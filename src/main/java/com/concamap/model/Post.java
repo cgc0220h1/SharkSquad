@@ -45,4 +45,8 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "categories_id", referencedColumnName = "id", nullable = false)
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private Users users;
 }
