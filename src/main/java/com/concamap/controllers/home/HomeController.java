@@ -24,7 +24,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/")
-@PropertySource({"classpath:config/status.properties", "classpath:config/homepage.properties"})
+@PropertySource("classpath:config/homepage.properties")
 public class HomeController {
     @Value("${homepage.random-post.quantity}")
     private int randomPosts;

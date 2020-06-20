@@ -64,6 +64,11 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    public Page<Post> findExistWithinTime(Timestamp startDate, Timestamp endDate, Pageable pageable) {
+        return postRepository.findAllByStatusAndCreatedDateBetween(statusExist, startDate, endDate, pageable);
+    }
+
+    @Override
     public List<Post> findAllExist() {
         List<Post> postList = new LinkedList<>();
         Iterable<Post> iterable = postRepository.findAllByStatus(statusExist);

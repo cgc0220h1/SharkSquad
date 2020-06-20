@@ -22,4 +22,6 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Integer
     Page<Post> findAllByStatusAndCreatedDateBefore(int status, Timestamp createdDate, Pageable pageable);
 
     Page<Post> findByStatusAndCategory(int status, Category category, Pageable pageable);
+
+    Page<Post> findAllByStatusAndCreatedDateBetween(int status, Timestamp startDate, Timestamp endDate, Pageable pageable);
 }
