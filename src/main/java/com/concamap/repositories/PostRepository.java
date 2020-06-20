@@ -6,10 +6,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
-    Iterable<Post> findAllByStatusIs(int status);
+import java.sql.Timestamp;
+import java.util.Optional;
 
-    Iterable<Post> findAllByStatusIs(int status, Sort sort);
+public interface PostRepository extends PagingAndSortingRepository<Post, Integer> {
+    Iterable<Post> findAllByStatus(int status);
 
-    Page<Post> findAllByStatusIs(int status, Pageable pageable);
+    Iterable<Post> findAllByStatus(int status, Sort sort);
+
+    Page<Post> findAllByStatus(int status, Pageable pageable);
+
+    Optional<Post> findByIdAndStatus(int id, int status);
+
+    Page<Post> findAllByStatusAndCreatedDateBefore(int status, Timestamp createdDate, Pageable pageable);
 }

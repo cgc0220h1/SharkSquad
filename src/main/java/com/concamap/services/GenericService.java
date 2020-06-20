@@ -3,12 +3,14 @@ package com.concamap.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface GenericService<T> {
-    Page<T> findAllByStatus(Integer status, Pageable pageable);
+import javax.persistence.EntityNotFoundException;
 
-    T findById(Long id);
+public interface GenericService<T> {
+    Page<T> findAllByStatus(int status, Pageable pageable);
+
+    T findByIdAndStatus(int id, int status);
 
     T save(T model);
 
-    boolean delete(Long id);
+    boolean delete(int id);
 }

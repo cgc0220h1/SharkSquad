@@ -21,7 +21,7 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
-    public List<Category> findAllByStatus(Integer status) {
+    public List<Category> findAllByStatus(int status) {
         List<Category> categoryList = new LinkedList<>();
         Sort sort = Sort.by("title").ascending();
         for (Category category : categoryRepository.findAllByStatusIs(status, sort)) {
@@ -31,22 +31,22 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
-    public Page<Category> findAllByStatus(Integer status, Pageable pageable) {
+    public Page<Category> findAllByStatus(int status, Pageable pageable) {
         return null;
     }
 
     @Override
-    public Category findById(Long id) {
+    public Category findByIdAndStatus(int id, int status) {
         return null;
     }
 
     @Override
-    public Category save(Category model) {
+    public Category save(Category category) {
         return null;
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean delete(int id) {
         return false;
     }
 }

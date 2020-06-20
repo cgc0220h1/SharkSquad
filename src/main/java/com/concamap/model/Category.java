@@ -13,18 +13,18 @@ public class Category {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @Basic
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 
     @Basic
-    @Column(name = "description", nullable = true, length = -1)
+    @Column(name = "description", length = -1)
     private String description;
 
     @Basic
-    @Column(name = "status", nullable = true)
+    @Column(name = "status")
     private Integer status;
 
     @Basic

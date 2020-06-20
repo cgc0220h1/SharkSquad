@@ -6,10 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface CategoryRepository extends PagingAndSortingRepository<Category, Long> {
-    Iterable<Category> findAllByStatusIs(Integer status);
+public interface CategoryRepository extends PagingAndSortingRepository<Category, Integer> {
+    Iterable<Category> findAllByStatusIs(int status);
 
-    Iterable<Category> findAllByStatusIs(Integer status, Sort sort);
+    Iterable<Category> findAllByStatusIs(int status, Sort sort);
 
-    Page<Category> findAllByStatusIs(Integer status, Pageable pageable);
+    Page<Category> findAllByStatusIs(int status, Pageable pageable);
 }
