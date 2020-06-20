@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "users", schema = "shark_squad", catalog = "d4p0ps6hhns57n")
+@Table(name = "users", schema = "shark_squad")
 @Data
 public class Users {
     @Id
