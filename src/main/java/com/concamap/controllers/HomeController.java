@@ -1,5 +1,6 @@
 package com.concamap.controllers;
 
+import com.concamap.component.post.PostComponent;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
 import com.concamap.services.category.CategoryService;
@@ -34,14 +35,26 @@ public class HomeController {
     @Value("${homepage.recent-post.quantity}")
     private int recentPosts;
 
+    @Value("${homepage.post.summary.extend}")
+    private String extendString;
+
+    @Value("${homepage.post.summary.words}")
+    private int summaryWords;
+
+    @Value("${homepage.recent-post.summary.words}")
+    private int summaryRecentWords;
+
     private final PostService postService;
 
     private final CategoryService categoryService;
 
+    private final PostComponent postComponent;
+
     @Autowired
-    public HomeController(PostService postService, CategoryService categoryService) {
+    public HomeController(PostService postService, CategoryService categoryService, PostComponent postComponent) {
         this.postService = postService;
         this.categoryService = categoryService;
+        this.postComponent = postComponent;
     }
 
     @ModelAttribute("categoryList")
@@ -68,18 +81,29 @@ public class HomeController {
 
     @ModelAttribute("randomPostList")
     public List<Post> randomPosts() {
-        return postService.findRandomByStatus(statusExist, randomPosts);
+        List<Post> postList = postService.findRandomByStatus(statusExist, randomPosts);
+        for (Post post : postList) {
+            post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
+        }
+        return postList;
     }
 
     @ModelAttribute("recentPostList")
     public List<Post> recentPosts() {
-        return postService.findRecentPostByStatus(statusExist, recentPosts).getContent();
+        List<Post> postList = postService.findRecentPostByStatus(statusExist, recentPosts).getContent();
+        for (Post post : postList) {
+            post.setContent(postComponent.summary(post.getContent(), summaryRecentWords, ""));
+        }
+        return postList;
     }
 
     @GetMapping
     public ModelAndView showHomePage(Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("index");
         Page<Post> postPage = postService.findAllByStatus(statusExist, pageable);
+        for (Post post : postPage) {
+            post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
+        }
         modelAndView.addObject("postPage", postPage);
         return modelAndView;
     }
