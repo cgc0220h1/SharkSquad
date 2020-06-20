@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import java.util.Collection;
 
 @Entity
-@Table(name = "post", schema = "shark_squad", catalog = "d4p0ps6hhns57n")
+@Table(name = "post", schema = "shark_squad")
 @Data
 public class Post {
     @Id
@@ -45,4 +45,8 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "categories_id", referencedColumnName = "id", nullable = false)
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private Users users;
 }
