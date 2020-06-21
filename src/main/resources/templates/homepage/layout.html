@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Shark Squad</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content=""/>
+
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:site_name" content=""/>
+    <meta property="og:description" content=""/>
+    <meta name="twitter:title" content=""/>
+    <meta name="twitter:image" content=""/>
+    <meta name="twitter:url" content=""/>
+    <meta name="twitter:card" content=""/>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="/static/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="/static/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="/static/css/magnific-popup.css">
+
+    <!-- Flexslider  -->
+    <link rel="stylesheet" href="/static/css/flexslider.css">
+
+    <!-- Owl Carousel -->
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/static/css/owl.theme.default.min.css">
+
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Modernizr JS -->
+    <script src="/static/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="/static/js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+<nav class="colorlib-nav" role="navigation" th:fragment="menu">
+    <div class="top-menu">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-2">
+                    <div id="colorlib-logo"><a href="index.html">Shark Squad</a></div>
+                </div>
+                <div class="col-xs-10 text-right menu-1">
+                    <ul>
+                        <li class="active"><a href="index.html" th:text="#{view.li.a.home}"></a></li>
+                        <li class="has-dropdown">
+                            <a href="blog.html" th:text="#{view.li.a.categories}"></a>
+                            <ul class="dropdown">
+                                <li><a href="single.html" th:text="#{view.li.a.business}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.entertainment}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.experience}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.finance}"></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="about.html" th:text="#{view.li.a.about_me}"></a></li>
+                        <li>
+                            <input type="text" id="search" placeholder="Enter any key to search..."
+                                   style="width: 30%">
+                            <button type="submit" class="btn btn-primary"><i class="icon-search3"></i></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div id="colorlib-instagram" th:fragment="hotBlog">
+    <div class="row">
+        <div class="col-md-12 col-md-offset-0 colorlib-heading text-center">
+            <h2>HOT BLOG</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="instagram-entry">
+            <a href="#" class="instagram text-center" style="background-image: url(../../static/images/gallery-1.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../../static/images/gallery-2.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../../static/images/gallery-3.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../../static/images/gallery-4.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../../static/images/gallery-5.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../../static/images/gallery-6.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../../static/images/gallery-7.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../../static/images/gallery-8.jpg);">
+            </a>
+        </div>
+    </div>
+</div>
+<footer id="colorlib-footer" role="contentinfo" th:fragment="footer">
+    <div class="container">
+        <div class="row row-pb-md">
+            <div class="col-md-4">
+                <h2>Shark Squad</h2>
+                <p>
+                <ul class="colorlib-footer-links">
+                    <li><a href="#"><i class="icon-check" th:text="#{view.li.a.home}"></i></a></li>
+                    <li><a href="#"><i class="icon-check" th:text="#{view.li.a.categories}"></i> </a></li>
+                    <li><a href="#"><i class="icon-check" th:text="#{view.li.a.about_me}"></i></a></li>
+                </ul>
+                </p>
+            </div>
+            <div class="col-md-4">
+                <h2 th:text="#{view.h2.recent_blog}"></h2>
+                <div class="f-blog">
+                    <a href="blog.html" class="blog-img" style="background-image: url(../../static/images/blog-1.jpg);">
+                    </a>
+                    <div class="desc">
+                        <h3><a href="blog.html">Be a designer</a></h3>
+                        <p class="admin"><span>25 March 2018</span></p>
+                    </div>
+                </div>
+                <div class="f-blog">
+                    <a href="blog.html" class="blog-img" style="background-image: url(../../static/images/blog-2.jpg);">
+                    </a>
+                    <div class="desc">
+                        <h3><a href="blog.html">How to build website</a></h3>
+                        <p class="admin"><span>24 March 2018</span></p>
+                    </div>
+                </div>
+                <div class="f-blog">
+                    <a href="blog.html" class="blog-img" style="background-image: url(../../static/images/blog-3.jpg);">
+                    </a>
+                    <div class="desc">
+                        <h3><a href="blog.html">Create website</a></h3>
+                        <p class="admin"><span>23 March 2018</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h2>Archive</h2>
+                <p>
+                <ul class="colorlib-footer-links">
+                    <li><a href="#"><i class="icon-check"></i> June 2020</a></li>
+                    <li><a href="#"><i class="icon-check"></i> May 2020</a></li>
+                    <li><a href="#"><i class="icon-check"></i> April 2020</a></li>
+                    <li><a href="#"><i class="icon-check"></i> March 2020</a></li>
+                    <li><a href="#"><i class="icon-check"></i> February 2020</a></li>
+                    <li><a href="#"><i class="icon-check"></i> January 2020</a></li>
+                </ul>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                    <small class="block">
+                        Copyright &copy;<script>document.write(new Date().getFullYear());</script>
+                        All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i>
+                    </small>
+
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+<div class="gototop js-top" th:fragment="backToTop">
+    <a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
+</div>
+</body>
+</html>
