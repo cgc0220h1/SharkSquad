@@ -1,5 +1,6 @@
 package com.concamap.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ public class Attachment {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @Basic
     @Column(name = "image_link", nullable = false, length = -1)
@@ -20,6 +21,7 @@ public class Attachment {
 
     @Basic
     @Column(name = "status", nullable = false)
+    @JsonIgnore
     private int status;
 
     @Basic
