@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
@@ -25,6 +26,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/")
 @PropertySource("classpath:config/homepage.properties")
+@SessionAttributes({"categoryList", "dateMap", "randomPostList", "recentPostList"})
 public class HomeController {
     @Value("${homepage.random-post.quantity}")
     private int randomPosts;

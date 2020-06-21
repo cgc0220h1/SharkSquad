@@ -39,7 +39,6 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public List<Category> findAllExist() {
         List<Category> categoryList = new LinkedList<>();
-        Sort sort = Sort.by("title").ascending();
         for (Category category : categoryRepository.findAllByStatus(statusExist)) {
             categoryList.add(category);
         }
