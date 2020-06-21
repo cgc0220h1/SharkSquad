@@ -6,10 +6,7 @@ import com.concamap.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -66,6 +63,34 @@ public class PostServiceImp implements PostService {
     @Override
     public Page<Post> findExistWithinTime(Timestamp startDate, Timestamp endDate, Pageable pageable) {
         return postRepository.findAllByStatusAndCreatedDateBetween(statusExist, startDate, endDate, pageable);
+    }
+
+    @Override
+    public Page<Post> findExistByTitle(String title, Pageable pageable) {
+        return postRepository.findAllByStatusAndTitleContains(statusExist, title, pageable);
+    }
+
+    @Override
+    public Page<Post> findExistByContent(String content, Pageable pageable) {
+        return postRepository.findAllByStatusAndContentContains(statusExist, content, pageable);
+    }
+
+    @Override
+    public Page<Post> findExistByTitleAndContent(String title, String content, Pageable pageable) {
+        return postRepository.findAllByStatusAndTitleContainsAndContentContains(
+                statusExist, title, content, pageable);
+    }
+
+    @Override
+    public Page<Post> findExistByTitleOrContent(String query, Pageable pageable) {
+        List<Post> postsFoundByTitle = postRepository.findAllByStatusAndTitleContains(statusExist, query);
+        List<Post> postsFoundByContent = postRepository.findAllByStatusAndContentContains(statusExist, query);
+        for (Post post : postsFoundByTitle) {
+            if (!postsFoundByContent.contains(post)) {
+                postsFoundByContent.add(post);
+            }
+        }
+        return new PageImpl<>(postsFoundByContent, pageable, postsFoundByContent.size());
     }
 
     @Override

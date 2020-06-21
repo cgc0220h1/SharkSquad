@@ -1,5 +1,6 @@
 package com.concamap.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class Attachment {
 
     @Basic
     @Column(name = "status", nullable = false)
+    @JsonIgnore
     private int status;
 
     @Basic

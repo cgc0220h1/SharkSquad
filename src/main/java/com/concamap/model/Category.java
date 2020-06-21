@@ -1,10 +1,12 @@
 package com.concamap.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "categories", schema = "shark_squad")
@@ -25,6 +27,7 @@ public class Category {
 
     @Basic
     @Column(name = "status")
+    @JsonIgnore
     private Integer status;
 
     @Basic
@@ -37,8 +40,10 @@ public class Category {
 
     @Basic
     @Column(name = "anchor_name", nullable = false, unique = true)
+    @JsonIgnore
     private String anchorName;
 
     @OneToMany(mappedBy = "category")
-    private Collection<Post> posts;
+    @JsonIgnore
+    private Set<Post> posts;
 }

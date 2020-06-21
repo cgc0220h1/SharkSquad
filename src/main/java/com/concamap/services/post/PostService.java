@@ -17,4 +17,12 @@ public interface PostService extends GenericService<Post> {
     Page<Post> findExistByCategory(Category category, Pageable pageable);
 
     Page<Post> findExistWithinTime(Timestamp startDate, Timestamp endDate, Pageable pageable);
+
+    Page<Post> findExistByTitle(String title, Pageable pageable);
+
+    Page<Post> findExistByContent(String content, Pageable pageable);
+
+    Page<Post> findExistByTitleAndContent(String title, String content, Pageable pageable);
+
+    Page<Post> findExistByTitleOrContent(String query, Pageable pageable);
 }
