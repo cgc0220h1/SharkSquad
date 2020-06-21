@@ -2,6 +2,8 @@ package com.concamap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -35,5 +37,8 @@ public class Attachment {
 
     @ManyToOne
     @JoinColumn(name = "posts_id", referencedColumnName = "id", nullable = false)
+    @Access(AccessType.PROPERTY)
+    @ToString.Exclude
+    @HashCodeExclude
     private Post post;
 }

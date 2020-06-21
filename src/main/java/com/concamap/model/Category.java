@@ -2,6 +2,8 @@ package com.concamap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -45,6 +47,9 @@ public class Category {
     private String anchorName;
 
     @OneToMany(mappedBy = "category")
+    @Access(AccessType.PROPERTY)
     @JsonIgnore
+    @ToString.Exclude
+    @HashCodeExclude
     private Set<Post> posts;
 }

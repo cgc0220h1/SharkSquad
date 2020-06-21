@@ -2,6 +2,8 @@ package com.concamap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -48,16 +50,28 @@ public class Post {
     private String anchorName;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    @Access(AccessType.PROPERTY)
+    @ToString.Exclude
+    @HashCodeExclude
     private Set<Attachment> attachments;
 
     @ManyToOne
     @JoinColumn(name = "categories_id", referencedColumnName = "id", nullable = false)
+    @Access(AccessType.PROPERTY)
+    @ToString.Exclude
+    @HashCodeExclude
     private Category category;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @Access(AccessType.PROPERTY)
+    @ToString.Exclude
+    @HashCodeExclude
     private Users users;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @Access(AccessType.PROPERTY)
+    @ToString.Exclude
+    @HashCodeExclude
     private Set<Comment> comments;
 }
