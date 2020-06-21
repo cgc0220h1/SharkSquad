@@ -1,10 +1,12 @@
 package com.concamap.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Collection;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "post", schema = "shark_squad")
@@ -13,7 +15,7 @@ public class Post {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @Basic
     @Column(name = "title", nullable = false)
@@ -25,6 +27,7 @@ public class Post {
 
     @Basic
     @Column(name = "status", nullable = false)
+    @JsonIgnore
     private int status;
 
     @Basic
@@ -39,8 +42,13 @@ public class Post {
     @Column(name = "updated_date", nullable = false)
     private Timestamp updatedDate;
 
-    @OneToMany(mappedBy = "post")
-    private Collection<Attachment> attachments;
+    @Basic
+    @Column(name = "anchor_name", nullable = false, unique = true)
+    @JsonIgnore
+    private String anchorName;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    private Set<Attachment> attachments;
 
     @ManyToOne
     @JoinColumn(name = "categories_id", referencedColumnName = "id", nullable = false)
@@ -49,4 +57,7 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private Users users;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    private Set<Comment> comments;
 }

@@ -13,7 +13,7 @@ public class Roles {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @Basic
     @Column(name = "name", nullable = false, length = 100)
@@ -31,6 +31,6 @@ public class Roles {
     @Column(name = "updated_date", nullable = false)
     private Timestamp updatedDate;
 
-    @OneToMany(mappedBy = "rolesByRolesId")
-    private Collection<Users> usersById;
+    @OneToMany(mappedBy = "roles")
+    private Collection<Users> users;
 }
