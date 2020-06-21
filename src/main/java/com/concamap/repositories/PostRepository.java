@@ -18,8 +18,6 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Integer
 
     Page<Post> findAllByStatus(int status, Pageable pageable);
 
-    Optional<Post> findByStatusAndId(int status, int id);
-
     Page<Post> findAllByStatusAndCreatedDateBefore(int status, Timestamp createdDate, Pageable pageable);
 
     Page<Post> findByStatusAndCategory(int status, Category category, Pageable pageable);
@@ -35,4 +33,8 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Integer
     List<Post> findAllByStatusAndContentContains(int status, String content);
 
     Page<Post> findAllByStatusAndTitleContainsAndContentContains(int status, String title, String content, Pageable pageable);
+
+    Optional<Post> findByStatusAndId(int status, int id);
+
+    Optional<Post> findByStatusAndAnchorName(int status, String anchorName);
 }
