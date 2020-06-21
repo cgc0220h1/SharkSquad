@@ -28,11 +28,4 @@ out/
 
 ### VS Code ###
 .vscode/
-assets/stuff/stuff/.DS_Store
-assets/stuff/stuff/css/.DS_Store
-assets/stuff/stuff/fonts/.DS_Store
-assets/stuff/stuff/fonts/bootstrap/.DS_Store
-assets/stuff/stuff/fonts/icomoon/.DS_Store
-assets/stuff/stuff/images/.DS_Store
-assets/stuff/stuff/js/.DS_Store
-assets/stuff/stuff/sass/.DS_Store
+/assets/
