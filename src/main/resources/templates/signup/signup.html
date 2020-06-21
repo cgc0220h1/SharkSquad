@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title th:text="#{login.title}"></title>
+	<title th:text="#{signup.title}"></title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
@@ -33,36 +33,62 @@
 		<div class="container-login100">
 			<div class="wrap-login100 p-l-85 p-r-85 p-t-55 p-b-55">
 				<form class="login100-form validate-form flex-sb flex-w" name="userForm" onsubmit="return validate();">
-					<span class="login100-form-title p-b-32" th:text="#{login.span.login}"></span>
+					<span class="login100-form-title p-b-32" th:text="#{signup.span.signup}"></span>
+
+					<!--firstName-->
+					<span class="txt1 p-b-11" th:text="#{signup.span.first_name}"></span>
+					<div class="wrap-input100 validate-input m-b-36">
+						<input class="input100" type="text" name="firstName" id="firstName">
+					</div>
+					<div id="firstNameError" style="color: #e7312a"></div>
+
+					<!--lastName-->
+					<div style="width: 100%; border: none">
+					<span class="txt1 p-b-11" th:text="#{signup.span.last_name}"></span>
+					<div class="wrap-input100 validate-input m-b-36">
+						<input class="input100" type="text" name="lastName" id="lastName">
+					</div>
+					<div id="lastNameError" style="color: #e7312a"></div>
+					</div>
+
+					<!--phone-->
+					<div style="width: 100%; border: none">
+					<span class="txt1 p-b-11" th:text="#{signup.span.phone}"></span>
+					<div class="wrap-input100 validate-input m-b-36">
+						<input class="input100" type="text" name="phone" id="phone">
+					</div>
+					<div id="phoneError" style="color: #e7312a"></div>
+					</div>
+
+					<!--email-->
+					<div style="width: 100%; border: none">
+					<span class="txt1 p-b-11" th:text="#{signup.span.email}"></span>
+					<div class="wrap-input100 validate-input m-b-36">
+						<input class="input100" type="text" name="email" id="email">
+					</div>
+					<div id="emailError" style="color: #e7312a"></div>
+					</div>
+
+					<!--userName-->
+					<div style="width: 100%; border: none">
 					<span class="txt1 p-b-11" th:text="#{login.span.username}"></span>
 					<div class="wrap-input100 validate-input m-b-36">
 						<input class="input100" type="text" name="username" id="username">
 					</div>
-					<div id="usernameError"></div>
+					<div id="usernameError" style="color: #e7312a"></div>
+					</div>
 
+					<!--password-->
 					<div style="width: 100%; border: none">
 					<span class="txt1 p-b-11" th:text="#{login.span.password}"></span>
 					<div class="wrap-input100 validate-input m-b-36">
 						<input class="input100" type="password" name="password" id="password">
 					</div>
-					<div id="passwordError"></div>
-					</div>
-
-					<div class="flex-sb-m w-full p-b-48">
-						<div class="contact100-form-checkbox">
-							<input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
-							<label class="label-checkbox100" for="ckb1" th:text="#{login.label.remember}"></label>
-						</div>
-						<div>
-							<a href="#" class="txt3" th:text="#{login.a.forgot_password}"></a>
-						</div>
+					<div id="passwordError" style="color: #e7312a"></div>
 					</div>
 
 					<div class="container-login100-form-btn">
 						<button class="login100-form-btn" th:text="#{login.button.submit}"></button>
-					</div>
-					<div>
-						<span class="txt3" th:text="#{login.span.not_have_account}"></span><a href="#" class="txt3" th:text="#{login.a.create_new_user}"></a>
 					</div>
 				</form>
 			</div>
