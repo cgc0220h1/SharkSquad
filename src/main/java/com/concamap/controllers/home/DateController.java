@@ -29,7 +29,7 @@ public class DateController {
     @Value("${homepage.post.summary.extend}")
     private String extendString;
 
-    private LocalDateTime endTime = LocalDateTime.now();
+    private final LocalDateTime endTime = LocalDateTime.now();
 
     @Value("${homepage.post.summary.words}")
     private int summaryWords;
@@ -53,10 +53,7 @@ public class DateController {
                 .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
                 .toFormatter();
         LocalDate localDate = LocalDate.parse(year, formatter);
-        Timestamp startTime = Timestamp.valueOf(localDate.atStartOfDay());
-        Page<Post> postPage = postService.findExistWithinTime(startTime, Timestamp.valueOf(endTime), pageable);
-        modelAndView.addObject("postPage", postPage);
-        return modelAndView;
+        return getModelAndView(pageable, modelAndView, localDate);
     }
 
     @GetMapping("/{year}/{month}")
@@ -66,8 +63,15 @@ public class DateController {
         ModelAndView modelAndView = new ModelAndView("filter");
         YearMonth yearMonth = YearMonth.of(Integer.parseInt(year), Integer.parseInt(month));
         LocalDate localDate = yearMonth.atDay(1);
+        return getModelAndView(pageable, modelAndView, localDate);
+    }
+
+    private ModelAndView getModelAndView(Pageable pageable, ModelAndView modelAndView, LocalDate localDate) {
         Timestamp startTime = Timestamp.valueOf(localDate.atStartOfDay());
         Page<Post> postPage = postService.findExistWithinTime(startTime, Timestamp.valueOf(endTime), pageable);
+        for (Post post : postPage) {
+            post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
+        }
         modelAndView.addObject("postPage", postPage);
         return modelAndView;
     }

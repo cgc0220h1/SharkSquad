@@ -94,6 +94,11 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    public Post findExistByAnchorName(String anchorName) {
+        return postRepository.findByStatusAndAnchorName(statusExist, anchorName).orElse(null);
+    }
+
+    @Override
     public List<Post> findAllExist() {
         List<Post> postList = new LinkedList<>();
         Iterable<Post> iterable = postRepository.findAllByStatus(statusExist);
@@ -153,7 +158,7 @@ public class PostServiceImp implements PostService {
         Optional<Post> optionalPost = postRepository.findById(id);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
-            post.setStatus(0);
+            post.setStatus(statusDeleted);
             postRepository.save(post);
             return true;
         }
