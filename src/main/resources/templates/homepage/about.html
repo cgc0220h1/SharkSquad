@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="layout :: head"></head>
+<body>
+
+<div class="colorlib-loader"></div>
+
+<div id="page">
+    <nav th:replace="layout :: menu"></nav>
+
+    <aside id="colorlib-breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 breadcrumbs text-center">
+                    <h2 th:text="#{view.li.a.about_me}"></h2>
+                    <p><span><a href="index.html" th:text="#{view.li.a.home}"></a></span> / <span th:text="#{view.li.a.about_me}"></span></p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div id="colorlib-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <img class="img-responsive" th:src="@{/static/images/author.jpg}" alt="">
+                </div>
+                <div class="col-md-6">
+                    <p>Hi! My Name is <strong>Rich</strong> Bookmarksgrove, the headline of Alphabet Village and the
+                        subline of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then she
+                        continued her way.</p>
+                    <blockquote>
+                        A small river named Duden flows by their place and supplies it with the necessary regelialia. It
+                        is a paradisematic country, in which roasted parts of sentences fly into your mouth.
+                    </blockquote>
+                    <p class="first-letra">Far far away, <strong><a href="#">behind the word mountains</a></strong>, far
+                        from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in
+                        Bookmarksgrove right at the coast of the Semantics, a large language ocean. A small river named
+                        Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic
+                        country, in which roasted parts of sentences fly into your mouth.</p>
+                    <p>
+                    <ul class="colorlib-social-icons">
+                        <li><a href="#"><i class="icon-twitter"></i></a></li>
+                        <li><a href="#"><i class="icon-facebook"></i></a></li>
+                        <li><a href="#"><i class="icon-linkedin"></i></a></li>
+                        <li><a href="#"><i class="icon-dribbble"></i></a></li>
+                    </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="layout :: hotBlog"></div>
+    <footer th:replace="layout :: footer"></footer>
+</div>
+
+<div th:replace="layout :: backToTop"></div>
+<div th:replace="layout :: jquery"></div>
+
+</body>
+</html>
+

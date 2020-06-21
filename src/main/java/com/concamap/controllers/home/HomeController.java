@@ -96,9 +96,9 @@ public class HomeController {
         return postList;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ModelAndView showHomePage(Pageable pageable) {
-        ModelAndView modelAndView = new ModelAndView("index");
+        ModelAndView modelAndView = new ModelAndView("homepage/index");
         Page<Post> postPage = postService.findAllExist(pageable);
         for (Post post : postPage) {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
@@ -106,4 +106,5 @@ public class HomeController {
         modelAndView.addObject("postPage", postPage);
         return modelAndView;
     }
+
 }

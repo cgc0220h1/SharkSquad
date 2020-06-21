@@ -41,7 +41,7 @@ public class PostServiceImp implements PostService {
         Random random = new Random();
         List<Post> postList = new LinkedList<>();
         while (count <= quantity) {
-            int id = random.nextInt((int) postRepository.count());
+            int id = random.nextInt((int) postRepository.count()) + 1;
             postList.add(postRepository.findById(id).orElse(null));
             count++;
         }
