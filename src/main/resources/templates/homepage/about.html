@@ -1,12 +1,12 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="/layout :: head"></head>
+<head th:replace="layout :: head"></head>
 <body>
 
 <div class="colorlib-loader"></div>
 
 <div id="page">
-    <nav th:replace="/layout :: menu"></nav>
+    <nav th:replace="layout :: menu"></nav>
 
     <aside id="colorlib-breadcrumbs">
         <div class="container">
@@ -51,13 +51,12 @@
         </div>
     </div>
 
-    <div th:replace="/layout :: hotBlog"></div>
-    <footer th:replace="/layout :: footer"></footer>
+    <div th:replace="layout :: hotBlog"></div>
+    <footer th:replace="layout :: footer"></footer>
 </div>
 
-<div th:replace="/layout :: backToTop"></div>
-
-<div th:replace="/layout :: jquery"></div>
+<div th:replace="layout :: backToTop"></div>
+<div th:replace="layout :: jquery"></div>
 
 </body>
 </html>
