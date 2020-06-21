@@ -1,10 +1,8 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="/layout :: head"></head>
+<head th:replace="/layout :: header"></head>
 <body>
-
 <div class="colorlib-loader"></div>
-
 <div id="page">
     <nav th:replace="/layout :: menu"></nav>
     <aside id="colorlib-hero">
@@ -89,14 +87,13 @@
             </ul>
         </div>
     </aside>
-
     <div id="colorlib-container">
         <div class="container">
             <div class="row row-pb-md">
                 <div class="col-md-4">
                     <div class="blog-entry">
                         <div class="blog-img">
-                            <a href="blog.html"><img src="images/blog-1.jpg" class="img-responsive"
+                            <a href="blog.html"><img src="/static/images/blog-1.jpg" class="img-responsive"
                                                      alt="html5 bootstrap template"></a>
                         </div>
                         <div class="desc">
@@ -113,7 +110,7 @@
                 <div class="col-md-4">
                     <div class="blog-entry">
                         <div class="blog-img">
-                            <a href="blog.html"><img src="images/blog-2.jpg" class="img-responsive"
+                            <a href="blog.html"><img src="/static/images/blog-2.jpg" class="img-responsive"
                                                      alt="html5 bootstrap template"></a>
                         </div>
                         <div class="desc">
@@ -350,31 +347,11 @@
             </div>
         </div>
     </div>
-
     <div th:replace="/layout :: hotBlog"></div>
     <footer th:replace="/layout :: footer"></footer>
 </div>
-
 <div th:replace="/layout :: backToTop"></div>
-
-<!-- jQuery -->
-<script src="/static/js/jquery.min.js"></script>
-<!-- jQuery Easing -->
-<script src="/static/js/jquery.easing.1.3.js"></script>
-<!-- Bootstrap -->
-<script src="/static/js/bootstrap.min.js"></script>
-<!-- Waypoints -->
-<script src="/static/js/jquery.waypoints.min.js"></script>
-<!-- Flexslider -->
-<script src="/static/js/jquery.flexslider-min.js"></script>
-<!-- Owl carousel -->
-<script src="/static/js/owl.carousel.min.js"></script>
-<!-- Magnific Popup -->
-<script src="/static/js/jquery.magnific-popup.min.js"></script>
-<script src="/static/js/magnific-popup-options.js"></script>
-<!-- Main -->
-<script src="/static/js/main.js"></script>
-
+<div th:replace="/layout :: jquery"></div>
 </body>
 </html>
 

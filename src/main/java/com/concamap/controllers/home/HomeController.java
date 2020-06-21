@@ -98,12 +98,17 @@ public class HomeController {
 
     @GetMapping
     public ModelAndView showHomePage(Pageable pageable) {
-        ModelAndView modelAndView = new ModelAndView("/homepage/index");
+        ModelAndView modelAndView = new ModelAndView("index");
         Page<Post> postPage = postService.findAllExist(pageable);
         for (Post post : postPage) {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
         }
         modelAndView.addObject("postPage", postPage);
         return modelAndView;
+    }
+
+    @GetMapping("/view")
+    public ModelAndView showView(){
+        return new ModelAndView("view");
     }
 }
