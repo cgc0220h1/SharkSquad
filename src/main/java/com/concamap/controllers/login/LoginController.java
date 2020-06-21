@@ -33,7 +33,7 @@ public class LoginController {
 //        return modelAndView;
 //    }
 
-    @PostMapping("validateUser")
+    @PostMapping("")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/login/login");
