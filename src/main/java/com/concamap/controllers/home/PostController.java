@@ -21,7 +21,7 @@ public class PostController {
 
     @GetMapping("/{anchor-name}")
     public ModelAndView showPost(@PathVariable("anchor-name") String anchorName) {
-        ModelAndView modelAndView = new ModelAndView("detail");
+        ModelAndView modelAndView = new ModelAndView("viewDetail/detail");
         Post postFound = postService.findExistByAnchorName(anchorName);
         modelAndView.addObject("post", postFound);
         return modelAndView;
