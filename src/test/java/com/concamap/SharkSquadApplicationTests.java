@@ -9,5 +9,4 @@ class SharkSquadApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
