@@ -36,7 +36,22 @@ public class LoginController {
     @PostMapping("")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
-            return new RedirectView("/login/login");
+            return new RedirectView("login/login");
+        }
+        return new RedirectView("/");
+    }
+
+    @GetMapping("/signup")
+    public ModelAndView showSignUp() {
+        ModelAndView modelAndView = new ModelAndView("signup/signup");
+        modelAndView.addObject("users", new Users());
+        return modelAndView;
+    }
+
+    @PostMapping("/signup")
+    public RedirectView signup(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            return new RedirectView("signup/signup");
         }
         return new RedirectView("/");
     }
