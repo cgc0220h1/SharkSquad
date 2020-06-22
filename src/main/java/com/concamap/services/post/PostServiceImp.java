@@ -35,15 +35,14 @@ public class PostServiceImp implements PostService {
     @Override
     public List<Post> findExistRandom(int quantity) {
         int count = 1;
-        long postSize = postRepository.count();
         Random random = new Random();
         List<Integer> randomId = new ArrayList<>();
         List<Post> postList = new LinkedList<>();
         while (count <= quantity) {
-            if (count > postSize) {
+            if (count > postRepository.count()) {
                 return postList;
             }
-            int id = random.nextInt((int) postSize) + 1;
+            int id = random.nextInt((int) postRepository.count()) + 1;
             if (!randomId.contains(id)) {
                 postList.add(postRepository.findById(id).orElse(null));
                 randomId.add(id);
