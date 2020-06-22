@@ -83,6 +83,14 @@ public class Users {
     private Timestamp updatedTime;
 
     @Basic
+    @Column(name = "bio")
+    private String bio;
+
+    @Basic
+    @Column(name = "avatar_link")
+    private String avatarLink;
+
+    @Basic
     @Column(name = "status", nullable = false)
     @JsonIgnore
     private int status;

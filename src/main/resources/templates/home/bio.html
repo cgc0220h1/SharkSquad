@@ -15,7 +15,8 @@
             <div class="row">
                 <div class="col-md-12 breadcrumbs text-center">
                     <h2 th:text="#{view.li.a.about_me}"></h2>
-                    <p><span><a href="index.html" th:text="#{view.li.a.home}"></a></span> / <span th:text="#{view.li.a.about_me}"></span></p>
+                    <p><span><a href="index.html" th:text="#{view.li.a.home}"></a></span> / <span
+                            th:text="${user.firstName.concat(' ').concat(user.lastName)}"></span></p>
                 </div>
             </div>
         </div>
@@ -25,11 +26,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <img class="img-responsive" th:src="@{/static/images/author.jpg}" alt="" src="">
+                    <img class="img-responsive" th:src="${user.avatarLink}" alt="" src="">
                 </div>
                 <div class="col-md-6">
                     <th:block>
-                        <div th:utext="${user}"></div>
+                        <div th:utext="${user.bio}"></div>
                     </th:block>
                     <ul class="colorlib-social-icons">
                         <li><a href="#"><i class="icon-twitter"></i></a></li>
