@@ -57,4 +57,12 @@ public class UserController {
         modelAndView.addObject("user", userFound);
         return modelAndView;
     }
+
+    @GetMapping("/users/{username}/profile")
+    public ModelAndView showUserProfile(@PathVariable("username") String username) {
+        ModelAndView modelAndView = new ModelAndView("user/profile");
+        Users userFound = userService.findActiveUserByUsername(username);
+        modelAndView.addObject("user", userFound);
+        return modelAndView;
+    }
 }
