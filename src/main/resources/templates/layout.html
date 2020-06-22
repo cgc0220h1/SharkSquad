@@ -2,31 +2,56 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">1
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Shark Squad</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content=""/>
+
+    <!-- Facebook and Twitter integration -->
+    <meta property="og:title" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:site_name" content=""/>
+    <meta property="og:description" content=""/>
+    <meta name="twitter:title" content=""/>
+    <meta name="twitter:image" content=""/>
+    <meta name="twitter:url" content=""/>
+    <meta name="twitter:card" content=""/>
+
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+
     <!-- Animate.css -->
-    <link rel="stylesheet" th:href="@{/css/animate.css}">
+    <link rel="stylesheet" th:href="@{css/animate.css}">
     <!-- Icomoon Icon Fonts-->
-    <link rel="stylesheet" th:href="@{/css/icomoon.css}">
+    <link rel="stylesheet" th:href="@{css/icomoon.css}">
     <!-- Bootstrap  -->
-    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{css/bootstrap.css}">
+
     <!-- Magnific Popup -->
-    <link rel="stylesheet" th:href="@{/css/magnific-popup.css}">
+    <link rel="stylesheet" th:href="@{css/magnific-popup.css}">
+
     <!-- Flexslider  -->
-    <link rel="stylesheet" th:href="@{/css/flexslider.css}">
+    <link rel="stylesheet" th:href="@{css/flexslider.css}">
+
     <!-- Owl Carousel -->
-    <link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
-    <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
+    <link rel="stylesheet" th:href="@{css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{css/owl.theme.default.min.css}">
+
     <!-- Flaticons  -->
-    <link rel="stylesheet" th:href="@{/fonts/flaticon/font/flaticon.css}">
+    <link rel="stylesheet" th:href="@{fonts/flaticon/font/flaticon.css}">
+
     <!-- Theme style  -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{css/style.css}">
+
     <!-- Modernizr JS -->
-    <script th:src="@{/js/modernizr-2.6.2.min.js}"></script>
-    <script th:src="@{/js/respond.min.js}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:src="@{js/modernizr-2.6.2.min.js}"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script th:src="@{js/respond.min.js}"></script>
+    <![endif]-->
+
 </head>
 <body>
 <nav class="colorlib-nav" role="navigation" th:fragment="menu">
@@ -42,16 +67,23 @@
                         <li class="has-dropdown active">
                             <a href="#" th:text="#{view.li.a.categories}"></a>
                             <ul class="dropdown">
-                                <th:block th:each="category: ${categoryList}">
-                                    <li>
-                                        <a th:href="@{/categories/__${category.anchorName}__}"
-                                           th:text="${category.title}"></a>
-                                    </li>
-                                </th:block>
+                                <li><a href="#" th:text="#{view.li.a.business}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.entertainment}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.experience}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.finance}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.game}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.health}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.programming}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.science}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.sport}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.style}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.technology}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.thought}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.travel}"></a></li>
+                                <li><a href="#" th:text="#{view.li.a.world}"></a></li>
                             </ul>
                         </li>
-                        <li><a href="/about" th:text="#{view.li.a.about_me}"></a></li>
-                        <li><a href="/login" th:text="#{login.span.login}"></a></li>
+                        <li><a href="#" th:text="#{view.li.a.about_me}"></a></li>
                     </ul>
                 </div>
             </div>
@@ -62,37 +94,29 @@
 <div id="colorlib-instagram" th:fragment="hotBlog">
     <div class="row">
         <div class="col-md-12 col-md-offset-0 colorlib-heading text-center">
-            <h2>PICTURE OF THE DAY</h2>
+            <h2>HOT BLOG</h2>
         </div>
     </div>
     <div class="row">
-        <div class="instagram-entry"></div>
+        <div class="instagram-entry">
+            <a href="#" class="instagram text-center" style="background-image: url(../static/images/gallery-1.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../static/images/gallery-2.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../static/images/gallery-3.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../static/images/gallery-4.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../static/images/gallery-5.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../static/images/gallery-6.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../static/images/gallery-7.jpg);">
+            </a>
+            <a href="#" class="instagram text-center" style="background-image: url(../static/images/gallery-8.jpg);">
+            </a>
+        </div>
     </div>
-    <script>
-        $(document).ready(function () {
-            let $a = $("<a>", {"class": "instagram text-center"});
-            $.ajax({
-                header: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                type: "GET",
-                url: "https://api.unsplash.com/photos?page=1&client_id=IdusRIk1r39o-uOTKwKK0hmrf4Tb1Au9QI4L78NYtoQ",
-                dataType: 'json',
-                error: function () {
-                    alert("Có lỗi xảy ra")
-                },
-                success: function (data) {
-                    for (let index = 0; index < 8; index++) {
-                        console.log(data);
-                        $a.attr("href", data[index].urls.small)
-                        $a.css("background-image", 'url(' + data[index].urls.small + ')');
-                        $(".instagram-entry").append($a.clone());
-                    }
-                }
-            })
-        })
-    </script>
 </div>
 
 <footer id="colorlib-footer" role="contentinfo" th:fragment="footer">
@@ -156,6 +180,7 @@
                         Copyright &copy;<script>document.write(new Date().getFullYear());</script>
                         All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i>
                     </small>
+
                 </p>
             </div>
         </div>
@@ -168,20 +193,20 @@
 
 <div class="jquery-layout" th:fragment="jquery">
     <!-- jQuery -->
-    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{js/jquery.min.js}"></script>
     <!-- jQuery Easing -->
-    <script th:src="@{/js/jquery.easing.1.3.js}"></script>
+    <script th:src="@{js/jquery.easing.1.3.js}"></script>
     <!-- Bootstrap -->
-    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{js/bootstrap.min.js}"></script>
     <!-- Waypoints -->
-    <script th:src="@{/js/jquery.waypoints.min.js}"></script>
+    <script th:src="@{js/jquery.waypoints.min.js}"></script>
     <!-- Flexslider -->
-    <script th:src="@{/js/jquery.flexslider-min.js}"></script>
+    <script th:src="@{js/jquery.flexslider-min.js}"></script>
     <!-- Owl carousel -->
-    <script th:src="@{/js/owl.carousel.min.js}"></script>
+    <script th:src="@{js/owl.carousel.min.js}"></script>
     <!-- Magnific Popup -->
-    <script th:src="@{/js/jquery.magnific-popup.min.js}"></script>
-    <script th:src="@{/js/magnific-popup-options.js}"></script>
+    <script th:src="@{js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{js/magnific-popup-options.js}"></script>
     <!-- Main -->
     <script th:src="@{/js/main.js}"></script>
 </div>
