@@ -35,7 +35,7 @@ public class CategoryController {
 
     @GetMapping("/{anchor-name}/posts")
     public ModelAndView showPostOfCategories(@PathVariable("anchor-name") Category category, Pageable pageable) {
-        ModelAndView modelAndView = new ModelAndView("filter");
+        ModelAndView modelAndView = new ModelAndView("post/viewByCategories");
         Page<Post> postPage = postService.findExistByCategory(category, pageable);
         for (Post post : postPage) {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
