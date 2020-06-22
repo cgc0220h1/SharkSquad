@@ -23,7 +23,6 @@ public class Attachment {
 
     @Basic
     @Column(name = "status", nullable = false)
-
     @JsonIgnore
     private int status;
 
@@ -37,7 +36,6 @@ public class Attachment {
 
     @ManyToOne
     @JoinColumn(name = "posts_id", referencedColumnName = "id", nullable = false)
-    @Access(AccessType.PROPERTY)
     @ToString.Exclude
     @HashCodeExclude
     private Post post;

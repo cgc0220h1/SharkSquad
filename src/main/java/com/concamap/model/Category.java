@@ -46,10 +46,10 @@ public class Category {
     @JsonIgnore
     private String anchorName;
 
-    @OneToMany(mappedBy = "category")
-    @Access(AccessType.PROPERTY)
-    @JsonIgnore
-    @ToString.Exclude
-    @HashCodeExclude
-    private Set<Post> posts;
+//    @OneToMany(mappedBy = "category")
+//    @Access(AccessType.PROPERTY)
+//    @JsonIgnore
+//    @ToString.Exclude
+//    @HashCodeExclude
+//    private Set<Post> posts;
 }
