@@ -1,8 +1,6 @@
 package com.concamap.model;
 
-import lombok.Data;
-import lombok.ToString;
-import org.apache.commons.lang3.builder.HashCodeExclude;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -10,7 +8,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "roles", schema = "shark_squad")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Roles {
     @Id
     @Column(name = "id", nullable = false)
@@ -34,8 +34,6 @@ public class Roles {
     private Timestamp updatedDate;
 
     @OneToMany(mappedBy = "roles")
-    @Access(AccessType.PROPERTY)
-    @ToString.Exclude
-    @HashCodeExclude
+    @EqualsAndHashCode.Exclude
     private Set<Users> users;
 }

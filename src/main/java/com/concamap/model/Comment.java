@@ -1,16 +1,16 @@
 package com.concamap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.ToString;
-import org.apache.commons.lang3.builder.HashCodeExclude;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "comments", schema = "shark_squad")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Comment {
     @Id
     @Column(name = "id", nullable = false)
@@ -36,15 +36,9 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "posts_id", referencedColumnName = "id", nullable = false)
-    @Access(AccessType.PROPERTY)
-    @ToString.Exclude
-    @HashCodeExclude
     private Post post;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    @Access(AccessType.PROPERTY)
-    @ToString.Exclude
-    @HashCodeExclude
     private Users users;
 }
