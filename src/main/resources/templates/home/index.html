@@ -23,7 +23,7 @@
                                         <div class="desc">
                                             <p class="meta">
                                                 <span class="cat">
-                                                    <a th:href="@{/categories/__${post.category.title}__/posts}"
+                                                    <a th:href="@{/categories/__${post.category.anchorName}__/posts}"
                                                        th:text="${post.category.title}"></a>
                                                 </span>
                                                 <span class="date" th:text="${post.createdDate}"></span>
@@ -81,6 +81,17 @@
                         </div>
                     </div>
                 </th:block>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <ul class="pagination">
+                        <li><a th:href="@{/(page=${postPage.number})}" th:if="${postPage.hasPrevious()}">&laquo;</a></li>
+                        <th:block th:each="i : ${#numbers.sequence(1, __${postPage.size}__,1)}">
+                            <li><a th:href="@{/(page=${i})}" th:text="${i}"></a></li>
+                        </th:block>
+                        <li><a th:href="@{/(page=${postPage.number + 2})}">&raquo;</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

@@ -58,8 +58,7 @@ public class HomeController {
 
     @ModelAttribute("categoryList")
     public List<Category> categoryList() {
-        List<Category> categoryList = categoryService.findAllExist(Sort.by("title").ascending());
-        return categoryList;
+        return categoryService.findAllExist(Sort.by("title").ascending());
     }
 
     @ModelAttribute("dateMap")
@@ -97,7 +96,7 @@ public class HomeController {
         return postList;
     }
 
-    @GetMapping()
+    @GetMapping
     public ModelAndView showHomePage(Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("home/index");
         Page<Post> postPage = postService.findAllExist(pageable);
