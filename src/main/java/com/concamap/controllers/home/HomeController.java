@@ -58,7 +58,8 @@ public class HomeController {
 
     @ModelAttribute("categoryList")
     public List<Category> categoryList() {
-        return categoryService.findAllExist(Sort.by("title").ascending());
+        List<Category> categoryList = categoryService.findAllExist(Sort.by("title").ascending());
+        return categoryList;
     }
 
     @ModelAttribute("dateMap")

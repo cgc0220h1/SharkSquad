@@ -23,14 +23,14 @@
                                         <div class="desc">
                                             <p class="meta">
                                                 <span class="cat">
-                                                    <a th:href="@{/categories/__${post.category.anchorName}__}"
+                                                    <a th:href="@{/categories/__${post.category.title}__/posts}"
                                                        th:text="${post.category.title}"></a>
                                                 </span>
                                                 <span class="date" th:text="${post.createdDate}"></span>
                                                 <br>
                                                 <span class="pos">By
                                                     <a th:href="@{/users/__${post.users.username}__}"
-                                                       th:text="${post.users.firstName.concat(' ').concat(post.users.lastName)}"></a>
+                                                       th:text="${post.users.username}"></a>
                                                 </span>
                                             </p>
                                             <h1>
@@ -56,7 +56,8 @@
                             <div class="blog-img">
                                 <a th:href="@{/posts/__${post.anchorName}__}">
                                     <img class="img-responsive"
-                                         alt="html5 bootstrap template" src="">
+                                         alt="html5 bootstrap template"
+                                         th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
                                 </a>
                             </div>
                             <div class="desc">
@@ -68,8 +69,8 @@
                                     <span class="date" th:text="${post.createdDate}"></span>
                                     <br>
                                     <span class="pos">By
-                                        <a th:href="@{/users/__${post.users.username}__}"
-                                           th:text="${post.users.firstName.concat(' ').concat(post.users.lastName)}"></a>
+                                        <a th:href="@{/users/__${post.users.username}__/posts}"
+                                           th:text="${post.users.username}"></a>
                                     </span>
                                 </p>
                                 <h2>
