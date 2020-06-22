@@ -28,6 +28,7 @@ public class UserController {
 
     @PostMapping("/login")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
+        Users users1 = (Users) userService.findAllExist();
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/login");
         }
