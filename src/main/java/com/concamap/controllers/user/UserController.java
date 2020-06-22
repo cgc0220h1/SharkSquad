@@ -50,18 +50,28 @@ public class UserController {
     }
 
     @GetMapping("/users/{username}")
-    public ModelAndView showUser(@PathVariable("username") String username) {
+    public ModelAndView showUser(@PathVariable("username") Users user) {
         ModelAndView modelAndView = new ModelAndView("home/bio");
-        Users userFound = userService.findActiveUserByUsername(username);
-        modelAndView.addObject("user", userFound);
+        modelAndView.addObject("user", user);
         return modelAndView;
     }
 
     @GetMapping("/users/{username}/profile")
-    public ModelAndView showUserProfile(@PathVariable("username") String username) {
+    public ModelAndView showUserProfile(@PathVariable("username") Users user) {
         ModelAndView modelAndView = new ModelAndView("user/profile");
-        Users userFound = userService.findActiveUserByUsername(username);
-        modelAndView.addObject("user", userFound);
+        modelAndView.addObject("user", user);
         return modelAndView;
+    }
+
+    @PostMapping("/users/**/profile")
+    public RedirectView updateUserProfile(@ModelAttribute("user") Users users) {
+        Users usersFound = userService.findExistById(users.getId());
+        usersFound.setFirstName(users.getFirstName());
+        usersFound.setLastName(users.getLastName());
+        usersFound.setPhone(users.getPhone());
+        usersFound.setEmail(users.getEmail());
+        usersFound.setBio(users.getBio());
+        userService.save(usersFound);
+        return new RedirectView("/users/" + usersFound.getUsername() + "/profile");
     }
 }
