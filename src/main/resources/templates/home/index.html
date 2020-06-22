@@ -23,7 +23,7 @@
                                         <div class="desc">
                                             <p class="meta">
                                                 <span class="cat">
-                                                    <a th:href="@{/categories/__${post.category.title}__/posts}"
+                                                    <a th:href="@{/categories/__${post.category.anchorName}__/posts}"
                                                        th:text="${post.category.title}"></a>
                                                 </span>
                                                 <span class="date" th:text="${post.createdDate}"></span>
