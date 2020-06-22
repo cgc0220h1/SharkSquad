@@ -60,9 +60,8 @@
                                     <p class="meta">
                                         <span class="cat"><a th:href="@{/categories/__${post.category.anchorName}__/posts}" th:text="*{post.category.title}"></a></span>
                                         <span class="date" th:text="*{post.createdDate}"></span>
-                                        <span class="pos"
-                                              th:text="#{view.span.by} + ' ' + *{post.users.username}"></span>
-                                        <!--<a href="#" th:text="*{post.users.username}"></a>-->
+                                        <span class="pos" th:text="#{view.span.by} + ' ' + *{post.users.username}"></span>
+                                        <!--<a th:href="@{/users/__${post.users.username}__}" th:text="*{post.users.username}"></a>-->
                                     </p>
                                     <h2 th:text="*{post.title}"></h2>
                                     <div th:utext="*{post.content}"></div>
@@ -94,33 +93,8 @@
                         <div class="col-md-12">
                             <h2 class="heading-2" th:text="#{view.h2.Comment}"></h2>
                             <form action="#">
-                                <!--<div class="row form-group">
-                                    <div class="col-md-6">
-                                        &lt;!&ndash; <label for="fname">First Name</label> &ndash;&gt;
-                                        <input type="text" id="fname" class="form-control" placeholder="Your firstname">
-                                    </div>
-                                    <div class="col-md-6">
-                                        &lt;!&ndash; <label for="lname">Last Name</label> &ndash;&gt;
-                                        <input type="text" id="lname" class="form-control" placeholder="Your lastname">
-                                    </div>
-                                </div>
-
                                 <div class="row form-group">
                                     <div class="col-md-12">
-                                        &lt;!&ndash; <label for="email">Email</label> &ndash;&gt;
-                                        <input type="text" id="email" class="form-control" placeholder="Your email address">
-                                    </div>
-                                </div>
-
-                                <div class="row form-group">
-                                    <div class="col-md-12">
-                                        &lt;!&ndash; <label for="subject">Subject</label> &ndash;&gt;
-                                        <input type="text" id="subject" class="form-control" placeholder="Your subject of this message">
-                                    </div>
-                                </div>-->
-                                <div class="row form-group">
-                                    <div class="col-md-12">
-                                        <!-- <label for="message">Message</label> -->
                                         <textarea name="message" id="message" cols="30" rows="10" class="form-control"
                                                   th:placeholder="#{view.text_area.placeholder.write_a_comment}"></textarea>
                                     </div>
@@ -134,83 +108,20 @@
                 </div>
                 <div class="col-md-3">
                     <div class="sidebar">
-                        <!--							<div class="side">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" id="search" placeholder="Enter any key to search...">
-                                                            <button type="submit" class="btn btn-primary"><i class="icon-search3"></i></button>
-                                                        </div>
-                                                    </div>-->
-                        <!--<div class="side">
-                            <h2 class="sidebar-heading">Categories</h2>
-                            <p>
-                                <ul class="category">
-                                    <li><a href="#"><i class="icon-check"></i> Home</a></li>
-                                    <li><a href="#"><i class="icon-check"></i> About Me</a></li>
-                                    <li><a href="#"><i class="icon-check"></i> Blog</a></li>
-                                    <li><a href="#"><i class="icon-check"></i> Travel</a></li>
-                                    <li><a href="#"><i class="icon-check"></i> Lifestyle</a></li>
-                                    <li><a href="#"><i class="icon-check"></i> Fashion</a></li>
-                                    <li><a href="#"><i class="icon-check"></i> Health</a></li>
-                                </ul>
-                            </p>
-                        </div>-->
                         <div class="side">
                             <h2 class="sidebar-heading" th:text="#{view.h2.recent_blog}"></h2>
-                            <div class="f-blog">
-                                <a href="blog.html" class="blog-img"
-                                   style="background-image: url(../../static/images/blog-1.jpg);">
-                                </a>
-                                <div class="desc">
-                                    <h3><a href="blog.html">Be a designer</a></h3>
-                                    <p class="admin"><span>25 March 2018</span></p>
+                            <th:block th:each="post : ${randomPostList}">
+                                <div class="f-blog">
+                                    <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img">
+                                        <img class="img-responsive" alt="html5 bootstrap template" th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
+                                    </a>
+                                    <div class="desc">
+                                        <h3><a th:href="@{/posts/__${post.anchorName}__}" th:text="*{post.title}"></a></h3>
+                                        <p class="admin"><span th:text="*{post.createdDate}"></span></p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="f-blog">
-                                <a href="blog.html" class="blog-img"
-                                   style="background-image: url(../../static/images/blog-2.jpg);">
-                                </a>
-                                <div class="desc">
-                                    <h3><a href="blog.html">How to build website</a></h3>
-                                    <p class="admin"><span>24 March 2018</span></p>
-                                </div>
-                            </div>
-                            <div class="f-blog">
-                                <a href="blog.html" class="blog-img"
-                                   style="background-image: url(../../static/images/blog-3.jpg);">
-                                </a>
-                                <div class="desc">
-                                    <h3><a href="blog.html">Create website</a></h3>
-                                    <p class="admin"><span>23 March 2018</span></p>
-                                </div>
-                            </div>
+                            </th:block>
                         </div>
-                        <!--<div class="side">
-                            <h2 class="sidebar-heading">Instagram</h2>
-                            <div class="instagram-entry">
-                                <a href="#" class="instagram text-center" style="background-image: url(images/gallery-1.jpg);">
-                                </a>
-                                <a href="#" class="instagram text-center" style="background-image: url(images/gallery-2.jpg);">
-                                </a>
-                                <a href="#" class="instagram text-center" style="background-image: url(images/gallery-3.jpg);">
-                                </a>
-                                <a href="#" class="instagram text-center" style="background-image: url(images/gallery-4.jpg);">
-                                </a>
-                                <a href="#" class="instagram text-center" style="background-image: url(images/gallery-5.jpg);">
-                                </a>
-                                <a href="#" class="instagram text-center" style="background-image: url(images/gallery-6.jpg);">
-                                </a>
-                                <a href="#" class="instagram text-center" style="background-image: url(images/gallery-7.jpg);">
-                                </a>
-                                <a href="#" class="instagram text-center" style="background-image: url(images/gallery-8.jpg);">
-                                </a>
-                            </div>
-                        </div>-->
-                        <!--<div class="side">
-                            <div class="form-group">
-                                <input type="text" class="form-control form-email text-center" id="email" placeholder="Enter your email">
-                                <button type="submit" class="btn btn-primary btn-subscribe">Subscribe</button>
-                            </div>
-                        </div>-->
                     </div>
                 </div>
             </div>
