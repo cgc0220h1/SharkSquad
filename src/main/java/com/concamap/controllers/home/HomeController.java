@@ -96,7 +96,7 @@ public class HomeController {
         return postList;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ModelAndView showHomePage(Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("home/index");
         Page<Post> postPage = postService.findAllExist(pageable);
