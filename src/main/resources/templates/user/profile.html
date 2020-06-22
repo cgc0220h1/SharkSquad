@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: head">
+    <title>Shark Squad</title>
+</head>
+<body>
+<script src="https://cdn.ckeditor.com/ckeditor5/19.1.1/classic/ckeditor.js"></script>
+<div class="colorlib-loader"></div>
+
+<div id="page">
+    <nav th:replace="layout :: menu"></nav>
+
+    <div id="colorlib-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div id="map" class="colorlib-map"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h2 class="heading-2" th:text="#{profile.form.title}"></h2>
+                            <form action="#" method="post" th:object="${user}">
+
+                                <div class="row form-group">
+                                    <div class="col-md-6">
+                                        <label for="first-name" th:text="#{sign-up.span.first_name}"></label>
+                                        <input type="text" id="first-name" class="form-control"
+                                               th:placeholder="${user.firstName}" th:field="*{firstName}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="last-name" th:text="#{sign-up.span.last_name}"></label>
+                                        <input type="text" id="last-name" class="form-control"
+                                               th:placeholder="${user.lastName}" th:field="*{lastName}">
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="email" th:text="#{sign-up.span.email}"></label>
+                                        <input type="text" id="email" class="form-control"
+                                               th:placeholder="${user.email}" th:field="*{email}">
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="subject" th:text="#{sign-up.span.phone}"></label>
+                                        <input type="text" id="subject" class="form-control"
+                                               th:placeholder="${user.phone}" th:field="*{phone}">
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="message" th:text="#{sign-up.span.bio}"></label>
+                                        <textarea name="message" id="message" cols="50" rows="30" class="form-control"
+                                                  th:placeholder="${user.bio}" th:field="*{bio}"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="upload-file" th:text="#{profile.form.input.file}"></label>
+                                        <input type="file" id="upload-file">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <button class="btn btn-primary" type="submit"
+                                            th:text="#{profile.form.button.submit}"></button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="layout :: hotBlog"></div>
+
+    <footer th:replace="layout :: footer"></footer>
+</div>
+
+<div th:replace="layout :: backToTop"></div>
+
+<div th:replace="layout :: jquery"></div>
+
+<script>
+    ClassicEditor
+        .create(document.querySelector("#message"))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+</body>
+</html>
+

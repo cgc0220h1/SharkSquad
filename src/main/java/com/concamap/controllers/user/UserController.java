@@ -51,7 +51,15 @@ public class UserController {
 
     @GetMapping("/users/{username}")
     public ModelAndView showUser(@PathVariable("username") String username) {
-        ModelAndView modelAndView = new ModelAndView("user/user-info");
+        ModelAndView modelAndView = new ModelAndView("home/bio");
+        Users userFound = userService.findActiveUserByUsername(username);
+        modelAndView.addObject("user", userFound);
+        return modelAndView;
+    }
+
+    @GetMapping("/users/{username}/profile")
+    public ModelAndView showUserProfile(@PathVariable("username") String username) {
+        ModelAndView modelAndView = new ModelAndView("user/profile");
         Users userFound = userService.findActiveUserByUsername(username);
         modelAndView.addObject("user", userFound);
         return modelAndView;
