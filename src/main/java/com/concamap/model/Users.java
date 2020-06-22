@@ -2,6 +2,8 @@ package com.concamap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,8 +11,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users", schema = "shark_squad")
@@ -87,15 +88,24 @@ public class Users {
     private int status;
 
     @OneToMany(mappedBy = "users")
+    @Access(AccessType.PROPERTY)
     @JsonIgnore
-    private Collection<Comment> comments;
+    @ToString.Exclude
+    @HashCodeExclude
+    private Set<Comment> comments;
 
     @OneToMany(mappedBy = "users")
+    @Access(AccessType.PROPERTY)
     @JsonIgnore
-    private Collection<Post> posts;
+    @ToString.Exclude
+    @HashCodeExclude
+    private Set<Post> posts;
 
     @ManyToOne
     @JoinColumn(name = "roles_id", referencedColumnName = "id", nullable = false)
+    @Access(AccessType.PROPERTY)
     @JsonIgnore
+    @ToString.Exclude
+    @HashCodeExclude
     private Roles roles;
 }

@@ -11,13 +11,13 @@ public class PostComponentImp implements PostComponent {
     @Override
     public String summary(String content, int numberOfWords, String extendString) {
         String contentPlainText = toPlainText(content);
-        final Pattern WB_PATTERN = Pattern.compile("(?<=\\w)\\b");
+        final Pattern WB_PATTERN = Pattern.compile("\\s");
         if (numberOfWords <= 0 || contentPlainText == null) {
             return "";
         }
         Matcher m = WB_PATTERN.matcher(contentPlainText);
-        for (int i = 0; i < numberOfWords && m.find(); i++) {
-            if (m.hitEnd()) {
+        for (int i = 0; i < numberOfWords; i++) {
+            if (!m.find()) {
                 return contentPlainText.concat(extendString);
             }
         }

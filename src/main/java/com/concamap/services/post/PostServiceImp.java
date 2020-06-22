@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @PropertySource("classpath:config/status.properties")
@@ -38,12 +35,20 @@ public class PostServiceImp implements PostService {
     @Override
     public List<Post> findExistRandom(int quantity) {
         int count = 1;
+        long postSize = postRepository.count();
         Random random = new Random();
+        List<Integer> randomId = new ArrayList<>();
         List<Post> postList = new LinkedList<>();
         while (count <= quantity) {
-            int id = random.nextInt((int) postRepository.count()) + 1;
-            postList.add(postRepository.findById(id).orElse(null));
-            count++;
+            if (count > postSize) {
+                return postList;
+            }
+            int id = random.nextInt((int) postSize) + 1;
+            if (!randomId.contains(id)) {
+                postList.add(postRepository.findById(id).orElse(null));
+                randomId.add(id);
+                count++;
+            }
         }
         return postList;
     }

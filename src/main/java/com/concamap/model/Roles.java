@@ -1,10 +1,12 @@
 package com.concamap.model;
 
 import lombok.Data;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles", schema = "shark_squad")
@@ -32,5 +34,8 @@ public class Roles {
     private Timestamp updatedDate;
 
     @OneToMany(mappedBy = "roles")
-    private Collection<Users> users;
+    @Access(AccessType.PROPERTY)
+    @ToString.Exclude
+    @HashCodeExclude
+    private Set<Users> users;
 }
