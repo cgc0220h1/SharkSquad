@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="layout :: head">
+    <title>Shark Squad</title>
+</head>
+<body>
+<div class="colorlib-loader"></div>
+<div id="page">
+    <nav th:replace="layout :: menu"></nav>
+    <aside id="colorlib-hero">
+        <div class="flexslider">
+            <ul class="slides">
+                <th:block th:each="post : ${postPage}">
+                    <li th:style="'background-image: url('
+                    +${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}
+                    +'); width: 100%; float: left; margin-right: -100%; position: relative; opacity: 0; display: block; z-index: 1;'"
+                        class="" data-thumb-alt="">
+                        <div class="overlay"></div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 col-md-pull-3 col-sm-12 col-xs-12 col-md-offset-3 slider-text">
+                                    <div class="slider-text-inner">
+                                        <div class="desc">
+                                            <p class="meta">
+                                                <span class="cat">
+                                                    <a th:href="@{/categories/__${post.category.anchorName}__}"
+                                                       th:text="${post.category.title}"></a>
+                                                </span>
+                                                <span class="date" th:text="${post.createdDate}"></span>
+                                                <br>
+                                                <span class="pos">By
+                                                    <a th:href="@{/users/__${post.users.username}__}"
+                                                       th:text="${post.users.firstName.concat(' ').concat(post.users.lastName)}"></a>
+                                                </span>
+                                            </p>
+                                            <h1>
+                                                <a th:href="@{/posts/__${post.anchorName}__}"
+                                                   th:text="${post.title}"></a>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </th:block>
+            </ul>
+        </div>
+    </aside>
+    <div id="colorlib-container">
+        <div class="container">
+            <div class="row row-pb-md">
+                <th:block th:each="post : ${postPage}">
+                    <div class="col-md-4">
+                        <div class="blog-entry">
+                            <div class="blog-img">
+                                <a th:href="@{/posts/__${post.anchorName}__}">
+                                    <img class="img-responsive"
+                                         alt="html5 bootstrap template" src="">
+                                </a>
+                            </div>
+                            <div class="desc">
+                                <p class="meta">
+                                    <span class="cat">
+                                        <a th:href="@{/categories/__${post.category.anchorName}__/posts}"
+                                           th:text="${post.category.title}"></a>
+                                    </span>
+                                    <span class="date" th:text="${post.createdDate}"></span>
+                                    <br>
+                                    <span class="pos">By
+                                        <a th:href="@{/users/__${post.users.username}__}"
+                                           th:text="${post.users.firstName.concat(' ').concat(post.users.lastName)}"></a>
+                                    </span>
+                                </p>
+                                <h2>
+                                    <a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
+                                </h2>
+                                <p th:text="${post.content}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+    <div th:replace="layout :: hotBlog"></div>
+    <footer th:replace="layout :: footer"></footer>
+</div>
+<div th:replace="layout :: backToTop"></div>
+<div th:replace="layout :: jquery"></div>
+</body>
+</html>
+
