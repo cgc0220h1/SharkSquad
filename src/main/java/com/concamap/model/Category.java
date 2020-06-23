@@ -24,7 +24,7 @@ public class Category {
     private String title;
 
     @Basic
-    @Column(name = "description", length = -1)
+    @Column(name = "description")
     private String description;
 
     @Basic

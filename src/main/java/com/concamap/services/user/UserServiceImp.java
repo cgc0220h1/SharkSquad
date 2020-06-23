@@ -48,7 +48,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Users findExistById(int id) {
-        return null;
+        return userRepository.findByStatusAndId(activeUserStatus, id).orElse(null);
     }
 
     @Override
@@ -72,8 +72,8 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Users save(Users model) {
-        return null;
+    public Users save(Users users) {
+        return userRepository.save(users);
     }
 
     @Override

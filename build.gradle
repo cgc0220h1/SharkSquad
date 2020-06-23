@@ -21,6 +21,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'mysql:mysql-connector-java'
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
 	compile group: 'org.apache.commons', name: 'commons-text', version: '1.8'
 	annotationProcessor 'org.projectlombok:lombok'
