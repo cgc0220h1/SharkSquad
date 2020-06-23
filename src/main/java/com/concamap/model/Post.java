@@ -24,7 +24,7 @@ public class Post {
     private String title;
 
     @Basic
-    @Column(name = "content", nullable = false, length = -1)
+    @Column(name = "content", nullable = false)
     private String content;
 
     @Basic
@@ -60,4 +60,9 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private Users users;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    private Set<Comment> comments;
 }

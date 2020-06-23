@@ -18,7 +18,7 @@ public class Comment {
     private int id;
 
     @Basic
-    @Column(name = "content", nullable = false, length = -1)
+    @Column(name = "content", nullable = false)
     private String content;
 
     @Basic
