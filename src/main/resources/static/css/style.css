@@ -392,9 +392,7 @@ h1, h2, h3, h4, h5, h6, figure {
 .blog-entry {
   z-index: 0;
   display: block;
-  position: relative;
-  height: 467px;
-}
+  position: relative; }
   @media screen and (max-width: 768px) {
     .blog-entry {
       margin-bottom: 4em; } }

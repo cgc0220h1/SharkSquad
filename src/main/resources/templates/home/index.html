@@ -28,10 +28,8 @@
                                                 </span>
                                                 <span class="date" th:text="${post.createdDate}"></span>
                                                 <br>
-                                                <span class="pos">By
-                                                    <a th:href="@{/users/__${post.users.username}__}"
-                                                       th:text="${post.users.username}"></a>
-                                                </span>
+                                                <span class="pos" th:text="#{view.span.by}"></span>
+                                                <a style="color: black; font-weight: bold" th:href="@{/users/__${post.users.username}__}" th:text="${post.users.username}"></a>
                                             </p>
                                             <h1>
                                                 <a th:href="@{/posts/__${post.anchorName}__}"
@@ -57,21 +55,19 @@
                                 <a th:href="@{/posts/__${post.anchorName}__}">
                                     <img class="img-responsive"
                                          alt="html5 bootstrap template"
-                                         th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" style="width: 350px; height: 243px">
+                                         th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
                                 </a>
                             </div>
                             <div class="desc">
                                 <p class="meta">
                                     <span class="cat">
-                                        <a th:href="@{/categories/__${post.category.anchorName}__}"
+                                        <a th:href="@{/categories/__${post.category.anchorName}__/posts}"
                                            th:text="${post.category.title}"></a>
                                     </span>
                                     <span class="date" th:text="${post.createdDate}"></span>
                                     <br>
-                                    <span class="pos">By
-                                        <a th:href="@{/users/__${post.users.username}__/posts}"
-                                           th:text="${post.users.username}"></a>
-                                    </span>
+                                    <span class="pos" th:text="#{view.span.by}"></span>
+                                    <a style="color: black; font-weight: bold" th:href="@{/users/__${post.users.username}__}" th:text="${post.users.username}"></a>
                                 </p>
                                 <h2>
                                     <a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a>

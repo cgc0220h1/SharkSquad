@@ -36,30 +36,33 @@
                 <div class="col-xs-2">
                     <div id="colorlib-logo"><a th:href="${'/'}" th:text="#{view.a.index}"></a></div>
                 </div>
-                <div class="col-xs-8 text-right menu-1">
+                <div class="col-xs-9 text-right menu-1">
                     <ul>
-                        <li>
-                            <input type="text" id="search" placeholder="Enter any key to search..."
-                                   style="width: 30%">
-                            <button type="submit" class="btn btn-primary"><i class="icon-search3"></i></button>
-                        </li>
                         <li class="active"><a th:href="${'/'}" th:text="#{view.li.a.home}"></a></li>
                         <li class="has-dropdown">
                             <a href="#" th:text="#{view.li.a.categories}"></a>
                             <ul class="dropdown">
                                 <th:block th:each="category: ${categoryList}">
                                     <li>
-                                        <a th:href="@{/categories/__${category.anchorName}__}"
+                                        <a th:href="@{/categories/__${category.anchorName}__/posts}"
                                            th:text="${category.title}"></a>
                                     </li>
                                 </th:block>
                             </ul>
                         </li>
                         <li><a href="#" th:text="#{view.li.a.about_me}"></a></li>
+                        <li>
+                            <div class="search-box">
+
+                            </div>
+                            <input type="text" id="search" placeholder="Enter any key to search..."
+                                   style="width: 30%">
+                            <button type="submit" class="btn btn-primary"><i class="icon-search3"></i></button>
+                        </li>
                         <li ><a href="#" th:text="#{login.title}"></a></li>
                     </ul>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-xs-1">
                     <div style="font-size: small">Language: <a href="?lang=en">English</a> | <a href="?lang=vn">VietNamese</a></div>
                 </div>
             </div>
