@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.sql.Timestamp;
+
 @Controller
 public class UserController {
     private final UserService userService;
@@ -26,14 +28,13 @@ public class UserController {
         return modelAndView;
     }
 
-    @PostMapping("/login")
+  /*  @PostMapping("/login")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
-        Users users1 = (Users) userService.findAllExist();
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/login");
         }
         return new RedirectView("/");
-    }
+    }*/
 
     @GetMapping("/signup")
     public ModelAndView showSignUp() {
@@ -47,6 +48,10 @@ public class UserController {
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/signup");
         }
+        users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+        userService.save(users);
+
         return new RedirectView("/login");
     }
 
