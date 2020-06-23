@@ -59,7 +59,7 @@
                             <ul class="dropdown">
                                 <th:block th:each="category: ${categoryList}">
                                     <li>
-                                        <a th:href="@{/categories/__${category.anchorName}__}"
+                                        <a th:href="@{/categories/__${category.anchorName}__/posts}"
                                            th:text="${category.title}"></a>
                                     </li>
                                 </th:block>

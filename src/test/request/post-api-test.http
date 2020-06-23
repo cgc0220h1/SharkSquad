@@ -18,5 +18,3 @@ GET http://localhost:8080/api/posts?title=suy+nghĩ&content=mình
 
 ###Tìm kiếm Post theo title hoặc content
 GET http://localhost:8080/api/posts?query=bài+tập
-
-###

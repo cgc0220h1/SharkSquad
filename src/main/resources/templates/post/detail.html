@@ -8,12 +8,13 @@
 <div class="colorlib-loader"></div>
 
 <div id="page">
+<!--
     <nav class="colorlib-nav" role="navigation">
         <div class="top-menu">
             <div class="container">
                 <div class="row">
                     <div class="col-xs-2">
-                        <div id="colorlib-logo"><a href="" th:text="#{view.a.index}"></a></div>
+                        <div id="colorlib-logo"><a th:href="@{/}" th:text="#{view.a.index}"></a></div>
                     </div>
                     <div class="col-xs-10 text-right menu-1">
                         <ul>
@@ -45,7 +46,18 @@
             </div>
         </div>
     </nav>
-
+-->
+    <nav th:replace="layout :: menu"></nav>
+    <aside id="colorlib-breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 breadcrumbs text-center">
+                    <h2 th:text="*{post.title}"></h2>
+                    <p><span><a th:href="@{/}" th:text="#{view.a.home}"></a></span> / <span th:text="*{post.category.title}"></span></p>
+                </div>
+            </div>
+        </div>
+    </aside>
     <div id="colorlib-container">
         <div class="container">
             <div class="row">
@@ -60,8 +72,8 @@
                                     <p class="meta">
                                         <span class="cat"><a th:href="@{/categories/__${post.category.anchorName}__/posts}" th:text="*{post.category.title}"></a></span>
                                         <span class="date" th:text="*{post.createdDate}"></span>
-                                        <span class="pos" th:text="#{view.span.by} + ' ' + *{post.users.username}"></span>
-                                        <!--<a th:href="@{/users/__${post.users.username}__}" th:text="*{post.users.username}"></a>-->
+                                        <span class="pos" th:text="#{view.span.by}"></span>
+                                        <a style="color: black; font-weight: bold" th:href="@{/users/__${post.users.username}__}" th:text="${post.users.username}"></a>
                                     </p>
                                     <h2 th:text="*{post.title}"></h2>
                                     <div th:utext="*{post.content}"></div>
@@ -110,7 +122,7 @@
                     <div class="sidebar">
                         <div class="side">
                             <h2 class="sidebar-heading" th:text="#{view.h2.recent_blog}"></h2>
-                            <th:block th:each="post : ${randomPostList}">
+                            <th:block th:each="post : ${recentPostList}">
                                 <div class="f-blog">
                                     <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img">
                                         <img class="img-responsive" alt="html5 bootstrap template" th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
