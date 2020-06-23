@@ -3,72 +3,51 @@
 <head th:replace="layout :: head">
     <title>Shark Squad</title>
 </head>
-<script src="https://cdn.ckeditor.com/ckeditor5/19.1.1/classic/ckeditor.js"></script>
 <body>
-
 <div class="colorlib-loader"></div>
-
 <div id="page">
-    <nav class="colorlib-nav" role="navigation">
-        <div class="top-menu">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-2">
-                        <div id="colorlib-logo"><a href="" th:text="#{view.a.index}"></a></div>
-                    </div>
-                    <div class="col-xs-10 text-right menu-1">
-                        <ul>
-                            <li><a href="" th:text="#{view.li.a.home}"></a></li>
-                            <li class="has-dropdown active">
-                                <a href="#" th:text="#{view.li.a.categories}"></a>
-                                <ul class="dropdown">
-                                    <li><a href="#" th:text="#{view.li.a.business}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.entertainment}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.experience}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.finance}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.game}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.health}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.programming}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.science}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.sport}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.style}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.technology}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.thought}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.travel}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.world}"></a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#" th:text="#{view.li.a.about_me}"></a></li>
-                            <li><a href="#" th:text="#{view.li.a.contact}"></a></li>
-                        </ul>
-                    </div>
+    <nav th:replace="layout :: menu"></nav>
+    <aside id="colorlib-breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 breadcrumbs text-center">
+                    <h2 th:text="#{create.h2.new_post}"></h2>
+                    <p><a th:href="@{/}">Trang chủ</a></p>
                 </div>
             </div>
         </div>
-    </nav>
-
+    </aside>
     <div id="colorlib-container">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="#">
+                            <form th:action="@{/users/{id}/create}" th:object="${post}" method="post">
                                 <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="title" th:text="#{create_blog.label.cover_picture}"></label>
+                                        <input type="text" id="title" class="form-control">
+                                    </div>
                                     <div class="col-md-6">
                                         <label for="picture" th:text="#{create_blog.label.cover_picture}"></label>
                                         <input type="file" id="picture" class="form-control" multiple>
                                     </div>
                                     <div class="col-md-6">
+<!--                                        <label for="categories" th:text="#{create_blog.label.categories}">-->
+                                            <!--<select id="categories" th:field="*{category}" class="form-control">
+                                                <th:block th:each="c : ${categoryList}">
+                                                    <option  th:value="${c.id}" th:text="${c.title}"></option>
+                                                </th:block>
+                                            </select>-->
                                         <label for="categories" th:text="#{create_blog.label.categories}"></label>
-                                        <!--Để select option thay thế cho input-->
-                                    <!--        <label th:text="#{create_blog.label.categories}">
-                                                <select th:field="*{category}" class="form-control">
-                                                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.title}"></option>
-                                                </select>
-                                            </label>-->
-                                        <input type="text" id="categories" class="form-control"
-                                               placeholder="Your email address">
+                                        <select th:field="*{category}" id="categories" class="form-control">
+                                                <option value="">-</option>
+                                                <th:block th:each="c : ${categoryList}">
+                                                    <option  th:value="${c.anchorName}" th:text="${c.title}"></option>
+                                                </th:block>
+                                            </select>
+<!--                                        </label>-->
                                     </div>
                                 </div>
 
@@ -94,147 +73,13 @@
             </div>
         </div>
     </div>
-    <div id="colorlib-instagram">
-        <div class="row">
-            <div class="col-md-12 col-md-offset-0 colorlib-heading text-center">
-                <h2>Instagram</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="instagram-entry">
-                <a href="#" class="instagram text-center"
-                   style="background-image: url(../../static/images/gallery-1.jpg);">
-                </a>
-                <a href="#" class="instagram text-center"
-                   style="background-image: url(../../static/images/gallery-2.jpg);">
-                </a>
-                <a href="#" class="instagram text-center"
-                   style="background-image: url(../../static/images/gallery-3.jpg);">
-                </a>
-                <a href="#" class="instagram text-center"
-                   style="background-image: url(../../static/images/gallery-4.jpg);">
-                </a>
-                <a href="#" class="instagram text-center"
-                   style="background-image: url(../../static/images/gallery-5.jpg);">
-                </a>
-                <a href="#" class="instagram text-center"
-                   style="background-image: url(../../static/images/gallery-6.jpg);">
-                </a>
-                <a href="#" class="instagram text-center"
-                   style="background-image: url(../../static/images/gallery-7.jpg);">
-                </a>
-                <a href="#" class="instagram text-center"
-                   style="background-image: url(../../static/images/gallery-8.jpg);">
-                </a>
-            </div>
-        </div>
-    </div>
-    <footer id="colorlib-footer" role="contentinfo">
-        <div class="container">
-            <div class="row row-pb-md">
-                <div class="col-md-3">
-                    <h2>Navigational</h2>
-                    <ul class="colorlib-footer-links">
-                        <li><a href="#"><i class="icon-check"></i> Home</a></li>
-                        <li><a href="#"><i class="icon-check"></i> About Me</a></li>
-                        <li><a href="#"><i class="icon-check"></i> Blog</a></li>
-                        <li><a href="#"><i class="icon-check"></i> Travel</a></li>
-                        <li><a href="#"><i class="icon-check"></i> Lifestyle</a></li>
-                        <li><a href="#"><i class="icon-check"></i> Fashion</a></li>
-                        <li><a href="#"><i class="icon-check"></i> Health</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h2>Recent Post</h2>
-                    <div class="f-blog">
-                        <a href="blog.html" class="blog-img"
-                           style="background-image: url(../../static/images/blog-1.jpg);">
-                        </a>
-                        <div class="desc">
-                            <h3><a href="blog.html">Be a designer</a></h3>
-                            <p class="admin"><span>25 March 2018</span></p>
-                        </div>
-                    </div>
-                    <div class="f-blog">
-                        <a href="blog.html" class="blog-img"
-                           style="background-image: url(../../static/images/blog-2.jpg);">
-                        </a>
-                        <div class="desc">
-                            <h3><a href="blog.html">How to build website</a></h3>
-                            <p class="admin"><span>24 March 2018</span></p>
-                        </div>
-                    </div>
-                    <div class="f-blog">
-                        <a href="blog.html" class="blog-img"
-                           style="background-image: url(../../static/images/blog-3.jpg);">
-                        </a>
-                        <div class="desc">
-                            <h3><a href="blog.html">Create website</a></h3>
-                            <p class="admin"><span>23 March 2018</span></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <h2>Archive</h2>
-                    <p>
-                    <ul class="colorlib-footer-links">
-                        <li><a href="#"><i class="icon-check"></i> February 2018</a></li>
-                        <li><a href="#"><i class="icon-check"></i> January 2018</a></li>
-                        <li><a href="#"><i class="icon-check"></i> December 2017</a></li>
-                        <li><a href="#"><i class="icon-check"></i> November 2017</a></li>
-                        <li><a href="#"><i class="icon-check"></i> October 2017</a></li>
-                        <li><a href="#"><i class="icon-check"></i> September 2017</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h2>Tags</h2>
-                    <p class="tags">
-                        <span><a href="#"><i class="icon-tag"></i> Modeling</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Fashion</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Life</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Blog</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Workout</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Vacation</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Travel</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Exercise</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Health</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> News</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Model</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Women</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Animals</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Nature</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Art</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Sea</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Ocean</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Office</a></span>
-                        <span><a href="#"><i class="icon-tag"></i> Home</a></span>
-                    </p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <p>
-                        <small class="block">
-                            Copyright &copy;<script>document.write(new Date().getFullYear());</script>
-                            All rights reserved | This template is made with <i class="icon-heart"
-                                                                                aria-hidden="true"></i> by <a
-                                href="https://colorlib.com" target="_blank">Colorlib</a>
-                        </small>
-                        <small class="block">Demo Images: <a href="http://unsplash.co/"
-                                                             target="_blank">Unsplash</a></small>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <div th:replace="layout :: hotBlog"></div>
+    <footer th:replace="layout :: footer"></footer>
 </div>
 
 <div th:replace="layout :: backToTop"></div>
-
 <div th:replace="layout :: jquery"></div>
-
-</body>
-
+<script src="https://cdn.ckeditor.com/ckeditor5/19.1.1/classic/ckeditor.js"></script>
 <script>
     ClassicEditor
         .create(document.querySelector('#message'))
@@ -242,5 +87,6 @@
             console.error(error);
         });
 </script>
+</body>
 </html>
 

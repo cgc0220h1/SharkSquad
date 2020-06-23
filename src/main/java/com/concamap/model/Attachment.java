@@ -34,5 +34,6 @@ public class Attachment {
 
     @ManyToOne
     @JoinColumn(name = "posts_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
     private Post post;
 }

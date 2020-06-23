@@ -36,9 +36,11 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "posts_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
     private Post post;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
     private Users users;
 }
