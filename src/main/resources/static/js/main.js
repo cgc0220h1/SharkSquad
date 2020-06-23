@@ -45,45 +45,45 @@
 
 	var offcanvasMenu = function() {
 
-		$('#page').prepend('<div id="colorlib-offcanvas" />');
-		$('#page').prepend('<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle colorlib-nav-white"><i></i></a>');
-		var clone1 = $('.menu-1 > ul').clone();
-		$('#colorlib-offcanvas').append(clone1);
-		var clone2 = $('.menu-2 > ul').clone();
-		$('#colorlib-offcanvas').append(clone2);
+		// $('#page').prepend('<div id="colorlib-offcanvas" />');
+		// $('#page').prepend('<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle colorlib-nav-white"><i></i></a>');
+		// var clone1 = $('.menu-1 > ul').clone();
+		// $('#colorlib-offcanvas').append(clone1);
+		// var clone2 = $('.menu-2 > ul').clone();
+		// $('#colorlib-offcanvas').append(clone2);
 
-		$('#colorlib-offcanvas .has-dropdown').addClass('offcanvas-has-dropdown');
-		$('#colorlib-offcanvas')
-			.find('li')
-			.removeClass('has-dropdown');
+		// $('#colorlib-offcanvas .has-dropdown').addClass('offcanvas-has-dropdown');
+		// $('#colorlib-offcanvas')
+		// 	.find('li')
+		// 	.removeClass('has-dropdown');
 
 		// Hover dropdown menu on mobile
-		$('.offcanvas-has-dropdown').mouseenter(function(){
-			var $this = $(this);
-
-			$this
-				.addClass('active')
-				.find('ul')
-				.slideDown(500, 'easeOutExpo');				
-		}).mouseleave(function(){
-
-			var $this = $(this);
-			$this
-				.removeClass('active')
-				.find('ul')
-				.slideUp(500, 'easeOutExpo');				
-		});
-
-
-		$(window).resize(function(){
-
-			if ( $('body').hasClass('offcanvas') ) {
-
-    			$('body').removeClass('offcanvas');
-    			$('.js-colorlib-nav-toggle').removeClass('active');
-				
-	    	}
-		});
+		// $('.offcanvas-has-dropdown').mouseenter(function(){
+		// 	var $this = $(this);
+		//
+		// 	$this
+		// 		.addClass('active')
+		// 		.find('ul')
+		// 		.slideDown(500, 'easeOutExpo');
+		// }).mouseleave(function(){
+		//
+		// 	var $this = $(this);
+		// 	$this
+		// 		.removeClass('active')
+		// 		.find('ul')
+		// 		.slideUp(500, 'easeOutExpo');
+		// });
+		//
+		//
+		// $(window).resize(function(){
+		//
+		// 	if ( $('body').hasClass('offcanvas') ) {
+		//
+    	// 		$('body').removeClass('offcanvas');
+    	// 		$('.js-colorlib-nav-toggle').removeClass('active');
+		//
+	    // 	}
+		// });
 	};
 
 	var burgerMenu = function() {
