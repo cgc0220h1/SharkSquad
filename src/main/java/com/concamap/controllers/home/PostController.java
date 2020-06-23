@@ -54,9 +54,4 @@ public class PostController {
         return modelAndView;
     }
 
-//    @GetMapping("/user/create")
-//    public ModelAndView showCreatePost (@PathVariable("id") )
-//
-//    @PostMapping("/user/{id}/create")
-//    public ModelAndView create
 }

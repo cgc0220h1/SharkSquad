@@ -50,10 +50,10 @@
                     <ul>
                         <li>
                             <input type="text" id="input-search" th:placeholder="#{view.layout.placeholder.search_bar}"
-                                   style="width: 30%">
+                                   style="width: 30%;border: 2px solid #F6490D; border-radius: 12px;">
                             <button type="button" id="btn-search" class="btn btn-primary"><i class="icon-search3"></i></button>
                         </li>
-                        <li class="active"><a th:href="${'/'}" th:text="#{view.li.a.home}"></a></li>
+                        <li><a th:href="${'/'}" th:text="#{view.li.a.home}"></a></li>
                         <li class="has-dropdown">
                             <a href="#" th:text="#{view.li.a.categories}"></a>
                             <ul class="dropdown">
@@ -123,7 +123,7 @@
 
 <footer id="colorlib-footer" role="contentinfo" th:fragment="footer">
     <div class="container">
-        <div class="row row-pb-md">
+        <div class="row row-pb-md" style="height: 510px ">
             <div class="col-md-4">
                 <h2 th:text="#{view.h2.recent_blog}"></h2>
                 <th:block th:each="post : ${randomPostList}">
@@ -153,12 +153,9 @@
                 </p>
             </div>
             <div class="col-md-4">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1521.1435029650042!2d105.76832956053602!3d21.03580020493395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454b9444c676b%3A0xe713200541b7456d!2sCodeGym!5e0!3m2!1svi!2s!4v1592897424979!5m2!1svi!2s"
-                        width="400" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
+                <h2 th:text="#{view.layout.footer.address}"></h2>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1861.96108185808!2d105.76832956053602!3d21.03580020493395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454b9444c676b%3A0xe713200541b7456d!2sCodeGym!5e0!3m2!1svi!2s!4v1592898770942!5m2!1svi!2s"
+                        width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
             </div>
         </div>
     </div>
