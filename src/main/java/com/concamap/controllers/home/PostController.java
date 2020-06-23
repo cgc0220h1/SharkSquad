@@ -23,11 +23,13 @@ public class PostController {
     @GetMapping("/{anchor-name}")
     public ModelAndView showPost(@PathVariable("anchor-name") String anchorName,
                                  @SessionAttribute("recentPostList") List<Post> recentPosts,
+                                 @SessionAttribute("randomPostList") List<Post> randomPosts,
                                  @SessionAttribute("categoryList") List<Category> categoryList) {
         ModelAndView modelAndView = new ModelAndView("post/detail");
         Post postFound = postService.findExistByAnchorName(anchorName);
         modelAndView.addObject("post", postFound);
         modelAndView.addObject("recentPostList", recentPosts);
+        modelAndView.addObject("randomPostList", randomPosts);
         modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }

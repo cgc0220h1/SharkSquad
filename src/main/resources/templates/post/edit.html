@@ -3,67 +3,44 @@
 <head th:replace="layout :: head">
     <title>Shark Squad</title>
 </head>
-<script src="https://cdn.ckeditor.com/ckeditor5/19.1.1/classic/ckeditor.js"></script>
 <body>
-
 <div class="colorlib-loader"></div>
-
 <div id="page">
-    <nav class="colorlib-nav" role="navigation">
-        <div class="top-menu">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-2">
-                        <div id="colorlib-logo"><a href="" th:text="#{view.a.index}"></a></div>
-                    </div>
-                    <div class="col-xs-10 text-right menu-1">
-                        <ul>
-                            <li><a href="" th:text="#{view.li.a.home}"></a></li>
-                            <li class="has-dropdown active">
-                                <a href="#" th:text="#{view.li.a.categories}"></a>
-                                <ul class="dropdown">
-                                    <li><a href="#" th:text="#{view.li.a.business}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.entertainment}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.experience}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.finance}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.game}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.health}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.programming}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.science}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.sport}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.style}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.technology}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.thought}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.travel}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.world}"></a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#" th:text="#{view.li.a.about_me}"></a></li>
-                            <li><a href="#" th:text="#{view.li.a.contact}"></a></li>
-                        </ul>
-                    </div>
+    <nav th:replace="layout :: menu"></nav>
+    <aside id="colorlib-breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 breadcrumbs text-center">
+                    <h2 th:text="#{create.h2.new_post}"></h2>
+                    <p><a th:href="@{/}" th:text="#{view.a.index}"></a></p>
                 </div>
             </div>
         </div>
-    </nav>
-
+    </aside>
     <div id="colorlib-container">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-12">
-                            <form action="#">
+                            <form>
                                 <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="title" th:text="#{create_blog.label.cover_picture}"></label>
+                                        <input type="text" id="title" class="form-control">
+                                    </div>
                                     <div class="col-md-6">
                                         <label for="picture" th:text="#{create_blog.label.cover_picture}"></label>
                                         <input type="file" id="picture" class="form-control" multiple>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="categories" th:text="#{create_blog.label.categories}"></label>
-                                        <!--Để select option thay thế cho input-->
-                                        <input type="text" id="categories" class="form-control"
-                                               placeholder="Your email address">
+                                  <!--      <label for="categories" th:text="#{create_blog.label.categories}"></label>
+                                        <select th:field="*{category}" id="categories" class="form-control">
+                                            <option value="">-</option>
+                                            <th:block th:each="c : ${categoryList}">
+                                                <option  th:value="${c.anchorName}" th:text="${c.title}"></option>
+                                            </th:block>
+                                        </select>-->
                                     </div>
                                 </div>
 
@@ -94,11 +71,8 @@
 </div>
 
 <div th:replace="layout :: backToTop"></div>
-
 <div th:replace="layout :: jquery"></div>
-
-</body>
-
+<script src="https://cdn.ckeditor.com/ckeditor5/19.1.1/classic/ckeditor.js"></script>
 <script>
     ClassicEditor
         .create(document.querySelector('#message'))
@@ -106,5 +80,6 @@
             console.error(error);
         });
 </script>
+</body>
 </html>
 

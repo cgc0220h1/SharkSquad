@@ -59,9 +59,13 @@ public class UserController {
     }
 
     @GetMapping("/users/{username}")
-    public ModelAndView showUser(@PathVariable("username") Users user) {
+    public ModelAndView showUser(@PathVariable("username") Users user,
+                                 @SessionAttribute("categoryList") List<Category> categoryList,
+                                 @SessionAttribute("randomPostList") List<Post> randomPosts) {
         ModelAndView modelAndView = new ModelAndView("home/bio");
         modelAndView.addObject("user", user);
+        modelAndView.addObject("categoryList", categoryList);
+        modelAndView.addObject("randomPostList", randomPosts);
         return modelAndView;
     }
 
