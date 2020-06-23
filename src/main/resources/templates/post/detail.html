@@ -83,22 +83,25 @@
                     </div>
                     <div class="row row-pb-lg">
                         <div class="col-md-12">
-                            <h2 class="heading-2">23 Comments</h2>
+                            <!--<h2 class="heading-2">23 Comments</h2>-->
+                            <th:block th:each="c : ${allComment}">
                             <div class="review">
-                                <div class="user-img"
-                                     style="background-image: url(../../static/images/person1.jpg)"></div>
-                                <div class="desc">
-                                    <h4>
-                                        <span class="text-left">Jacob Webb</span>
-                                        <span class="text-right">24 March 2018</span>
-                                    </h4>
-                                    <p>When she reached the first hills of the Italic Mountains, she had a last view
-                                        back on the skyline of her hometown Bookmarksgrov</p>
-                                    <p class="star">
-                                        <span class="text-left"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
-                                    </p>
-                                </div>
+
+                                    <div class="user-img">
+                                        <img class="user-img" th:src="${c.users.avatarLink}">
+                                    </div>
+                                    <div class="desc">
+                                        <h4>
+                                            <a class="text-left" th:text="*{c.users.username}" th:href="@{/users/__${c.users.username}__}"></a>
+                                            <span class="text-right" th:text="*{c.createdDate}"></span>
+                                        </h4>
+                                        <p th:text="*{c.content}"></p>
+                                        <p class="star">
+                                            <span class="text-left"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
+                                        </p>
+                                    </div>
                             </div>
+                            </th:block>
                         </div>
                     </div>
                     <div class="row">
