@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col-md-12 breadcrumbs text-center">
                     <h2 th:text="#{create.h2.new_post}"></h2>
-                    <p><a th:href="@{/}">Trang chủ</a></p>
+                    <p><a th:href="@{/}" th:text="#{view.li.a.home}"></a> / <span th:text="#{create.h2.new_post}"></span> </p>
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
                             <form th:action="@{/users/{id}/create}" th:object="${post}" method="post">
                                 <div class="row form-group">
                                     <div class="col-md-12">
-                                        <label for="title" th:text="#{create_blog.label.cover_picture}"></label>
+                                        <label for="title" th:text="#{create.h2.title}"></label>
                                         <input type="text" id="title" class="form-control">
                                     </div>
                                     <div class="col-md-6">
@@ -34,20 +34,13 @@
                                         <input type="file" id="picture" class="form-control" multiple>
                                     </div>
                                     <div class="col-md-6">
-<!--                                        <label for="categories" th:text="#{create_blog.label.categories}">-->
-                                            <!--<select id="categories" th:field="*{category}" class="form-control">
-                                                <th:block th:each="c : ${categoryList}">
-                                                    <option  th:value="${c.id}" th:text="${c.title}"></option>
-                                                </th:block>
-                                            </select>-->
                                         <label for="categories" th:text="#{create_blog.label.categories}"></label>
                                         <select th:field="*{category}" id="categories" class="form-control">
                                                 <option value="">-</option>
                                                 <th:block th:each="c : ${categoryList}">
                                                     <option  th:value="${c.anchorName}" th:text="${c.title}"></option>
                                                 </th:block>
-                                            </select>
-<!--                                        </label>-->
+                                        </select>
                                     </div>
                                 </div>
 

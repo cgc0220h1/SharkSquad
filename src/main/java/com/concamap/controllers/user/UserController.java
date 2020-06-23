@@ -3,6 +3,7 @@ package com.concamap.controllers.user;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
 import com.concamap.model.Users;
+import com.concamap.services.post.PostService;
 import com.concamap.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,9 +19,12 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    private final PostService postService;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PostService postService) {
         this.userService = userService;
+        this.postService = postService;
     }
 
     @GetMapping("/login")
@@ -79,7 +83,7 @@ public class UserController {
         return new RedirectView("/users/" + usersFound.getUsername() + "/profile");
     }
 
-    @GetMapping("/users/{id}/create")
+    @GetMapping("/users/{id}/posts/create")
     public ModelAndView showCreateForm(@PathVariable("id") int id, @SessionAttribute("categoryList") List<Category> categoryList){
         Post post = new Post();
         ModelAndView modelAndView = new ModelAndView("post/create");
@@ -90,6 +94,42 @@ public class UserController {
 
 //    @PostMapping("/users/{id}/create")
 //    public ModelAndView savePost(@ModelAttribute("post")Post post, @PathVariable("id") int id){
+//        ModelAndView modelAndView = new ModelAndView("post/create");
+//        MultipartFile multipartFile = ;
+//        String title, content, fileName, fileUpload;
+//        File file;
 //
 //    }
+
+    @GetMapping("/users/{id}/posts/{anchor-name}/edit")
+    public ModelAndView showEditForm(@PathVariable("id") int id, @PathVariable("anchor-name") String anchorName, @SessionAttribute("categoryList") List<Category> categoryList){
+        Post post = postService.findExistByAnchorName(anchorName);
+        ModelAndView modelAndView = new ModelAndView("post/edit");
+        modelAndView.addObject("post", post);
+        modelAndView.addObject("categoryList", categoryList);
+        return modelAndView;
+    }
+
+    @PostMapping("/users/{id}/posts/edit")
+    public ModelAndView updatePost(@PathVariable("id") int id,@ModelAttribute("post")Post post, @SessionAttribute("categoryList") List<Category> categoryList){
+        postService.save(post);
+        ModelAndView modelAndView = new ModelAndView("post/edit");
+        modelAndView.addObject("post", post);
+        modelAndView.addObject("categoryList", categoryList);
+        return modelAndView;
+    }
+
+    @GetMapping("/users/{id}/posts/{anchor-name}/delete")
+    public ModelAndView showDeleteForm(@PathVariable("id") int id, @PathVariable("anchor-name") String anchorName){
+        Post post = postService.findExistByAnchorName(anchorName);
+        ModelAndView modelAndView = new ModelAndView("post/delete");
+        modelAndView.addObject("post", post);
+        return modelAndView;
+    }
+
+    @PostMapping("/users/{id}/posts/delete")
+    public RedirectView deleteBook(@ModelAttribute("post")Post post){
+        postService.delete(post.getId());
+        return new RedirectView("/");
+    }
 }
