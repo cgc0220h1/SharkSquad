@@ -200,21 +200,19 @@
                     success: function (data) {
                         let node = $(".col-md-4:first").clone();
                         $(".row-pb-md:first").empty();
-                        $.each(data, function () {
-                            console.log($(node).find(".blog-img > a").attr("href"));
-                            console.log($(node).find(".blog-img > a > img").attr("src"));
-                            console.log($(node).find(".cat > a").attr("href"));
-                            console.log($(node).find(".cat > a ").html());
-                            console.log($(node).find(".date").html());
-                            console.log($(node).find(".meta > a").attr("href"));
-                            console.log($(node).find(".meta > a").html());
-                            console.log($(node).find("h2 > a").attr("href"));
-                            console.log($(node).find("h2 > a").html());
-                            console.log($(node).find(".desc > p:not([class])").html());
+                        $.each(data, function (index) {
+                            $(node).find(".blog-img > a").attr("href",data[index].attachments[0].imageLink);
+                            $(node).find(".blog-img > a > img").attr("src", data[index].attachments[0].imageLink);
+                            $(node).find(".cat > a").attr("href", data[index].category.id);
+                            $(node).find(".cat > a ").html(data[index].category.title);
+                            $(node).find(".date").html(data[index].createdDate);
+                            $(node).find(".meta > a").attr("href", data[index].id);
+                            $(node).find(".meta > a").html(data[index].firstName);
+                            $(node).find("h2 > a").attr("href",data[index].id);
+                            $(node).find("h2 > a").html(data[index].title);
+                            $(node).find(".desc > p:not([class])").html("");
                             $(".row-pb-md:first").append(node.clone());
                         })
-                        console.log(node);
-                        console.log(data);
                     }
                 })
             })
