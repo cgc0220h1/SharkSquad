@@ -50,6 +50,7 @@ public class UserController {
         }
         users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
         users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+        users.setRoles(userService.findExistRolesById(2));
         userService.save(users);
 
         return new RedirectView("/login");
