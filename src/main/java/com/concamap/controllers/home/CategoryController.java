@@ -12,7 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/categories")
@@ -34,7 +37,10 @@ public class CategoryController {
     }
 
     @GetMapping("/{anchor-name}/posts")
-    public ModelAndView showPostOfCategories(@PathVariable("anchor-name") Category category, Pageable pageable) {
+    public ModelAndView showPostOfCategories(@PathVariable("anchor-name") Category category,
+                                             Pageable pageable,
+                                             @SessionAttribute("recentPostList") List<Post> recentPosts,
+                                             @SessionAttribute("categoryList") List<Category> categoryList) {
         ModelAndView modelAndView = new ModelAndView("post/filter");
         Page<Post> postPage = postService.findExistByCategory(category, pageable);
         for (Post post : postPage) {
@@ -42,6 +48,8 @@ public class CategoryController {
         }
         modelAndView.addObject("category", category);
         modelAndView.addObject("postPage", postPage);
+        modelAndView.addObject("recentPostList", recentPosts);
+        modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }
 }
