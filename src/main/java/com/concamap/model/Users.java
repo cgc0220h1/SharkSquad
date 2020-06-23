@@ -84,7 +84,7 @@ public class Users {
     private Timestamp updatedTime;
 
     @Basic
-    @Column(name = "bio")
+    @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
 
     @Basic
