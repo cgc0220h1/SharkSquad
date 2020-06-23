@@ -16,7 +16,7 @@ public class Attachment {
     private int id;
 
     @Basic
-    @Column(name = "image_link", nullable = false, length = -1)
+    @Column(name = "image_link", nullable = false)
     private String imageLink;
 
     @Basic

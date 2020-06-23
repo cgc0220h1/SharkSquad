@@ -10,6 +10,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Entity
 @Table(name = "users", schema = "shark_squad")
@@ -30,7 +31,7 @@ public class Users {
             "    \"ẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợ\" +\n" +
             "    \"ụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\\\s]+$")
     private String firstName;
-  
+
     @Basic
     @Column(name = "last_name", nullable = false, length = 100)
     @NotNull(message = "Last Name cannot be empty")
@@ -67,7 +68,7 @@ public class Users {
     private String username;
 
     @NotNull(message = "password cannot be empty")
-    @Size(min = 8 , max = 30)
+    @Size(min = 8, max = 30)
     @Basic
     @Column(name = "password", nullable = false, length = 100)
     @JsonIgnore
@@ -102,4 +103,14 @@ public class Users {
     @ToString.Exclude
     @HashCodeExclude
     private Roles roles;
+
+    @OneToMany(mappedBy = "users")
+    @EqualsAndHashCode.Exclude
+    @JsonIgnore
+    private Set<Post> posts;
+
+    @OneToMany(mappedBy = "users")
+    @EqualsAndHashCode.Exclude
+    @JsonIgnore
+    private Set<Comment> comments;
 }

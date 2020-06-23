@@ -1,0 +1,2 @@
+INSERT INTO shark_squad.roles (id, name, status, created_date, updated_date) VALUES (2, 'ADMIN', 1, '2020-06-20 15:47:02.000000', '2020-06-20 15:47:17.000000');
+INSERT INTO shark_squad.roles (id, name, status, created_date, updated_date) VALUES (3, 'USER', 1, '2020-06-20 15:47:04.000000', '2020-06-20 15:47:18.000000');
