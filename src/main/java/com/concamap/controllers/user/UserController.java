@@ -1,5 +1,7 @@
 package com.concamap.controllers.user;
 
+import com.concamap.model.Category;
+import com.concamap.model.Post;
 import com.concamap.model.Users;
 import com.concamap.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -74,4 +78,18 @@ public class UserController {
         userService.save(usersFound);
         return new RedirectView("/users/" + usersFound.getUsername() + "/profile");
     }
+
+    @GetMapping("/users/{id}/create")
+    public ModelAndView showCreateForm(@PathVariable("id") int id, @SessionAttribute("categoryList") List<Category> categoryList){
+        Post post = new Post();
+        ModelAndView modelAndView = new ModelAndView("post/create");
+        modelAndView.addObject("post", post);
+        modelAndView.addObject("categoryList", categoryList);
+        return modelAndView;
+    }
+
+//    @PostMapping("/users/{id}/create")
+//    public ModelAndView savePost(@ModelAttribute("post")Post post, @PathVariable("id") int id){
+//
+//    }
 }

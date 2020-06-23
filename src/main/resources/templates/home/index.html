@@ -49,8 +49,8 @@
         <div class="container">
             <div class="row row-pb-md">
                 <th:block th:each="post : ${postPage}">
-                    <div class="col-md-4">
-                        <div class="blog-entry">
+                    <div class="col-md-4" >
+                        <div class="blog-entry" style="height: 577px" >
                             <div class="blog-img">
                                 <a th:href="@{/posts/__${post.anchorName}__}">
                                     <img class="img-responsive"
