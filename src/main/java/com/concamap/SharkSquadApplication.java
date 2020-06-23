@@ -5,13 +5,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.format.Formatter;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
 @SpringBootApplication
-public class SharkSquadApplication {
+public class SharkSquadApplication implements WebMvcConfigurer {
 
     public static void main(String[] args) {
         SpringApplication.run(SharkSquadApplication.class, args);
@@ -31,5 +36,17 @@ public class SharkSquadApplication {
                 return WordUtils.capitalizeFully(monthDisplay);
             }
         };
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
+        registry.addInterceptor(interceptor);
+        interceptor.setParamName("lang");
+    }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        return new SessionLocaleResolver();
     }
 }
