@@ -1,5 +1,6 @@
 package com.concamap.controllers.home;
 
+import com.concamap.model.Category;
 import com.concamap.model.Post;
 import com.concamap.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,13 @@ public class PostController {
 
     @GetMapping("/{anchor-name}")
     public ModelAndView showPost(@PathVariable("anchor-name") String anchorName,
-                                 @SessionAttribute("randomPostList") List<Post> randomPosts) {
+                                 @SessionAttribute("recentPostList") List<Post> recentPosts,
+                                 @SessionAttribute("categoryList") List<Category> categoryList) {
         ModelAndView modelAndView = new ModelAndView("post/detail");
         Post postFound = postService.findExistByAnchorName(anchorName);
         modelAndView.addObject("post", postFound);
-        modelAndView.addObject("randomPostList", randomPosts);
+        modelAndView.addObject("recentPostList", recentPosts);
+        modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }
 

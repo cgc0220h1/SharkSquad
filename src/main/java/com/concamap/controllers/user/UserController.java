@@ -1,5 +1,7 @@
 package com.concamap.controllers.user;
 
+import com.concamap.model.Category;
+import com.concamap.model.Post;
 import com.concamap.model.Users;
 import com.concamap.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -26,13 +31,13 @@ public class UserController {
         return modelAndView;
     }
 
-    @PostMapping("/login")
+  /*  @PostMapping("/login")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/login");
         }
         return new RedirectView("/");
-    }
+    }*/
 
     @GetMapping("/signup")
     public ModelAndView showSignUp() {
@@ -46,6 +51,10 @@ public class UserController {
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/signup");
         }
+        users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+        userService.save(users);
+
         return new RedirectView("/login");
     }
 
@@ -74,4 +83,18 @@ public class UserController {
         userService.save(usersFound);
         return new RedirectView("/users/" + usersFound.getUsername() + "/profile");
     }
+
+    @GetMapping("/users/{id}/create")
+    public ModelAndView showCreateForm(@PathVariable("id") int id, @SessionAttribute("categoryList") List<Category> categoryList){
+        Post post = new Post();
+        ModelAndView modelAndView = new ModelAndView("post/create");
+        modelAndView.addObject("post", post);
+        modelAndView.addObject("categoryList", categoryList);
+        return modelAndView;
+    }
+
+//    @PostMapping("/users/{id}/create")
+//    public ModelAndView savePost(@ModelAttribute("post")Post post, @PathVariable("id") int id){
+//
+//    }
 }
