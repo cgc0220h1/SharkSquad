@@ -47,6 +47,7 @@ public class CategoryController {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
         }
         modelAndView.addObject("category", category);
+        modelAndView.addObject("message", category.getTitle());
         modelAndView.addObject("postPage", postPage);
         modelAndView.addObject("recentPostList", recentPosts);
         modelAndView.addObject("categoryList", categoryList);
