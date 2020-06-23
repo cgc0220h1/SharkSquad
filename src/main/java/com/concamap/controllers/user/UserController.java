@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Controller
@@ -30,13 +31,13 @@ public class UserController {
         return modelAndView;
     }
 
-    @PostMapping("/login")
+  /*  @PostMapping("/login")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/login");
         }
         return new RedirectView("/");
-    }
+    }*/
 
     @GetMapping("/signup")
     public ModelAndView showSignUp() {
@@ -50,6 +51,10 @@ public class UserController {
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/signup");
         }
+        users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+        userService.save(users);
+
         return new RedirectView("/login");
     }
 
