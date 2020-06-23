@@ -36,21 +36,20 @@ public class PostController {
         this.postComponent = postComponent;
     }
 
-//    @ModelAttribute("randomPostList")
-//    public List<Post> randomPosts() {
-//        List<Post> postList = postService.findExistRandom(randomPosts);
-//        for (Post post : postList) {
-//            post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
-//        }
-//        return postList;
-//    }
+    @ModelAttribute("randomPostList")
+    public List<Post> randomPosts() {
+        List<Post> postList = postService.findExistRandom(randomPosts);
+        for (Post post : postList) {
+            post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
+        }
+        return postList;
+    }
 
     @GetMapping("/{anchor-name}")
-    public ModelAndView showPost(@PathVariable("anchor-name") String anchorName, @ModelAttribute("randomPostList") List<Post> randomPosts) {
+    public ModelAndView showPost(@PathVariable("anchor-name") String anchorName) {
         ModelAndView modelAndView = new ModelAndView("post/detail");
         Post postFound = postService.findExistByAnchorName(anchorName);
         modelAndView.addObject("post", postFound);
-        modelAndView.addObject("randomPostList", randomPosts);
         return modelAndView;
     }
 
