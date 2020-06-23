@@ -189,7 +189,6 @@
             });
             $("#search-button").click(function () {
                 let keyword = $("#search-bar").val();
-                console.log(keyword);
                 $.ajax({
                     headers: {
                         'Accept': 'application/json',
@@ -199,6 +198,22 @@
                     url: "/api/posts?query=" + keyword,
                     dataType: 'json',
                     success: function (data) {
+                        let node = $(".col-md-4:first").clone();
+                        $(".row-pb-md:first").empty();
+                        $.each(data, function () {
+                            console.log($(node).find(".blog-img > a").attr("href"));
+                            console.log($(node).find(".blog-img > a > img").attr("src"));
+                            console.log($(node).find(".cat > a").attr("href"));
+                            console.log($(node).find(".cat > a ").html());
+                            console.log($(node).find(".date").html());
+                            console.log($(node).find(".meta > a").attr("href"));
+                            console.log($(node).find(".meta > a").html());
+                            console.log($(node).find("h2 > a").attr("href"));
+                            console.log($(node).find("h2 > a").html());
+                            console.log($(node).find(".desc > p:not([class])").html());
+                            $(".row-pb-md:first").append(node.clone());
+                        })
+                        console.log(node);
                         console.log(data);
                     }
                 })
