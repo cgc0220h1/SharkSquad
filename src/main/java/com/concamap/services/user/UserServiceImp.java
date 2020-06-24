@@ -43,6 +43,16 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public Users findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public Users findByConfirmationToken(String confirmationToken) {
+        return userRepository.findByConfirmationToken(confirmationToken);
+    }
+
+    @Override
     public List<Users> findAllExist() {
         return null;
     }

@@ -3,8 +3,10 @@ package com.concamap.controllers.user;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
 import com.concamap.model.Users;
+import com.concamap.services.user.EmailService;
 import com.concamap.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -12,16 +14,20 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class UserController {
     private final UserService userService;
+    private EmailService emailService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, EmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @GetMapping("/login")
@@ -31,32 +37,63 @@ public class UserController {
         return modelAndView;
     }
 
-  /*  @PostMapping("/login")
+    @PostMapping("/login")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/login");
         }
         return new RedirectView("/");
-    }*/
+    }
 
     @GetMapping("/signup")
-    public ModelAndView showSignUp() {
+    public ModelAndView showSignUp(Users users) {
         ModelAndView modelAndView = new ModelAndView("user/signup");
-        modelAndView.addObject("users", new Users());
+        modelAndView.addObject("users", users);
         return modelAndView;
     }
 
     @PostMapping("/signup")
-    public RedirectView signup(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            return new RedirectView("/signup");
-        }
-        users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
-        users.setRoles(userService.findExistRolesById(2));
-        userService.save(users);
+    public ModelAndView signup(ModelAndView modelAndView, @Validated @ModelAttribute("users") Users users, BindingResult bindingResult, HttpServletRequest request) {
 
-        return new RedirectView("/login");
+        Users userExists = userService.findByEmail(users.getEmail());
+
+        if (userExists != null) {
+            modelAndView.addObject("alreadyRegisteredMessage", "Oops!  There is already a user registered with the email provided.");
+            modelAndView.setViewName("user/signup");
+            bindingResult.reject("email");
+        }
+
+        if (bindingResult.hasFieldErrors()) {
+            modelAndView.setViewName("user/signup");
+        } else {
+
+            users.setStatus(0);
+
+            users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+            users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+            users.setRoles(userService.findExistRolesById(2));
+
+            users.setConfirmationToken(UUID.randomUUID().toString());
+
+            userService.save(users);
+
+            String appUrl = request.getScheme() + "://" + request.getServerName();
+
+            SimpleMailMessage registrationEmail = new SimpleMailMessage();
+            registrationEmail.setTo(users.getEmail());
+            registrationEmail.setSubject("Registration Confirmation");
+            registrationEmail.setText("To confirm your e-mail address, please click the link below:\n"
+                    + appUrl + ":8080/confirm?token=" + users.getConfirmationToken());
+            registrationEmail.setFrom("doubleteamc0220h1@gmail.com");
+
+            emailService.sendEmail(registrationEmail);
+
+            modelAndView.addObject("confirmationMessage", "A confirmation e-mail has been sent to " + users.getEmail());
+            modelAndView.setViewName("user/signup");
+        }
+
+
+        return modelAndView;
     }
 
     @GetMapping("/users/{username}")

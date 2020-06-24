@@ -10,4 +10,8 @@ public interface UserService extends GenericService<Users> {
     Users findActiveUserByUsername(String username);
 
     Roles findExistRolesById(int id);
+
+    Users findByEmail(String email);
+
+    Users findByConfirmationToken(String confirmationToken);
 }
