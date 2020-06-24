@@ -17,26 +17,30 @@
             </div>
         </div>
     </aside>
+    <th:block th:if="${message}">
+        <p th:text="${message}"></p>
+    </th:block>
     <div id="colorlib-container">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-12">
-                            <form th:action="@{/users/{id}/create}" th:object="${post}" method="post">
+                            <form th:action="@{/users/posts/create}" th:object="${post}" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="users" th:value="${post.users.username}">
                                 <div class="row form-group">
                                     <div class="col-md-12">
                                         <label for="title" th:text="#{create.h2.title}"></label>
-                                        <input type="text" id="title" class="form-control">
+                                        <input type="text" th:field="*{title}" id="title" class="form-control">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="picture" th:text="#{create_blog.label.cover_picture}"></label>
-                                        <input type="file" id="picture" class="form-control" multiple>
+                                        <input type="file" id="picture" th:field="*{multipartFile}" class="form-control" multiple>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="categories" th:text="#{create_blog.label.categories}"></label>
                                         <select th:field="*{category}" id="categories" class="form-control">
-                                                <option value="">-</option>
+                                                <option value="">---</option>
                                                 <th:block th:each="c : ${categoryList}">
                                                     <option  th:value="${c.anchorName}" th:text="${c.title}"></option>
                                                 </th:block>
@@ -47,8 +51,8 @@
                                 <div class="row form-group">
                                     <div class="col-md-12">
                                         <label for="message" th:text="#{create_blog.label.content}"></label>
-                                        <textarea name="message" id="message" cols="30" rows="10" class="form-control"
-                                                  placeholder="Say something about us"></textarea>
+                                        <textarea th:field="*{content}" name="message" id="message" cols="30" rows="10" class="form-control"
+                                                  th:placeholder="#{create.text_area.write_content}"></textarea>
                                     </div>
                                 </div>
 

@@ -27,4 +27,6 @@ public interface PostService extends GenericService<Post> {
     Page<Post> findExistByTitleOrContent(String query, Pageable pageable);
 
     Post findExistByAnchorName(String anchorName);
+
+    int count();
 }
