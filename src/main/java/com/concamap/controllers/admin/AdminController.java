@@ -57,6 +57,14 @@ public class AdminController {
         return usersView;
     }
 
+    @GetMapping("/user/{id}")
+    ModelAndView loadDetailUser(@PathVariable("id") Integer id) {
+        ModelAndView detailUser = new ModelAndView("admin/detailUser");
+        Users currentUser = userService.findExistById(id);
+        detailUser.addObject("currentUser", currentUser);
+        return detailUser;
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void handleNotFound(Exception exception) {
