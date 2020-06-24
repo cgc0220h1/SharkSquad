@@ -64,7 +64,7 @@ public class Users {
     @Pattern(regexp = "^[a-z0-9_-]{3,16}$")
     @Basic
     @Column(name = "username", nullable = false, length = 100)
-    @JsonIgnore
+//    @JsonIgnore
     private String username;
 
     @NotNull(message = "password cannot be empty")

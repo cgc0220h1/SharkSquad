@@ -2,17 +2,25 @@ package com.concamap.services.comment;
 
 import com.concamap.model.Comment;
 import com.concamap.model.Post;
+import com.concamap.model.Users;
 import com.concamap.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
+@PropertySource("classpath:config/status.properties")
 public class CommentServiceImpl implements CommentService {
+
+    @Value("${entity.exist}")
+    private int statusExist;
 
     private final CommentRepository commentRepository;
 
@@ -74,5 +82,15 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<Comment> findAllByPostAndStatus(Post post, int status) {
         return commentRepository.findAllByPostAndStatus(post, status);
+    }
+
+    @Override
+    public Comment save(Comment comment, Users user, Post post) {
+        comment.setUsers(user);
+        comment.setPost(post);
+        comment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        comment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        comment.setStatus(statusExist);
+        return commentRepository.save(comment);
     }
 }
