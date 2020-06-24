@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @PropertySource("classpath:config/status.properties")
@@ -49,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment findExistById(int id) {
-        return null;
+        return commentRepository.findByIdAndStatus(id, statusExist);
     }
 
     @Override
@@ -79,32 +80,18 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public boolean delete(int id) {
+        Optional<Comment> optionalComment = commentRepository.findById(id);
+        if (optionalComment.isPresent()) {
+            Comment comment = optionalComment.get();
+            comment.setStatus(statusDelete);
+            commentRepository.save(comment);
+            return true;
+        }
         return false;
     }
 
     @Override
-    public List<Comment> findAllByPostAndStatus(Post post, int status) {
-        return commentRepository.findAllByPostAndStatus(post, status);
-    }
-
-    @Override
-    public Comment findByIdAndStatus(int id, int status) {
-        return commentRepository.findByIdAndStatus(id, status);
-    }
-
-    @Override
-    public Comment save(Comment comment, Users user, Post post) {
-        comment.setUsers(user);
-        comment.setPost(post);
-        comment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-        comment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        comment.setStatus(statusExist);
-        return commentRepository.save(comment);
-    }
-
-    @Override
-    public void delete(Comment comment, Post post) {
-        comment.setStatus(statusDelete);
-        commentRepository.save(comment);
+    public List<Comment> findAllExistByPost(Post post) {
+        return commentRepository.findAllByPostAndStatus(post, statusExist);
     }
 }

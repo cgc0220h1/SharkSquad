@@ -40,7 +40,7 @@
             }
         }
 
-        input#search-bar:focus {
+        input:focus {
             outline: none!important;
         }
     </style>
@@ -78,10 +78,10 @@
                             <a th:text="#{view.layout.head.language}"></a>
                             <ul class="dropdown">
                                 <li>
-                                    <a href="?lang=en">English</a>
+                                    <a href="/?lang=en">English</a>
                                 </li>
                                 <li>
-                                    <a href="?lang=vi">VietNamese</a>
+                                    <a href="/?lang=vi">Vietnamese</a>
                                 </li>
                             </ul>
                         </li>
@@ -168,9 +168,11 @@
     <script th:src="@{/js/main.js}"></script>
 
     <script>
-        $("#search-button").click(function () {
-            let keyword = $("#search-bar").val();
-            location.href = "/search?keyword=" + keyword;
+        $(document).ready(function () {
+            $("#btn-search").click(function () {
+                let keyword = $("#input-search").val();
+                location.href = "/search?keyword=" + keyword;
+            })
         })
     </script>
 
