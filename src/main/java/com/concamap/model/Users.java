@@ -68,7 +68,6 @@ public class Users {
     private String username;
 
     @NotNull(message = "password cannot be empty")
-    @Size(min = 8, max = 30)
     @Basic
     @Column(name = "password", nullable = false, length = 100)
     @JsonIgnore
