@@ -95,7 +95,9 @@ public class PostServiceImp implements PostService {
                 postsFoundByContent.add(post);
             }
         }
-        return new PageImpl<>(postsFoundByContent, pageable, postsFoundByContent.size());
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), postsFoundByContent.size());
+        return new PageImpl<>(postsFoundByContent.subList(start, end), pageable, postsFoundByContent.size());
     }
 
     @Override

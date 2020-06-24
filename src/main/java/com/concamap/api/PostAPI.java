@@ -49,7 +49,7 @@ public class PostAPI {
     }
 
     @GetMapping(value = "", params = "query", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Post> findAllExistPostByTitleOrContent(@PageableDefault(size = 4) Pageable pageable,
+    public List<Post> findAllExistPostByTitleOrContent(@PageableDefault(size = 3) Pageable pageable,
                                                        @RequestParam("query") String query) {
         return postService.findExistByTitleOrContent(query, pageable).getContent();
     }

@@ -39,6 +39,10 @@
                 width: 1500px;
             }
         }
+
+        input#search-bar:focus {
+            outline: none!important;
+        }
     </style>
 </head>
 <body>
@@ -166,6 +170,13 @@
     <script th:src="@{/js/main.js}"></script>
 
     <script>
+        $("#search-button").click(function () {
+            let keyword = $("#search-bar").val();
+            location.href = "/search?keyword=" + keyword;
+        })
+    </script>
+
+    <script>
         $(document).ready(function () {
             let $a = $("<a>", {"class": "instagram text-center"});
             $.ajax({
@@ -187,42 +198,6 @@
                     }
                 }
             });
-            // $("#search-button").click(function () {
-            //     let keyword = $("#search-bar").val();
-            //     $.ajax({
-            //         headers: {
-            //             'Accept': 'application/json',
-            //             'Content-Type': 'application/json'
-            //         },
-            //         type: 'GET',
-            //         url: "/api/posts?query=" + keyword,
-            //         dataType: 'json',
-            //         success: function (data) {
-            //             let node = $(".col-md-4:first").clone();
-            //             $(".row-pb-md:first").empty()
-            //             // $(".row-pb-md:first").fadeOut(300, function () {
-            //             //     $(this).empty();
-            //             // });
-            //             $.each(data, function (index) {
-            //                 $(node).find(".blog-img > a").attr("href",data[index].attachments[0].imageLink);
-            //                 $(node).find(".blog-img > a > img").attr("src", data[index].attachments[0].imageLink);
-            //                 $(node).find(".cat > a").attr("href", data[index].category.id);
-            //                 $(node).find(".cat > a ").html(data[index].category.title);
-            //                 $(node).find(".date").html(data[index].createdDate);
-            //                 $(node).find(".meta > a").attr("href", data[index].id);
-            //                 $(node).find(".meta > a").html(data[index].firstName);
-            //                 $(node).find("h2 > a").attr("href",data[index].id);
-            //                 $(node).find("h2 > a").html(data[index].title);
-            //                 $(node).find(".desc > p:not([class])").html("");
-            //                 $(".row-pb-md:first").append(node.clone());
-            //             })
-            //         }
-            //     })
-            // })
-            $("#search-button").click(function () {
-                let keyword = $("#search-bar").val();
-                location.href="";
-            })
         })
     </script>
 </div>
