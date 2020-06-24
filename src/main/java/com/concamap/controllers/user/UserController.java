@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -132,7 +131,7 @@ public class UserController {
             Set<Attachment> attachments = new HashSet<>();
             Attachment attachment = new Attachment();
 
-            attachment.setImageLink("/uploadFile/"+fileName);
+            attachment.setImageLink("/uploadFile/" +fileName);
             attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
             attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
             attachment.setStatus(1);
