@@ -34,13 +34,13 @@ public class UserController {
 
     private final PostService postService;
 
-    @Autowired
-    Environment env;
+    private final Environment env;
 
     @Autowired
-    public UserController(UserService userService, PostService postService) {
+    public UserController(UserService userService, PostService postService, Environment env) {
         this.userService = userService;
         this.postService = postService;
+        this.env = env;
     }
 
     private String removeAccent(String s) {
@@ -115,7 +115,6 @@ public class UserController {
 
     @GetMapping("/users/{username}/posts/create")
     public ModelAndView showCreateForm(@PathVariable("username") String username, @SessionAttribute("categoryList") List<Category> categoryList) {
-//        Users user = userService.findExistById(id);
         Users user = userService.findActiveUserByUsername(username);
         Post post = new Post();
         post.setUsers(user);
@@ -125,23 +124,23 @@ public class UserController {
         return modelAndView;
     }
 
-    @PostMapping("/users/posts/create")
-    public ModelAndView savePost(@ModelAttribute("post") Post post) {
-        ModelAndView modelAndView = null;
+    @PostMapping("/users/**/posts/create")
+    public RedirectView savePost(@ModelAttribute("post") Post post) {
         MultipartFile multipartFile;
-        String fileName, fileUpload;
+        String fileName, folderUpload;
         File file;
         try {
             multipartFile = post.getMultipartFile();
             fileName = multipartFile.getOriginalFilename();
-            fileUpload = env.getProperty("upload.path").toString();
-            file = new File(fileUpload, fileName);
+            folderUpload = env.getProperty("upload.path");
+            assert fileName != null;
+            file = new File(folderUpload, fileName);
             FileCopyUtils.copy(multipartFile.getBytes(), file);
 
             Set<Attachment> attachments = new HashSet<>();
             Attachment attachment = new Attachment();
 
-            attachment.setImageLink("/uploadFile/"+fileName);
+            attachment.setImageLink(fileName);
             attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
             attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
             attachment.setStatus(1);
@@ -152,46 +151,44 @@ public class UserController {
             post.setStatus(1);
             post.setCreatedDate(new Timestamp(System.currentTimeMillis()));
             post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-            post.setAnchorName(removeAccent(post.getTitle() +" "+ (postService.count() + 1)));
+            post.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
             post.setLikes(0);
 
             postService.save(post);
 
-            modelAndView = new ModelAndView("post/create");
-            modelAndView.addObject("message", "Success");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return modelAndView;
+        return new RedirectView("/");
     }
 
-    @GetMapping("/users/{id}/posts/{anchor-name}/edit")
-    public ModelAndView showEditForm(@PathVariable("id") int id, @PathVariable("anchor-name") String anchorName, @SessionAttribute("categoryList") List<Category> categoryList) {
-        Post post = postService.findExistByAnchorName(anchorName);
+    @GetMapping("/users/{username}/posts/{anchor-name}/edit")
+    public ModelAndView showEditForm(@PathVariable("username") Users users,
+                                     @PathVariable("anchor-name") String anchorName,
+                                     @SessionAttribute("categoryList") List<Category> categoryList) {
+        Post post = postService.findExistByAnchorNameAndUser(anchorName, users);
         ModelAndView modelAndView = new ModelAndView("post/edit");
         modelAndView.addObject("post", post);
         modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }
 
-    @PostMapping("/users/{id}/posts/edit")
-    public ModelAndView updatePost(@PathVariable("id") int id, @ModelAttribute("post") Post post, @SessionAttribute("categoryList") List<Category> categoryList) {
+    @PostMapping("/users/**/posts/edit")
+    public RedirectView updatePost(@ModelAttribute("post") Post post) {
         postService.save(post);
-        ModelAndView modelAndView = new ModelAndView("post/edit");
-        modelAndView.addObject("post", post);
-        modelAndView.addObject("categoryList", categoryList);
-        return modelAndView;
+        return new RedirectView("/");
     }
 
-    @GetMapping("/users/{id}/posts/{anchor-name}/delete")
-    public ModelAndView showDeleteForm(@PathVariable("id") int id, @PathVariable("anchor-name") String anchorName) {
+    @GetMapping("/users/{username}/posts/{anchor-name}/delete")
+    public ModelAndView showDeleteForm(@PathVariable("username") Users users,
+                                       @PathVariable("anchor-name") String anchorName) {
         Post post = postService.findExistByAnchorName(anchorName);
         ModelAndView modelAndView = new ModelAndView("post/delete");
         modelAndView.addObject("post", post);
         return modelAndView;
     }
 
-    @PostMapping("/users/{id}/posts/delete")
+    @PostMapping("/users/**/posts/delete")
     public RedirectView deleteBook(@ModelAttribute("post") Post post) {
         postService.delete(post.getId());
         return new RedirectView("/");

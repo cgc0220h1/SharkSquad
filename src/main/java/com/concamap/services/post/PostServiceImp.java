@@ -2,6 +2,7 @@ package com.concamap.services.post;
 
 import com.concamap.model.Category;
 import com.concamap.model.Post;
+import com.concamap.model.Users;
 import com.concamap.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,6 +104,11 @@ public class PostServiceImp implements PostService {
     @Override
     public Post findExistByAnchorName(String anchorName) {
         return postRepository.findByStatusAndAnchorName(statusExist, anchorName).orElse(null);
+    }
+
+    @Override
+    public Post findExistByAnchorNameAndUser(String anchorName, Users users) {
+        return postRepository.findByStatusAndAnchorNameAndUsers(statusExist, anchorName, users).orElse(null);
     }
 
     @Override

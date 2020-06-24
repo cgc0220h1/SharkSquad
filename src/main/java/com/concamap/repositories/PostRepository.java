@@ -2,6 +2,7 @@ package com.concamap.repositories;
 
 import com.concamap.model.Category;
 import com.concamap.model.Post;
+import com.concamap.model.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,4 +38,6 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Integer
     Optional<Post> findByStatusAndId(int status, int id);
 
     Optional<Post> findByStatusAndAnchorName(int status, String anchorName);
+
+    Optional<Post> findByStatusAndAnchorNameAndUsers(int status, String anchorName, Users users);
 }
