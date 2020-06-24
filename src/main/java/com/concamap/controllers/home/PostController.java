@@ -19,9 +19,6 @@ import java.util.List;
 @RequestMapping("/posts")
 public class PostController {
 
-    @Value("${entity.exist}")
-    private int statusExist;
-
     private final PostService postService;
 
     private final CommentService commentService;
@@ -40,7 +37,7 @@ public class PostController {
         ModelAndView modelAndView = new ModelAndView("post/detail");
         Post postFound = postService.findExistByAnchorName(anchorName);
 
-        List<Comment> allComment = commentService.findAllByPostAndStatus(postFound, statusExist);
+        List<Comment> allComment = commentService.findAllExistByPost(postFound);
 
         modelAndView.addObject("post", postFound);
         modelAndView.addObject("allComment", allComment);
@@ -51,4 +48,9 @@ public class PostController {
         return modelAndView;
     }
 
+//    @GetMapping("/user/{id}/create")
+//    public ModelAndView showCreatePost (@PathVariable("id") )
+//
+//    @PostMapping("/user/{id}/create")
+//    public ModelAndView create
 }

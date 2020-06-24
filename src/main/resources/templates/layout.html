@@ -29,12 +29,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         @media (min-width: 992px) {
-            .container{
-                width: 1200px;}
+            .container {
+                width: 1200px;
             }
+        }
+
         @media (min-width: 1200px) {
-            .container{
-                width: 1500px;}
+            .container {
+                width: 1500px;
+            }
+        }
+
+        input:focus {
+            outline: none!important;
         }
     </style>
 </head>
@@ -71,10 +78,10 @@
                             <a th:text="#{view.layout.head.language}"></a>
                             <ul class="dropdown">
                                 <li>
-                                    <a href="?lang=en">English</a>
+                                    <a href="/?lang=en">English</a>
                                 </li>
                                 <li>
-                                    <a href="?lang=vi">VietNamese</a>
+                                    <a href="/?lang=vi">Vietnamese</a>
                                 </li>
                             </ul>
                         </li>
@@ -94,31 +101,6 @@
     <div class="row">
         <div class="instagram-entry"></div>
     </div>
-    <script>
-        $(document).ready(function () {
-            let $a = $("<a>", {"class": "instagram text-center"});
-            $.ajax({
-                header: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                type: "GET",
-                url: "https://api.unsplash.com/photos?page=1&client_id=IdusRIk1r39o-uOTKwKK0hmrf4Tb1Au9QI4L78NYtoQ",
-                dataType: 'json',
-                error: function () {
-                    alert("Có lỗi xảy ra")
-                },
-                success: function (data) {
-                    for (let index = 0; index < 8; index++) {
-                        console.log(data);
-                        $a.attr("href", data[index].urls.small)
-                        $a.css("background-image", 'url(' + data[index].urls.small + ')');
-                        $(".instagram-entry").append($a.clone());
-                    }
-                }
-            })
-        })
-    </script>
 </div>
 
 <footer id="colorlib-footer" role="contentinfo" th:fragment="footer">
@@ -127,16 +109,16 @@
             <div class="col-md-4">
                 <h2 th:text="#{layout.h2.maybe_interested}"></h2>
                 <th:block th:each="post : ${randomPostList}">
-                <div class="f-blog">
-                    <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img" th:style="'background-image: url('
+                    <div class="f-blog">
+                        <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img" th:style="'background-image: url('
                     +${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}
                     +');'" data-thumb-alt="">
-                    </a>
-                    <div class="desc">
-                        <h3><a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a></h3>
-                        <p class="admin"><span th:text="${post.createdDate}"></span></p>
+                        </a>
+                        <div class="desc">
+                            <h3><a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a></h3>
+                            <p class="admin"><span th:text="${post.createdDate}"></span></p>
+                        </div>
                     </div>
-                </div>
                 </th:block>
             </div>
             <div class="col-md-4">
@@ -155,7 +137,8 @@
             <div class="col-md-4">
                 <h2 th:text="#{view.layout.footer.address}"></h2>
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1861.96108185808!2d105.76832956053602!3d21.03580020493395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454b9444c676b%3A0xe713200541b7456d!2sCodeGym!5e0!3m2!1svi!2s!4v1592898770942!5m2!1svi!2s"
-                        width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+                        width="600" height="450" frameborder="0" style="border:0;" allowfullscreen=""
+                        aria-hidden="false" tabindex="0"></iframe>
             </div>
         </div>
     </div>
@@ -167,7 +150,7 @@
 
 <div class="jquery-layout" th:fragment="jquery">
     <!-- jQuery -->
-    <script th:src="@{/js/jquery.min.js}"></script>
+    <!--    <script th:src="@{/js/jquery.min.js}"></script>-->
     <!-- jQuery Easing -->
     <script th:src="@{/js/jquery.easing.1.3.js}"></script>
     <!-- Bootstrap -->
@@ -184,27 +167,39 @@
     <!-- Main -->
     <script th:src="@{/js/main.js}"></script>
 
-<!--    <script>-->
-<!--    $(document).ready(function () {-->
-<!--        $("#btn-search").click(function (event) {-->
-<!--            let keyword = $("#input-search").val();-->
-<!--            $.ajax({-->
-<!--                headers: {-->
-<!--                    'Accept': 'application/json',-->
-<!--                    'Content-Type': 'application/json'-->
-<!--                },-->
-<!--                type: "GET",-->
-<!--                url: "api/posts?query=" + keyword,-->
-<!--                dataType: 'json',-->
-<!--                success: function (data) {-->
-<!--                    console.log(data)-->
-<!--                }-->
-<!--            });-->
-<!--            event.preventDefault();-->
-<!--        })-->
-<!--    })-->
-<!--</script>-->
+    <script>
+        $(document).ready(function () {
+            $("#btn-search").click(function () {
+                let keyword = $("#input-search").val();
+                location.href = "/search?keyword=" + keyword;
+            })
+        })
+    </script>
 
+    <script>
+        $(document).ready(function () {
+            let $a = $("<a>", {"class": "instagram text-center"});
+            $.ajax({
+                header: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                type: "GET",
+                url: "https://api.unsplash.com/photos?page=1&client_id=IdusRIk1r39o-uOTKwKK0hmrf4Tb1Au9QI4L78NYtoQ",
+                dataType: 'json',
+                error: function () {
+                    alert("Có lỗi xảy ra")
+                },
+                success: function (data) {
+                    for (let index = 0; index < 8; index++) {
+                        $a.attr("href", data[index].urls.small)
+                        $a.css("background-image", 'url(' + data[index].urls.small + ')');
+                        $(".instagram-entry").append($a.clone());
+                    }
+                }
+            });
+        })
+    </script>
 </div>
 </body>
 </html>

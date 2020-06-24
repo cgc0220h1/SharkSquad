@@ -13,15 +13,14 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Controller
 @PropertySource("classpath:config/status.properties")
 @RequestMapping("/api/comments")
 public class CommentAPI {
-
-    @Value("${entity.exist}")
-    private int statusExist;
 
     private final CommentService commentService;
 
@@ -36,43 +35,53 @@ public class CommentAPI {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "/{anchorName}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{anchor-name}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Comment createComment(@RequestBody Comment comment, @PathVariable String anchorName) {
+    public Comment createComment(@RequestBody Comment comment, @PathVariable("anchor-name") String anchorName) {
         String username = comment.getUsers().getUsername();
         Users currentUser = userService.findActiveUserByUsername(username);
         Post currentPost = postService.findExistByAnchorName(anchorName);
-        return commentService.save(comment, currentUser, currentPost);
+        comment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        comment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        comment.setUsers(currentUser);
+        comment.setPost(currentPost);
+        return commentService.save(comment);
     }
 
-    @RequestMapping(value = "/{anchorName}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{anchor-name}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Comment editComment(@RequestBody Comment comment, @PathVariable String anchorName) {
+    public Comment editComment(@RequestBody Comment comment, @PathVariable("anchor-name") String anchorName) throws EntityNotFoundException {
+        Comment currentComment = commentService.findExistById(comment.getId());
+        if (currentComment == null) {
+            throw new EntityNotFoundException();
+        }
         String username = comment.getUsers().getUsername();
-        Comment currentComment = commentService.findByIdAndStatus(comment.getId(), statusExist);
         Users currentUser = userService.findActiveUserByUsername(username);
         Post currentPost = postService.findExistByAnchorName(anchorName);
-        if (currentComment != null) {
-            comment.setId(comment.getId());
-        }
-        return commentService.save(comment, currentUser, currentPost);
+        currentComment.setUsers(currentUser);
+        currentComment.setPost(currentPost);
+        currentComment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        return commentService.save(currentComment);
     }
 
-    @RequestMapping(value = "/{anchorName}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{anchor-name}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void deleteComment(@RequestBody Comment comment, @PathVariable String anchorName) {
-        Comment currentComment = commentService.findByIdAndStatus(comment.getId(), statusExist);
-        Post currentPost = postService.findExistByAnchorName(anchorName);
-        if (currentComment != null) {
-            currentComment.setId(comment.getId());
+    public void deleteComment(@RequestBody Comment comment, @PathVariable("anchor-name") String anchorName) throws EntityNotFoundException {
+        Comment currentComment = commentService.findExistById(comment.getId());
+        if (currentComment == null) {
+            throw new EntityNotFoundException();
         }
-        commentService.delete(currentComment, currentPost);
+        Post currentPost = postService.findExistByAnchorName(anchorName);
+        if (currentComment.getPost() != currentPost) {
+            throw new EntityNotFoundException();
+        }
+        commentService.delete(currentComment.getId());
     }
 
-    @RequestMapping(value = "/{anchor-name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{anchor-name}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<Comment> allComment(@PathVariable("anchor-name") String anchorName) {
         Post postFound = postService.findExistByAnchorName(anchorName);
-        return commentService.findAllByPostAndStatus(postFound, statusExist);
+        return commentService.findAllExistByPost(postFound);
     }
 }

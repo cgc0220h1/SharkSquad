@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -23,17 +23,17 @@ public class AdminController {
         this.postService = postService;
     }
 
-    @RequestMapping(value = "/overview", method = RequestMethod.GET)
-    ModelAndView loadDashboard(Pageable pageable) {
-        ModelAndView dashboard = null;
-        Page<Post> posts;
-        try {
-            posts = postService.findAllExist(pageable);
-            dashboard= new ModelAndView("admin/dashboard");
-            dashboard.addObject("allPost", posts);
-        } catch (Exception ex) {
-            System.err.println(ex.getMessage());
-        }
+    @GetMapping("/overview")
+    ModelAndView loadDashboard(Pageable pageable) throws Exception {
+        ModelAndView dashboard = new ModelAndView("admin/dashboard");
+        Page<Post> posts = postService.findAllExist(pageable);
+        dashboard.addObject("allPost", posts);
         return dashboard;
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void handleNotFound(Exception exception) {
+        System.err.println(exception.getMessage());
     }
 }
