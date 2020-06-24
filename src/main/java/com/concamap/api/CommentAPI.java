@@ -9,6 +9,10 @@ import com.concamap.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -83,5 +87,14 @@ public class CommentAPI {
     public List<Comment> allComment(@PathVariable("anchor-name") String anchorName) {
         Post postFound = postService.findExistByAnchorName(anchorName);
         return commentService.findAllExistByPost(postFound);
+    }
+
+    @GetMapping(value = "/{anchor-name}", params = "page", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Page<Comment> getComment(@PathVariable("anchor-name") String anchorName,
+                                    @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 5)
+                                            Pageable pageable) {
+        Post postFound = postService.findExistByAnchorName(anchorName);
+        return commentService.findAllExistByPost(postFound, pageable);
     }
 }

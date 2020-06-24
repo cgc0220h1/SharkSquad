@@ -56,7 +56,7 @@ public class Users {
     @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
     @Basic
     @Column(name = "email", nullable = false, length = 225)
-    @JsonIgnore
+//    @JsonIgnore
     private String email;
 
     @NotNull(message = "username cannot be empty")

@@ -5,7 +5,19 @@
 </head>
 <style>
     .heading-2 {
-        margin-bottom: 0;
+        margin-bottom: 40px;
+    }
+
+    .row-pb-lg {
+        padding-bottom: 0;
+    }
+
+    img[class=user-img] {
+        bottom: 10px;
+    }
+
+    .text-right {
+        float: right;
     }
 </style>
 
@@ -55,49 +67,40 @@
                             </div>
                         </div>
                     </div>
-                    <th:block th:if="${!allComment.isEmpty()}">
-                        <div class="row row-pb-lg">
-                            <div class="col-md-12">
-                                <!--<h2 class="heading-2">23 Comments</h2>-->
-                                <th:block th:each="c : ${allComment}">
-                                    <div class="review">
-
-                                        <div class="user-img">
-                                            <img class="user-img" th:src="${c.users.avatarLink}">
-                                        </div>
-                                        <div class="desc">
-                                            <h4>
-                                                <a class="text-left" th:text="*{c.users.username}"
-                                                   th:href="@{/users/__${c.users.username}__}"></a>
-                                                <span class="text-right" th:text="*{c.createdDate}"></span>
-                                            </h4>
-                                            <p th:text="*{c.content}"></p>
-                                            <span class="text-left"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
-                                        </div>
-                                    </div>
-                                </th:block>
-                            </div>
-                        </div>
-                    </th:block>
                     <div class="row">
                         <div class="col-md-12">
-                            <h2 class="heading-2" th:text="#{view.h2.Comment}"></h2>
+                            <h2 class="heading-2" style="margin-bottom: 0" th:text="#{view.h2.Comment}"></h2>
                             <div>
-                                <form id="newComment">
-                                    <div class="row form-group">
-                                        <div class="col-md-12">
-                                            <label for="comment-content"></label>
-                                            <textarea name="message" id="comment-content" cols="20" rows="5"
-                                                      style="resize: none"
-                                                      class="form-control"
-                                                      th:placeholder="#{view.text_area.placeholder.write_a_comment}"></textarea>
-                                        </div>
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="comment-content"></label>
+                                        <textarea name="message" id="comment-content" cols="20" rows="5"
+                                                  style="resize: none"
+                                                  class="form-control"
+                                                  th:placeholder="#{view.text_area.placeholder.write_a_comment}"></textarea>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="submit" th:value="#{view.input.post_comment}"
-                                               class="btn btn-primary">
-                                    </div>
-                                </form>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" th:value="#{view.input.post_comment}"
+                                           class="btn btn-primary">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-pb-lg">
+                        <div class="col-md-12" id="comment-section">
+                            <h2 class="heading-2"></h2>
+                            <div class="review">
+                                <div class="user-img">
+                                    <img class="user-img" src="" alt="avatar_link">
+                                </div>
+                                <div class="desc">
+                                    <h4>
+                                        <a class="text-left"></a>
+                                        <span class="text-right"></span>
+                                    </h4>
+                                    <p></p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -137,13 +140,57 @@
 
 <script>
     $(document).ready(function () {
-        $("#newComment").submit(function (event) {
+        let currentPage = 1;
+        let node = $("#comment-section > .heading-2:first");
+        let clone = $(".review:first").clone();
+        $(".review:last-child").remove();
+        let getComment = function (page) {
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                type: "GET",
+                dataType: 'json',
+                url: "/api/comments/[[${post.anchorName}]]?page=" + page,
+                error: function () {
+                    $(node).text(0 + " Comments")
+                },
+                success: function (data) {
+                    console.log(data)
+                    $(node).text(data.totalElements + " [[#{comment.h2.text}]]");
+                    if (data.content.length !== 0) {
+                        $.each(data.content, function (index) {
+                            $(clone).find("img").attr("src", data.content[index].users.avatarLink);
+                            $(clone).find("h4 > .text-left").text(data.content[index].users.username);
+                            $(clone).find("h4 > .text-left").attr("href", "/users/" + data.content[index].users.username);
+                            $(clone).find("h4 > .text-right").text(data.content[index].createdDate);
+                            $(clone).find("p").text(data.content[index].content);
+                            $(node).after(clone.clone());
+                        })
+                    }
+                    if (!data.empty) {
+                        $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.more.text}]]</button>");
+                    } else {
+                        $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.home.text}]]</button>");
+                        currentPage = 0;
+                    }
+                    $("button[type=button]").click(function () {
+                        $(node).nextAll(".review").remove();
+                        $(node).nextAll("button").remove();
+                        currentPage++;
+                        getComment(currentPage);
+                    })
+                }
+            })
+        }
+
+        getComment(currentPage);
+
+        $("input[type=submit]").click(function (event) {
             let content = $("#comment-content").val();
-            let today = new Date();
             let json = {
                 "content": content,
-                "createdDate": today.toLocaleDateString(),
-                "updatedDate": today.toLocaleDateString(),
                 "users": {
                     "username": "vanduc2514"
                 }
@@ -155,13 +202,18 @@
                 },
                 type: "POST",
                 data: JSON.stringify(json),
-                url: "/api/comments/" + [[${post.anchorName}]],
+                url: "/api/comments/[[${post.anchorName}]]",
                 error: function () {
-                    console.log(this.url);
+                    alert("Error")
                 },
                 success: function (data) {
-                    console.log(this.url)
-                    console.log(data)
+                    $(clone).find("img").attr("src", data.users.avatarLink);
+                    $(clone).find("h4 > .text-left").text(data.users.username);
+                    $(clone).find("h4 > .text-left").attr("/users/" + data.users.username);
+                    $(clone).find("h4 > .text-right").text(data.createdDate);
+                    $(clone).find("p").text(data.content)
+                    $(node).after(clone.clone());
+                    $(".review").last().remove();
                 }
             });
             event.preventDefault();

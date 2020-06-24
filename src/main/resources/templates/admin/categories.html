@@ -29,13 +29,13 @@
       </div>
       <div class="sidebar-wrapper" id="sidebar-wrapper">
         <ul class="nav">
-          <li th:class="active">
+          <li>
             <a th:href="@{/admin/overview}">
               <i class="now-ui-icons education_paper"></i>
               <p>Bài viết</p>
             </a>
           </li>
-          <li>
+          <li th:class="active">
             <a th:href="@{/admin/categories}">
               <i class="now-ui-icons design_bullet-list-67"></i>
               <p>Thể loại</p>
@@ -62,7 +62,7 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" th:href="@{/admin/overview}">Danh sách bài viết</a>
+            <a class="navbar-brand" th:href="@{/admin/categories}">Danh sách thể loại</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -114,22 +114,22 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title">Danh sách bài viết</h4>
+                <h4 class="card-title">Danh sách thể loại</h4>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
                   <table class="table">
-                      <td class="text-uppercase">Tiêu đề</td>
-                      <td class="text-uppercase">Thể loại</td>
-                      <td class="text-uppercase">Tác giả</td>
+                      <td class="text-uppercase">Mã thể loại</td>
+                      <td class="text-uppercase">Tên</td>
+                      <td class="text-uppercase">Mô tả</td>
                       <td class="text-uppercase" colspan="2">Tùy chọn</td>
-                    <th:block th:each="post : ${allPost}">
+                    <th:block th:each="category : ${categories}">
                       <tr>
-                        <td><a th:href="@{/admin/post/__${post.id}__}" th:text="*{post.title}"></a></td>
-                        <td><a th:href="@{/admin/category/__${post.category.id}__}" th:text="*{post.category.title}"></a></td>
-                        <td><a th:href="@{/admin/user/__${post.users.id}__}" th:text="*{post.users.username}"></a></td>
-                        <td><a th:href="@{/admin/edit/post/__${post.id}__}"><i class="now-ui-icons ui-2_settings-90"></i></a></td>
-                        <td><a th:href="@{/admin/delete/post/__${post.id}__}"><i class="now-ui-icons ui-1_simple-remove" ></i></a></td>
+                        <td th:text="*{category.id}"></td>
+                        <td th:text="*{category.title}"></td>
+                        <td th:text="*{category.description}"></td>
+                        <td><a th:href="@{/admin/edit/category/__${category.id}__}"><i class="now-ui-icons ui-2_settings-90"></i></a></td>
+                        <td><a th:href="@{/admin/delete/category/__${category.id}__}"><i class="now-ui-icons ui-1_simple-remove" ></i></a></td>
                       </tr>
                     </th:block>
                   </table>
@@ -139,11 +139,11 @@
           </div>
           <div class="col-md-12 text-center">
             <ul class="pagination">
-              <li><a th:href="@{/admin/overview (page=${allPost.number})}" th:if="${allPost.hasPrevious()}">&laquo;</a></li>
-              <th:block th:each="i : ${#numbers.sequence(1, __${allPost.size}__,1)}">
-                <li><a th:href="@{/admin/overview (page=${i})}" th:text="${i}"></a></li>
+              <li><a th:href="@{/admin/categories (page=${categories.number})}" th:if="${categories.hasPrevious()}">&laquo;</a></li>
+              <th:block th:each="i : ${#numbers.sequence(1, __${categories.size}__,1)}">
+                <li><a th:href="@{/admin/categories (page=${i})}" th:text="${i}"></a></li>
               </th:block>
-              <li><a th:href="@{/admin/overview (page=${allPost.number + 2})}">&raquo;</a></li>
+              <li><a th:href="@{/admin/categories (page=${categories.number + 2})}">&raquo;</a></li>
             </ul>
           </div>
         </div>

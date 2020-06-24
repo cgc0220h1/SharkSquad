@@ -75,6 +75,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment save(Comment comment) {
+        comment.setStatus(statusExist);
         return commentRepository.save(comment);
     }
 
@@ -93,5 +94,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<Comment> findAllExistByPost(Post post) {
         return commentRepository.findAllByPostAndStatus(post, statusExist);
+    }
+
+    @Override
+    public Page<Comment> findAllExistByPost(Post post, Pageable pageable) {
+        return commentRepository.findAllByPostAndStatus(post, statusExist, pageable);
     }
 }
