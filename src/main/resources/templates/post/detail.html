@@ -158,7 +158,7 @@
                 },
                 success: function (data) {
                     console.log(data)
-                    $(node).text(data.totalElements + " Comments");
+                    $(node).text(data.totalElements + " [[#{comment.h2.text}]]");
                     if (data.content.length !== 0) {
                         $.each(data.content, function (index) {
                             $(clone).find("img").attr("src", data.content[index].users.avatarLink);
@@ -170,9 +170,9 @@
                         })
                     }
                     if (!data.empty) {
-                        $("#comment-section").append("<button type='button' class='btn btn-primary'>More</button>");
+                        $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.more.text}]]</button>");
                     } else {
-                        $("#comment-section").append("<button type='button' class='btn btn-primary'>Back</button>");
+                        $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.home.text}]]</button>");
                         currentPage = 0;
                     }
                     $("button[type=button]").click(function () {
