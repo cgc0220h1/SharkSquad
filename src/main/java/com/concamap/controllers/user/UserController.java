@@ -5,6 +5,8 @@ import com.concamap.model.Post;
 import com.concamap.model.Users;
 import com.concamap.services.user.EmailService;
 import com.concamap.services.user.UserService;
+import com.nulabinc.zxcvbn.Strength;
+import com.nulabinc.zxcvbn.Zxcvbn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
@@ -12,11 +14,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -84,7 +88,7 @@ public class UserController {
             registrationEmail.setSubject("Registration Confirmation");
             registrationEmail.setText("To confirm your e-mail address, please click the link below:\n"
                     + appUrl + ":8080/confirm?token=" + users.getConfirmationToken());
-            registrationEmail.setFrom("doubleteamc0220h1@gmail.com");
+            registrationEmail.setFrom("sharksquadteam420@gmail.com");
 
             emailService.sendEmail(registrationEmail);
 
@@ -96,9 +100,54 @@ public class UserController {
         return modelAndView;
     }
 
+    @GetMapping("/confirm")
+    public ModelAndView confirmRegistration(ModelAndView modelAndView, @RequestParam("token") String token) {
+
+        Users user = userService.findByConfirmationToken(token);
+
+        if (user == null) {
+            modelAndView.addObject("invalidToken", "Oops!  This is an invalid confirmation link.");
+        } else {
+            modelAndView.addObject("confirmationToken", user.getConfirmationToken());
+        }
+
+        modelAndView.setViewName("user/confirm");
+        return modelAndView;
+    }
+
+    @PostMapping("/confirm")
+    public ModelAndView confirmRegistration(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map<String, String> requestParams, RedirectAttributes redir) {
+
+        modelAndView.setViewName("user/confirm");
+
+        Zxcvbn passwordCheck = new Zxcvbn();
+
+        Strength strength = passwordCheck.measure(requestParams.get("password"));
+
+        if (strength.getScore() < 3) {
+            //modelAndView.addObject("errorMessage", "Your password is too weak.  Choose a stronger one.");
+            bindingResult.reject("password");
+
+            redir.addFlashAttribute("errorMessage", "Your password is too weak.  Choose a stronger one.");
+
+            modelAndView.setViewName("redirect:user/confirm?token=" + requestParams.get("token"));
+            System.out.println(requestParams.get("token"));
+            return modelAndView;
+        }
+
+        Users user = userService.findByConfirmationToken(requestParams.get("token"));
+
+        user.setPassword(requestParams.get("password"));
+
+        user.setStatus(1);
+
+        userService.save(user);
+
+        modelAndView.addObject("successMessage", "Your password has been set!");
+        return modelAndView;
+    }
+
     @GetMapping("/users/{username}")
-
-
     public ModelAndView showUser(@PathVariable("username") Users user) {
         ModelAndView modelAndView = new ModelAndView("home/bio");
         modelAndView.addObject("user", user);

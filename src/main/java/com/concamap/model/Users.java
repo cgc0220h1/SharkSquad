@@ -98,7 +98,7 @@ public class Users {
     private int status;
 
     @Basic
-    @Column(name = "confirmation_token", nullable = false)
+    @Column(name = "confirmation_token")
     private String confirmationToken;
 
     @ManyToOne
