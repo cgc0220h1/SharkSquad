@@ -3,6 +3,12 @@
 <head th:replace="layout :: head">
     <title>Shark Squad</title>
 </head>
+<style>
+    .heading-2 {
+        margin-bottom: 0;
+    }
+</style>
+
 <body>
 
 <div class="colorlib-loader"></div>
@@ -49,28 +55,30 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row row-pb-lg">
-                        <div class="col-md-12">
-                            <!--<h2 class="heading-2">23 Comments</h2>-->
-                            <th:block th:each="c : ${allComment}">
-                                <div class="review">
+                    <th:block th:if="${!allComment.isEmpty()}">
+                        <div class="row row-pb-lg">
+                            <div class="col-md-12">
+                                <!--<h2 class="heading-2">23 Comments</h2>-->
+                                <th:block th:each="c : ${allComment}">
+                                    <div class="review">
 
-                                    <div class="user-img">
-                                        <img class="user-img" th:src="${c.users.avatarLink}">
+                                        <div class="user-img">
+                                            <img class="user-img" th:src="${c.users.avatarLink}">
+                                        </div>
+                                        <div class="desc">
+                                            <h4>
+                                                <a class="text-left" th:text="*{c.users.username}"
+                                                   th:href="@{/users/__${c.users.username}__}"></a>
+                                                <span class="text-right" th:text="*{c.createdDate}"></span>
+                                            </h4>
+                                            <p th:text="*{c.content}"></p>
+                                            <span class="text-left"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
+                                        </div>
                                     </div>
-                                    <div class="desc">
-                                        <h4>
-                                            <a class="text-left" th:text="*{c.users.username}"
-                                               th:href="@{/users/__${c.users.username}__}"></a>
-                                            <span class="text-right" th:text="*{c.createdDate}"></span>
-                                        </h4>
-                                        <p th:text="*{c.content}"></p>
-                                        <span class="text-left"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
-                                    </div>
-                                </div>
-                            </th:block>
+                                </th:block>
+                            </div>
                         </div>
-                    </div>
+                    </th:block>
                     <div class="row">
                         <div class="col-md-12">
                             <h2 class="heading-2" th:text="#{view.h2.Comment}"></h2>
@@ -79,7 +87,7 @@
                                     <div class="row form-group">
                                         <div class="col-md-12">
                                             <label for="comment-content"></label>
-                                            <textarea name="message" id="comment-content" cols="30" rows="10"
+                                            <textarea name="message" id="comment-content" cols="20" rows="5"
                                                       style="resize: none"
                                                       class="form-control"
                                                       th:placeholder="#{view.text_area.placeholder.write_a_comment}"></textarea>
