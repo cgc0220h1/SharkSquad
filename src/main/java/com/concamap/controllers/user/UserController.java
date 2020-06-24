@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.sql.Timestamp;
-import java.io.File;
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.io.File;
 import java.text.Normalizer;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +34,7 @@ public class UserController {
     private final PostService postService;
 
     private final Environment env;
+
 
     @Autowired
     public UserController(UserService userService, PostService postService, Environment env) {
@@ -135,6 +135,13 @@ public class UserController {
             folderUpload = env.getProperty("upload.path");
             assert fileName != null;
             file = new File(folderUpload, fileName);
+            if (!file.exists()) {
+                if (file.mkdir()) {
+                    if (file.createNewFile()) {
+                        System.out.println("Created File Successful");
+                    }
+                }
+            }
             FileCopyUtils.copy(multipartFile.getBytes(), file);
 
             Set<Attachment> attachments = new HashSet<>();
