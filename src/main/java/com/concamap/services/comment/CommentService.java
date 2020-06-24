@@ -11,5 +11,9 @@ public interface CommentService extends GenericService<Comment> {
 
     List<Comment> findAllByPostAndStatus(Post post, int status);
 
+    Comment findByIdAndStatus(int id, int status);
+
     Comment save(Comment comment, Users user, Post post);
+
+    void delete(Comment comment, Post post);
 }

@@ -3,6 +3,8 @@
 <head th:replace="layout :: head">
     <title>Shark Squad</title>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" />
+    <link rel="stylesheet" type="text/css" th:href="@{js/semantic.js}">
 </head>
 <body>
 
@@ -98,9 +100,7 @@
                                             <span class="text-right" th:text="*{c.createdDate}"></span>
                                         </h4>
                                         <p th:text="*{c.content}"></p>
-                                        <p class="star">
                                             <span class="text-left"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
-                                        </p>
                                     </div>
                             </div>
                             </th:block>

@@ -45,6 +45,30 @@ public class CommentAPI {
         return commentService.save(comment, currentUser, currentPost);
     }
 
+    @RequestMapping(value = "/{anchorName}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Comment editComment(@RequestBody Comment comment, @PathVariable String anchorName) {
+        String username = comment.getUsers().getUsername();
+        Comment currentComment = commentService.findByIdAndStatus(comment.getId(), statusExist);
+        Users currentUser = userService.findActiveUserByUsername(username);
+        Post currentPost = postService.findExistByAnchorName(anchorName);
+        if (currentComment != null) {
+            comment.setId(comment.getId());
+        }
+        return commentService.save(comment, currentUser, currentPost);
+    }
+
+    @RequestMapping(value = "/{anchorName}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void deleteComment(@RequestBody Comment comment, @PathVariable String anchorName) {
+        Comment currentComment = commentService.findByIdAndStatus(comment.getId(), statusExist);
+        Post currentPost = postService.findExistByAnchorName(anchorName);
+        if (currentComment != null) {
+            currentComment.setId(comment.getId());
+        }
+        commentService.delete(currentComment, currentPost);
+    }
+
     @RequestMapping(value = "/{anchor-name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<Comment> allComment(@PathVariable("anchor-name") String anchorName) {
