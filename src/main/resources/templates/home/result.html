@@ -3,6 +3,50 @@
 <head th:replace="layout :: head">
     <title>Shark Squad</title>
 </head>
+<style>
+    #colorlib-container {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .sidebar-heading {
+        font-size: 30px;
+        display: block;
+        margin-bottom: 2em;
+        position: relative;
+        font-weight: 700;
+        color: #333333;
+    }
+
+    .f-blog {
+        position: relative;
+        padding-left: 100px;
+        margin-bottom: 80px;
+    }
+
+    #result-size {
+        color: #F6490D;
+    }
+
+    .img-responsive {
+        display: block;
+        max-width: 227%;
+        height: auto;
+    }
+
+    .desc {
+        margin-left: 100px;
+    }
+
+    .desc > .admin {
+        font-size: 50px;
+    }
+
+    h3 {
+        font-size: 100px;
+    }
+
+</style>
 <body>
 <div class="colorlib-loader"></div>
 <div id="page">
@@ -11,8 +55,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 breadcrumbs text-center">
-                    <h2 th:text="${keyword}"></h2>
-                    <a th:href="@{/}" th:text="#{view.a.home}"><span th:text="#{view.span.search}"></span></a>
+                    <h2>
+                        <span th:text="#{search.h2.keyword}"></span>
+                        <span th:text="${keyword}" id="keyword"></span>
+                    </h2>
+                    <a th:href="@{/}" th:text="#{view.a.home}">
+                        <span th:text="#{view.span.search}"></span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -20,50 +69,25 @@
     <div id="colorlib-container">
         <div class="container">
             <div class="row">
-<!--                <div class="col-md-9 content">-->
-<!--                    <div class="row row-pb-lg">-->
-<!--                        <th:block th:each="post : ${postPage}">-->
-<!--                            <div class="col-md-6">-->
-<!--                                <div class="blog-entry">-->
-<!--                                    <div class="blog-img">-->
-<!--                                        <a th:href="@{/posts/__${post.anchorName}__}">-->
-<!--                                            <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">-->
-<!--                                        </a>-->
-<!--                                    </div>-->
-<!--                                    <div class="desc">-->
-<!--                                        <p class="meta">-->
-<!--                                    <span class="cat">-->
-<!--                                        <a th:href="@{/categories/__${post.category.anchorName}__/posts}"-->
-<!--                                           th:text="${post.category.title}"></a>-->
-<!--                                    </span>-->
-<!--                                            <span class="date" th:text="${post.createdDate}"></span>-->
-<!--                                            <br>-->
-<!--                                            <span class="pos" th:text="#{view.span.by}"></span>-->
-<!--                                            <a style="color: black; font-weight: bold" th:href="@{/users/__${post.users.username}__}" th:text="${post.users.username}"></a>-->
-<!--                                        </p>-->
-<!--                                        <h2>-->
-<!--                                            <a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a>-->
-<!--                                        </h2>-->
-<!--                                        <p th:text="${post.content}"></p>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </th:block>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-                <div class="col-md-3">
-                    <div class="sidebar content">
-                        <div class="side">
-                            <h2 class="sidebar-heading" th:text="#{view.h2.recent_blog}"></h2>
-                            <th:block th:each="post : ${recentPostList}">
+                <div class="col-md-9" style="float: none; margin: auto">
+                    <div class="sidebar">
+                        <div class="side" style="margin-top: 30px">
+                            <h3 class="sidebar-heading">
+                                <span id="result-size" th:text="${postPage.totalElements}"></span>
+                                <span th:text="#{search.result.span}"></span></h3>
+                            <th:block th:each="post : ${postPage.getContent()}">
                                 <div class="f-blog">
                                     <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img">
-                                        <img class="img-responsive" alt="html5 bootstrap template" th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
+                                        <img class="img-responsive" alt="html5 bootstrap template"
+                                             th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}"
+                                             src="">
                                     </a>
                                     <div class="desc">
-                                        <h3><a th:href="@{/posts/__${post.anchorName}__}" th:text="*{post.title}"></a></h3>
-                                        <p class="admin"><span th:text="*{post.createdDate}"></span></p>
+                                        <h3><a th:href="@{/posts/__${post.anchorName}__}" th:text="*{post.title}"></a>
+                                        </h3>
+                                        <p class="admin" style="margin-bottom: 0"><span
+                                                th:text="*{post.createdDate}" id="post-time"></span></p>
+                                        <p class="admin"><span th:text="*{post.content}" id="post-content"></span></p>
                                     </div>
                                 </div>
                             </th:block>
@@ -72,22 +96,44 @@
                 </div>
             </div>
         </div>
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <ul class="pagination">
-                        <li><a th:href="@{/categories/__${category.anchorName}__/posts (page=${postPage.number})}" th:if="${postPage.hasPrevious()}">&laquo;</a></li>
-                        <th:block th:each="i : ${#numbers.sequence(1, __${postPage.size}__,1)}">
-                            <li><a th:href="@{/categories/__${category.anchorName}__/posts (page=${i})}" th:text="${i}"></a></li>
-                        </th:block>
-                        <li><a th:href="@{/categories/__${category.anchorName}__/posts (page=${postPage.number + 2})}">&raquo;</a></li>
-                    </ul>
-                </div>
-            </div>
     </div>
-    </div>
-    <div th:replace="layout :: hotBlog"></div>
-    <footer th:replace="layout :: footer"></footer>
 </div>
+<script>
+    $(document).ready(function () {
+        let page = 2;
+        $(window).scroll(function () {
+            if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+                let keyword = $("#keyword").html();
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    type: 'GET',
+                    url: "/api/posts?query=" + keyword + "&page=" + page,
+                    dataType: 'json',
+                    error: function () {
+                        $(window).unbind('scroll');
+                    },
+                    success: function (data) {
+                        let node = $(".f-blog:first").clone();
+                        $.each(data, function (index) {
+                            $(node).find("a").attr("href", '/posts/' + data[index].anchorName);
+                            $(node).find("a > img").attr("src", data[index].attachments[0].imageLink);
+                            $(node).find(".desc > h3 > a").attr("href", '/posts/' + data[index].anchorName);
+                            $(node).find(".desc > h3 > a").html(data[index].title);
+                            $(node).find(".desc > #post-time ").html(data[index].createdDate);
+                            $(node).find(".desc > #post-content").html(data[index].content);
+                            $(".side").append(node.clone());
+                            index++;
+                        })
+                    }
+                })
+                page++;
+            }
+        })
+    })
+</script>
 <div th:replace="layout :: backToTop"></div>
 <div th:replace="layout :: jquery"></div>
 </body>
