@@ -140,9 +140,10 @@
 
 <script>
     $(document).ready(function () {
-        let page = 1;
+        let currentPage = 1;
         let node = $("#comment-section > .heading-2:first");
         let clone = $(".review:first").clone();
+        $(".review:last-child").remove();
         let getComment = function (page) {
             $.ajax({
                 headers: {
@@ -168,21 +169,23 @@
                             $(node).after(clone.clone());
                         })
                     }
-                    $(".review:last-child").remove();
-                    if (data.totalElements > 5 || data.content.length !== 0) {
-                        $("#comment-section").append("<button type='button' id='more-comment' class='btn btn-primary'>More</button>");
+                    if (!data.empty) {
+                        $("#comment-section").append("<button type='button' class='btn btn-primary'>More</button>");
+                    } else {
+                        $("#comment-section").append("<button type='button' class='btn btn-primary'>Back</button>");
+                        currentPage = 0;
                     }
+                    $("button[type=button]").click(function () {
+                        $(node).nextAll(".review").remove();
+                        $(node).nextAll("button").remove();
+                        currentPage++;
+                        getComment(currentPage);
+                    })
                 }
             })
         }
 
-        $("button[type=button]").click(function () {
-            alert("Hello")
-            page++;
-            getComment(page)
-        })
-
-        getComment(page);
+        getComment(currentPage);
 
         $("input[type=submit]").click(function (event) {
             let content = $("#comment-content").val();
