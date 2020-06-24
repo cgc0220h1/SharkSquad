@@ -1,4 +1,4 @@
-package com.concamap.config.security;
+package com.concamap.security;
 
 import com.concamap.model.Users;
 import com.concamap.services.user.UserService;
@@ -16,7 +16,7 @@ public class UserSecurity {
     }
 
     public boolean checkUsername(Authentication authentication, String username) {
-        Users userslogin = userService.findActiveUserByUsername(authentication.getName());
-        return userslogin != null && userslogin.getUsername().equals(username);
+        Users usersLogin = userService.findActiveUserByUsername(authentication.getName());
+        return usersLogin != null && usersLogin.getUsername().equals(username);
     }
 }

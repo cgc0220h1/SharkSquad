@@ -1,4 +1,4 @@
-package com.concamap.config.security;
+package com.concamap.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
 
-    public static final String CHECKED_USER_NAME = "@userSecurity.checkUsername(authentication,#username)";
+    public static final String CHECKED_USER_NAME = "@userSecurity.checkUsername(authentication, #username)";
 
     @Autowired
     public SecurityConfig(@Qualifier("userDetailServiceImp") UserDetailsService userDetailsService) {
