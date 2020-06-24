@@ -18,7 +18,7 @@
   <link th:href="@{/demo/demo.css}" rel="stylesheet" />
 </head>
 
-<body class="">
+<body class="user-profile">
   <div class="wrapper ">
     <div class="sidebar" data-color="orange">
       <!--
@@ -29,7 +29,7 @@
       </div>
       <div class="sidebar-wrapper" id="sidebar-wrapper">
         <ul class="nav">
-          <li th:class="active">
+          <li>
             <a th:href="@{/admin/overview}">
               <i class="now-ui-icons education_paper"></i>
               <p>Bài viết</p>
@@ -41,7 +41,7 @@
               <p>Thể loại</p>
             </a>
           </li>
-          <li>
+          <li th:class="active">
             <a th:href="@{/admin/users}">
               <i class="now-ui-icons users_single-02"></i>
               <p>Người dùng</p>
@@ -62,7 +62,7 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" th:href="@{/admin/overview}">Danh sách bài viết</a>
+            <a class="navbar-brand" th:href="@{/admin/users}">Người dùng</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -111,40 +111,80 @@
       </div>
       <div class="content">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-8">
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title">Danh sách bài viết</h4>
+                <h5 class="title">Thông tin chi tiết</h5>
               </div>
               <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table">
-                      <td class="text-uppercase">Tiêu đề</td>
-                      <td class="text-uppercase">Thể loại</td>
-                      <td class="text-uppercase">Tác giả</td>
-                      <td class="text-uppercase" colspan="2">Tùy chọn</td>
-                    <th:block th:each="post : ${allPost}">
-                      <tr>
-                        <td><a th:href="@{/admin/post/__${post.id}__}" th:text="*{post.title}"></a></td>
-                        <td><a th:href="@{/admin/category/__${post.category.id}__}" th:text="*{post.category.title}"></a></td>
-                        <td><a th:href="@{/admin/user/__${post.users.id}__}" th:text="*{post.users.username}"></a></td>
-                        <td><a th:href="@{/admin/edit/post/__${post.id}__}"><i class="now-ui-icons ui-2_settings-90"></i></a></td>
-                        <td><a th:href="@{/admin/delete/post/__${post.id}__}"><i class="now-ui-icons ui-1_simple-remove" ></i></a></td>
-                      </tr>
-                    </th:block>
-                  </table>
-                </div>
+                <form>
+
+                  <div class="row">
+                    <div class="col-md-6 pr-1">
+                      <div class="form-group">
+                        <label>Tên</label>
+                        <input type="text" class="form-control" th:field="*{currentUser.firstName}" disabled>
+                      </div>
+                    </div>
+                    <div class="col-md-6 pl-1">
+                      <div class="form-group">
+                        <label>Họ và tên đệm</label>
+                        <input type="text" class="form-control" th:field="*{currentUser.lastName}" disabled>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-5 pr-1">
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" class="form-control" disabled th:field="*{currentUser.email}">
+                      </div>
+                    </div>
+                    <div class="col-md-3 px-1">
+                      <div class="form-group">
+                        <label>Tên đăng nhập</label>
+                        <input type="text" class="form-control" disabled th:field="*{currentUser.username}">
+                      </div>
+                    </div>
+                    <div class="col-md-4 pl-1">
+                      <div class="form-group">
+                        <label>Mật khẩu</label>
+                        <input type="email" class="form-control" disabled th:field="*{currentUser.password}">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6 pr-1">
+                      <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" class="form-control" th:field="*{currentUser.phone}" disabled>
+                      </div>
+                    </div>
+                    <div class="col-md-6 pl-1">
+                      <div class="form-group">
+                        <label>Loại tài khoản</label>
+                          <input type="text" class="form-control" th:field="*{currentUser.roles.name}" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
-          <div class="col-md-12 text-center">
-            <ul class="pagination">
-              <li><a th:href="@{/admin/overview (page=${allPost.number})}" th:if="${allPost.hasPrevious()}">&laquo;</a></li>
-              <th:block th:each="i : ${#numbers.sequence(1, __${allPost.size}__,1)}">
-                <li><a th:href="@{/admin/overview (page=${i})}" th:text="${i}"></a></li>
-              </th:block>
-              <li><a th:href="@{/admin/overview (page=${allPost.number + 2})}">&raquo;</a></li>
-            </ul>
+          <div class="col-md-4">
+            <div class="card card-user">
+              <div class="card-body">
+                <div class="author">
+                    <img class="avatar border-gray" th:src="${currentUser.avatarLink}">
+                    <h5 class="title" th:text="${currentUser.firstName}"></h5>
+                  <p class="description" th:text="${currentUser.username}"></p>
+                </div>
+                <p class="description text-center" th:utext="${currentUser.bio}"></p>
+              </div>
+              <hr>
+            </div>
           </div>
         </div>
       </div>
@@ -159,8 +199,8 @@
           </nav>
           <div class="copyright" id="copyright">
             &copy; <script>
-              document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
-            </script>, Làm bằng cả <a href="https://www.invisionapp.com" target="_blank">Trái tim</a>. Thiết kế bởi <a href="https://www.creative-tim.com" target="_blank">Chú cá bú đá</a>.
+            document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
+          </script>, Làm bằng cả <a href="https://www.invisionapp.com" target="_blank">Trái tim</a>. Thiết kế bởi <a href="https://www.creative-tim.com" target="_blank">Chú cá bú đá</a>.
           </div>
         </div>
       </footer>
