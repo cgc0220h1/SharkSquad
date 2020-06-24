@@ -19,6 +19,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
 
+    public static final String CHECKED_USER_NAME = "@userSecurity.checkUsername(authentication,#username)";
+
     @Autowired
     public SecurityConfig(@Qualifier("userDetailServiceImp") UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -27,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/", "/login").permitAll();
-        http.authorizeRequests().antMatchers("/users/**/profile").access("hasRole('USER')");
+        http.authorizeRequests().antMatchers("/users/{username}/profile").access(CHECKED_USER_NAME);
         http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
         http.formLogin().loginPage("/login").usernameParameter("username").passwordParameter("password");
         http.csrf().disable();

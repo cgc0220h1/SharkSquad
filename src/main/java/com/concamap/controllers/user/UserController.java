@@ -60,6 +60,8 @@ public class UserController {
     }
 
     @GetMapping("/users/{username}")
+
+
     public ModelAndView showUser(@PathVariable("username") Users user) {
         ModelAndView modelAndView = new ModelAndView("home/bio");
         modelAndView.addObject("user", user);

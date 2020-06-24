@@ -25,12 +25,12 @@ public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
 
     @Autowired
-    private RolesRepository rolesRepository;
-
-    @Autowired
     public UserServiceImp(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    @Autowired
+    private RolesRepository rolesRepository;
 
     @Override
     public Users findActiveUserByUsername(String username) {
