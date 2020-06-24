@@ -66,7 +66,7 @@
                             </ul>
                         </li>
                         <li><a href="#" th:text="#{view.li.a.about_me}"></a></li>
-                        <li ><a href="#" th:text="#{login.title}"></a></li>
+                        <li ><a th:href="@{/login}" th:text="#{login.title}"></a></li>
                         <li class="has-dropdown">
                             <a th:text="#{view.layout.head.language}"></a>
                             <ul class="dropdown">
@@ -88,7 +88,7 @@
 <div id="colorlib-instagram" th:fragment="hotBlog">
     <div class="row">
         <div class="col-md-12 col-md-offset-0 colorlib-heading text-center">
-            <h2>PICTURE OF THE DAY</h2>
+            <h2 th:text="#{layout.h2.picture_of_day}"></h2>
         </div>
     </div>
     <div class="row">
@@ -125,7 +125,7 @@
     <div class="container">
         <div class="row row-pb-md" style="height: 510px ">
             <div class="col-md-4">
-                <h2 th:text="#{view.h2.recent_blog}"></h2>
+                <h2 th:text="#{layout.h2.maybe_interested}"></h2>
                 <th:block th:each="post : ${randomPostList}">
                 <div class="f-blog">
                     <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img" th:style="'background-image: url('

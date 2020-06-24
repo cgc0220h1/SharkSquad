@@ -40,6 +40,7 @@ public class CategoryController {
     public ModelAndView showPostOfCategories(@PathVariable("anchor-name") Category category,
                                              Pageable pageable,
                                              @SessionAttribute("recentPostList") List<Post> recentPosts,
+                                             @SessionAttribute("randomPostList") List<Post> randomPosts,
                                              @SessionAttribute("categoryList") List<Category> categoryList) {
         ModelAndView modelAndView = new ModelAndView("post/filter");
         Page<Post> postPage = postService.findExistByCategory(category, pageable);
@@ -50,6 +51,7 @@ public class CategoryController {
         modelAndView.addObject("message", category.getTitle());
         modelAndView.addObject("postPage", postPage);
         modelAndView.addObject("recentPostList", recentPosts);
+        modelAndView.addObject("randomPostList", randomPosts);
         modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }

@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head">
     <title>Shark Squad</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" />
+    <link rel="stylesheet" type="text/css" th:href="@{js/semantic.js}">
 </head>
 <body>
 
@@ -65,6 +68,7 @@
                     <div class="row row-pb-lg">
                         <div class="col-md-12">
                             <div class="blog-entry">
+                                <input type="hidden" id="idPost" th:field="*{post.id}">
                                 <div class="blog-img blog-detail">
                                     <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">
                                 </div>
@@ -83,28 +87,29 @@
                     </div>
                     <div class="row row-pb-lg">
                         <div class="col-md-12">
-                            <h2 class="heading-2">23 Comments</h2>
+                            <!--<h2 class="heading-2">23 Comments</h2>-->
+                            <th:block th:each="c : ${allComment}">
                             <div class="review">
-                                <div class="user-img"
-                                     style="background-image: url(../../static/images/person1.jpg)"></div>
-                                <div class="desc">
-                                    <h4>
-                                        <span class="text-left">Jacob Webb</span>
-                                        <span class="text-right">24 March 2018</span>
-                                    </h4>
-                                    <p>When she reached the first hills of the Italic Mountains, she had a last view
-                                        back on the skyline of her hometown Bookmarksgrov</p>
-                                    <p class="star">
-                                        <span class="text-left"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
-                                    </p>
-                                </div>
+
+                                    <div class="user-img">
+                                        <img class="user-img" th:src="${c.users.avatarLink}">
+                                    </div>
+                                    <div class="desc">
+                                        <h4>
+                                            <a class="text-left" th:text="*{c.users.username}" th:href="@{/users/__${c.users.username}__}"></a>
+                                            <span class="text-right" th:text="*{c.createdDate}"></span>
+                                        </h4>
+                                        <p th:text="*{c.content}"></p>
+                                            <span class="text-left"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
+                                    </div>
                             </div>
+                            </th:block>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <h2 class="heading-2" th:text="#{view.h2.Comment}"></h2>
-                            <form action="#">
+                            <form id="newComment">
                                 <div class="row form-group">
                                     <div class="col-md-12">
                                         <textarea name="message" id="message" cols="30" rows="10" class="form-control"
@@ -150,5 +155,24 @@
 <div th:replace="layout :: jquery"></div>
 
 </body>
+<!--<script type="text/javascript">
+    $(document).ready(function () {
+        $('#newComment').submit(function (event) {
+                let json;
+
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                type : "POST",
+                data: JSON.stringify(json),
+                url: "/api/comments/{username}/create",
+                success: function (phone) {
+                    alert("Thanh cong");
+                }
+        });
+    })
+</script>-->
 </html>
 
