@@ -139,7 +139,7 @@ public class UserController {
             Set<Attachment> attachments = new HashSet<>();
             Attachment attachment = new Attachment();
 
-            attachment.setImageLink("/upload-file/" + fileName);
+            attachment.setImageLink(fileName);
             attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
             attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
             attachment.setStatus(1);
