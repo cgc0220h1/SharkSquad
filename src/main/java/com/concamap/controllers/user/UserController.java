@@ -124,40 +124,37 @@ public class UserController {
     }
 
     @PostMapping("/users/**/posts/create")
-    public RedirectView savePost(@ModelAttribute("post") Post post) {
-        MultipartFile multipartFile;
-        String fileName, folderUpload;
-        File file;
-        try {
-            multipartFile = post.getMultipartFile();
-            fileName = multipartFile.getOriginalFilename();
-            folderUpload = env.getProperty("upload.path");
-            assert fileName != null;
-            file = new File(folderUpload, fileName);
-            FileCopyUtils.copy(multipartFile.getBytes(), file);
+    public RedirectView savePost(@ModelAttribute("post") Post post) throws IOException {
+        Set<Attachment> attachments = new HashSet<>();
+        Attachment attachment = new Attachment();
+        String username = post.getUsers().getUsername();
 
-            Set<Attachment> attachments = new HashSet<>();
-            Attachment attachment = new Attachment();
-
-            attachment.setImageLink(fileName);
-            attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-            attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-            attachment.setStatus(1);
-            attachment.setPost(post);
-            attachments.add(attachment);
-
-            post.setAttachments(attachments);
-            post.setStatus(1);
-            post.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-            post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-            post.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
-            post.setLikes(0);
-
-            postService.save(post);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        MultipartFile multipartFile = post.getMultipartFile();
+        String fileName = System.currentTimeMillis() + "-" + multipartFile.getOriginalFilename();
+        String folderUploadPath = env.getProperty("upload.path");
+        assert folderUploadPath != null;
+        File folderUpload = new File(folderUploadPath, username);
+        if (!folderUpload.exists()) {
+            if (folderUpload.mkdirs()) {
+                File file = new File(folderUpload, fileName);
+                FileCopyUtils.copy(multipartFile.getBytes(), file);
+                attachment.setImageLink("/" + username + "/" + fileName);
+                attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+                attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+                attachment.setStatus(1);
+                attachment.setPost(post);
+            }
         }
+
+        attachments.add(attachment);
+        post.setAttachments(attachments);
+        post.setStatus(1);
+        post.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        post.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
+        post.setLikes(0);
+        postService.save(post);
+
         return new RedirectView("/");
     }
 
