@@ -113,7 +113,6 @@ public class UserController {
 
     @GetMapping("/users/{username}/posts/create")
     public ModelAndView showCreateForm(@PathVariable("username") String username, @SessionAttribute("categoryList") List<Category> categoryList) {
-//        Users user = userService.findExistById(id);
         Users user = userService.findActiveUserByUsername(username);
         Post post = new Post();
         post.setUsers(user);
@@ -125,27 +124,8 @@ public class UserController {
 
     @PostMapping("/users/posts/create")
     public RedirectView savePost(@ModelAttribute("post") Post post) {
-        MultipartFile multipartFile;
-        String fileName, fileUpload;
-        File file;
         try {
-            multipartFile = post.getMultipartFile();
-            fileName = multipartFile.getOriginalFilename();
-            fileUpload = env.getProperty("upload.path").toString();
-            file = new File(fileUpload, fileName);
-            FileCopyUtils.copy(multipartFile.getBytes(), file);
-
-            Set<Attachment> attachments = new HashSet<>();
-            Attachment attachment = new Attachment();
-
-            attachment.setImageLink("/uploadFile/" +fileName);
-            attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-            attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-            attachment.setStatus(1);
-            attachment.setPost(post);
-            attachments.add(attachment);
-
-            post.setAttachments(attachments);
+            setAttachmentsForPost(post);
             post.setStatus(1);
             post.setCreatedDate(new Timestamp(System.currentTimeMillis()));
             post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
@@ -159,8 +139,8 @@ public class UserController {
         return new RedirectView("/posts/" + post.getAnchorName());
     }
 
-    @GetMapping("/users/{id}/posts/{anchor-name}/edit")
-    public ModelAndView showEditForm(@PathVariable("id") int id, @PathVariable("anchor-name") String anchorName, @SessionAttribute("categoryList") List<Category> categoryList) {
+    @GetMapping("/users/{username}/posts/{anchor-name}/edit")
+    public ModelAndView showEditForm(@PathVariable("username") String username, @PathVariable("anchor-name") String anchorName, @SessionAttribute("categoryList") List<Category> categoryList) {
         Post post = postService.findExistByAnchorName(anchorName);
         ModelAndView modelAndView = new ModelAndView("post/edit");
         modelAndView.addObject("post", post);
@@ -168,17 +148,49 @@ public class UserController {
         return modelAndView;
     }
 
-    @PostMapping("/users/{id}/posts/edit")
-    public ModelAndView updatePost(@PathVariable("id") int id, @ModelAttribute("post") Post post, @SessionAttribute("categoryList") List<Category> categoryList) {
-        postService.save(post);
-        ModelAndView modelAndView = new ModelAndView("post/edit");
-        modelAndView.addObject("post", post);
-        modelAndView.addObject("categoryList", categoryList);
-        return modelAndView;
+    @PostMapping("/users/posts/edit")
+    public RedirectView updatePost(@ModelAttribute("post") Post post, @SessionAttribute("categoryList") List<Category> categoryList) {
+        try {
+            setAttachmentsForPost(post);
+            post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+            post.setStatus(1);
+            post.setAnchorName(removeAccent(post.getTitle() +" "+ (postService.count() + 1)));
+
+            postService.save(post);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new RedirectView("/posts/" + post.getAnchorName());
     }
 
-    @GetMapping("/users/{id}/posts/{anchor-name}/delete")
-    public ModelAndView showDeleteForm(@PathVariable("id") int id, @PathVariable("anchor-name") String anchorName) {
+    private void setAttachmentsForPost(@ModelAttribute("post") Post post) throws IOException {
+        MultipartFile multipartFile;
+        String fileName;
+        String fileUpload;
+        File file;
+        multipartFile = post.getMultipartFile();
+        fileName = multipartFile.getOriginalFilename();
+        fileUpload = env.getProperty("upload.path").toString();
+        file = new File(fileUpload, fileName);
+        FileCopyUtils.copy(multipartFile.getBytes(), file);
+
+        Set<Attachment> attachments = new HashSet<>();
+        Attachment attachment = new Attachment();
+
+        attachment.setImageLink("/uploadFile/" +fileName);
+        attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        attachment.setStatus(1);
+        attachment.setPost(post);
+        attachments.add(attachment);
+
+        post.setAttachments(attachments);
+    }
+
+    @GetMapping("/users/{username}/posts/{anchor-name}/delete")
+    public ModelAndView showDeleteForm(@PathVariable("username") String username, @PathVariable("anchor-name") String anchorName) {
         Post post = postService.findExistByAnchorName(anchorName);
         ModelAndView modelAndView = new ModelAndView("post/delete");
         modelAndView.addObject("post", post);
