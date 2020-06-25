@@ -49,12 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                                         permitAll();
 
         http.authorizeRequests().antMatchers("/users/{username}/profile",
-                                                        "/users/**/profile",
+                                                        "users/{username}/posts",
                                                         "/users/{username}/posts/create",
                                                         "/users/posts/create",
                                                         "/users/{username}/posts/{anchor-name}/edit",
-                                                        "/users/posts/edit",
-                                                        "/users/{id}/posts/delete").
+                                                        "/users/{username}/posts/{anchor-name}/delete").
                                                         access(CHECKED_USER_NAME);
         http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
 
