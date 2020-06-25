@@ -86,7 +86,7 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public Category save(Category category) {
-        return null;
+        return categoryRepository.save(category);
     }
 
     @Override

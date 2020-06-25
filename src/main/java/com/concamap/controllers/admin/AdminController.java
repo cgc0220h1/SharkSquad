@@ -14,6 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.sql.Timestamp;
+import java.text.Normalizer;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Controller
 @PropertySource("classpath:config/homepage.properties")
@@ -33,6 +39,12 @@ public class AdminController {
         this.userService = userService;
     }
 
+    private String removeAccent(String s) {
+        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("").replace('đ', 'd').replace('Đ', 'D').replace(' ', '-');
+    }
+
     @GetMapping("/overview")
     ModelAndView loadDashboard(Pageable pageable) throws Exception {
         ModelAndView dashboard = new ModelAndView("admin/dashboard");
@@ -47,6 +59,24 @@ public class AdminController {
         Page<Category> categories = categoryService.findAllExist(pageable);
         categoriesView.addObject("categories", categories);
         return categoriesView;
+    }
+
+    @GetMapping("/categories/{anchor-name}/edit")
+    public ModelAndView showEditForm(@PathVariable("anchor-name") String anchorName) {
+        Category category = categoryService.findByAnchorName(anchorName);
+        ModelAndView modelAndView = new ModelAndView("admin/categoriesEdit");
+        modelAndView.addObject("category", category);
+        return modelAndView;
+    }
+
+    @PostMapping("/categories/edit")
+    public RedirectView updateCategory(@ModelAttribute("category") Category category) {
+        Category categoryFound = categoryService.findExistById(category.getId());
+        long now = System.currentTimeMillis();
+        categoryFound.setUpdatedDate(new Timestamp(now));
+        categoryFound.setAnchorName(removeAccent(category.getDescription()));
+        categoryService.save(categoryFound);
+        return new RedirectView("/categories");
     }
 
     @GetMapping("/users")

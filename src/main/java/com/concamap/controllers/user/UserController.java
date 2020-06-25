@@ -238,7 +238,6 @@ public class UserController {
                 attachment.setImageLink("/" + username + "/" + fileName);
                 attachment.setUpdatedDate(new Timestamp(now));
                 attachment.setStatus(1);
-
                 postFound.setContent(post.getContent());
                 postFound.setUpdatedDate(new Timestamp(now));
                 postFound.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
