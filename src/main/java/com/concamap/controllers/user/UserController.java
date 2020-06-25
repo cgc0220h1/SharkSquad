@@ -8,6 +8,8 @@ import com.concamap.model.Post;
 import com.concamap.model.Users;
 import com.concamap.security.UserDetailServiceImp;
 import com.concamap.services.user.EmailService;
+import com.concamap.model.*;
+import com.concamap.services.comment.CommentService;
 import com.concamap.services.post.PostService;
 import com.concamap.services.user.UserService;
 import com.nulabinc.zxcvbn.Strength;
@@ -50,6 +52,8 @@ public class UserController {
 
     private final PostComponent postComponent;
 
+    private final CommentService commentService;
+
     private final UserService userService;
 
     private final EmailService emailService;
@@ -66,6 +70,7 @@ public class UserController {
         this.userService = userService;
         this.postService = postService;
         this.postComponent = postComponent;
+        this.commentService = commentService;
         this.fileComponent = fileComponent;
         this.emailService = emailService;
         this.userDetailServiceImp = userDetailServiceImp;
@@ -283,7 +288,7 @@ public class UserController {
         post.setAnchorName(postComponent.toAnchorName(post.getTitle()));
         postService.save(post);
 
-        return new RedirectView("/posts/" + post.getAnchorName());
+        return new RedirectView("/users/" + post.getUsers().getUsername() + "/posts/" + post.getAnchorName());
     }
 
     @GetMapping("/users/{username}/posts/{anchor-name}/edit")
@@ -327,5 +332,24 @@ public class UserController {
         postFound.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         postService.delete(postFound.getId());
         return new RedirectView("/users/" + postFound.getUsers().getUsername() + "/posts");
+    }
+
+    @GetMapping("/users/{username}/posts/{anchor-name}")
+    public ModelAndView showPostDetail(@PathVariable("anchor-name") String anchorName,
+                                 @PathVariable("username") String username,
+                                 @SessionAttribute("recentPostList") List<Post> recentPosts,
+                                 @SessionAttribute("randomPostList") List<Post> randomPosts,
+                                 @SessionAttribute("categoryList") List<Category> categoryList) {
+        ModelAndView modelAndView = new ModelAndView("user/postDetail");
+        Post postFound = postService.findExistByAnchorName(anchorName);
+
+        List<Comment> allComment = commentService.findAllExistByPost(postFound);
+
+        modelAndView.addObject("post", postFound);
+        modelAndView.addObject("allComment", allComment);
+        modelAndView.addObject("recentPostList", recentPosts);
+        modelAndView.addObject("randomPostList", randomPosts);
+        modelAndView.addObject("categoryList", categoryList);
+        return modelAndView;
     }
 }
