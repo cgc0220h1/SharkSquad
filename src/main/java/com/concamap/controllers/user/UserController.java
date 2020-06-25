@@ -35,7 +35,6 @@ public class UserController {
 
     private final Environment env;
 
-
     @Autowired
     public UserController(UserService userService, PostService postService, Environment env) {
         this.userService = userService;
@@ -135,19 +134,12 @@ public class UserController {
             folderUpload = env.getProperty("upload.path");
             assert fileName != null;
             file = new File(folderUpload, fileName);
-            if (!file.exists()) {
-                if (file.mkdir()) {
-                    if (file.createNewFile()) {
-                        System.out.println("Created File Successful");
-                    }
-                }
-            }
             FileCopyUtils.copy(multipartFile.getBytes(), file);
 
             Set<Attachment> attachments = new HashSet<>();
             Attachment attachment = new Attachment();
 
-            attachment.setImageLink(fileName);
+            attachment.setImageLink("/upload-file/" + fileName);
             attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
             attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
             attachment.setStatus(1);

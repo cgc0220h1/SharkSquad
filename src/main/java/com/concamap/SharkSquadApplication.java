@@ -2,9 +2,11 @@ package com.concamap;
 
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.format.Formatter;
 import org.springframework.web.servlet.LocaleResolver;
@@ -52,13 +54,4 @@ public class SharkSquadApplication implements WebMvcConfigurer {
     public LocaleResolver localeResolver() {
         return new SessionLocaleResolver();
     }
-
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/");
-//        registry.addResourceHandler("/css/**").addResourceLocations("classpath:/static/css/");
-//        registry.addResourceHandler("/fonts/**").addResourceLocations("classpath:/static/fonts/");
-//        registry.addResourceHandler("/images/**").addResourceLocations("classpath:/static/images/");
-//        registry.addResourceHandler("/vendor/**").addResourceLocations("classpath:/static/vendor/");
-//    }
 }
