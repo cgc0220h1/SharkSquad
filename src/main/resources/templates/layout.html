@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:fragment="head">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -73,15 +73,36 @@
                             </ul>
                         </li>
                         <li><a href="#" th:text="#{view.li.a.about_me}"></a></li>
-                        <li ><a th:href="@{/login}" th:text="#{login.title}"></a></li>
+                        <li sec:authorize="isAnonymous()">
+                            <a th:href="@{/login}" th:text="#{login.title}"></a>
+                        </li>
+
+                        <li class="has-dropdown" sec:authorize="isAuthenticated()">
+                            <a th:href="@{/users/__${user.getUsername()}__}" sec:authentication="name"></a>
+                            <ul class="dropdown">
+                                <li>
+                                    <a th:href="@{/users/__${user.getUsername()}__/profile}" th:text="#{layout.a.profile}"></a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/users/__${user.getUsername()}__/posts/create}" th:text="#{layout.a.create_post}"></a>
+                                </li>
+                                <!--Đợi link xem tất cả bài viết-->
+                                <li>
+                                    <a th:href="@{/users/__${user.getUsername()}__/profile}" th:text="#{layout.a.all_posts}"></a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/logout}" th:text="#{layout.a.logout}"></a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="has-dropdown">
                             <a th:text="#{view.layout.head.language}"></a>
                             <ul class="dropdown">
                                 <li>
-                                    <a href="/?lang=en">English</a>
+                                    <a href="/?lang=en" th:text="#{layout.a.english}"></a>
                                 </li>
                                 <li>
-                                    <a href="/?lang=vi">Vietnamese</a>
+                                    <a href="/?lang=vi" th:text="#{layout.a.vietnamese}"></a>
                                 </li>
                             </ul>
                         </li>

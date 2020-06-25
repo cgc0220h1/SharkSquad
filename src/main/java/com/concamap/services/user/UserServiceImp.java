@@ -1,7 +1,9 @@
 package com.concamap.services.user;
 
 import com.concamap.model.Post;
+import com.concamap.model.Roles;
 import com.concamap.model.Users;
+import com.concamap.repositories.RolesRepository;
 import com.concamap.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @PropertySource("classpath:config/status.properties")
@@ -26,9 +29,27 @@ public class UserServiceImp implements UserService {
         this.userRepository = userRepository;
     }
 
+    @Autowired
+    private RolesRepository rolesRepository;
+
     @Override
     public Users findActiveUserByUsername(String username) {
         return userRepository.findByStatusAndUsername(activeUserStatus, username).orElse(null);
+    }
+
+    @Override
+    public Roles findExistRolesById(int id) {
+        return rolesRepository.findByStatusAndId(1,id).orElse(null);
+    }
+
+    @Override
+    public Users findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public Users findByConfirmationToken(String confirmationToken) {
+        return userRepository.findByConfirmationToken(confirmationToken);
     }
 
     @Override
