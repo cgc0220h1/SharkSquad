@@ -1,59 +1,39 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="layout :: head">
     <title>Shark Squad</title>
 </head>
+<style>
+    .heading-2 {
+        margin-bottom: 40px;
+    }
+
+    .row-pb-lg {
+        padding-bottom: 0;
+    }
+
+    img[class=user-img] {
+        bottom: 10px;
+    }
+
+    .text-right {
+        float: right;
+    }
+</style>
+
 <body>
 
 <div class="colorlib-loader"></div>
 
 <div id="page">
-<!--
-    <nav class="colorlib-nav" role="navigation">
-        <div class="top-menu">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-2">
-                        <div id="colorlib-logo"><a th:href="@{/}" th:text="#{view.a.index}"></a></div>
-                    </div>
-                    <div class="col-xs-10 text-right menu-1">
-                        <ul>
-                            <li><a href="" th:text="#{view.li.a.home}"></a></li>
-                            <li class="has-dropdown active">
-                                <a href="#" th:text="#{view.li.a.categories}"></a>
-                                <ul class="dropdown">
-                                    <li><a href="#" th:text="#{view.li.a.business}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.entertainment}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.experience}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.finance}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.game}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.health}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.programming}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.science}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.sport}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.style}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.technology}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.thought}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.travel}"></a></li>
-                                    <li><a href="#" th:text="#{view.li.a.world}"></a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#" th:text="#{view.li.a.about_me}"></a></li>
-                            <li><a href="#" th:text="#{view.li.a.contact}"></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
--->
     <nav th:replace="layout :: menu"></nav>
     <aside id="colorlib-breadcrumbs">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 breadcrumbs text-center">
                     <h2 th:text="*{post.title}"></h2>
-                    <p><span><a th:href="@{/}" th:text="#{view.a.home}"></a></span> / <span th:text="*{post.category.title}"></span></p>
+                    <p><span><a th:href="@{/}" th:text="#{view.a.home}"></a></span> / <span
+                            th:text="*{post.category.title}"></span></p>
                 </div>
             </div>
         </div>
@@ -65,15 +45,21 @@
                     <div class="row row-pb-lg">
                         <div class="col-md-12">
                             <div class="blog-entry">
+                                <input type="hidden" id="idPost" th:field="*{post.id}">
                                 <div class="blog-img blog-detail">
-                                    <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">
+                                    <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}"
+                                         class="img-responsive" alt="html5 bootstrap template" src="">
                                 </div>
                                 <div class="desc">
                                     <p class="meta">
-                                        <span class="cat"><a th:href="@{/categories/__${post.category.anchorName}__/posts}" th:text="*{post.category.title}"></a></span>
+                                        <span class="cat"><a
+                                                th:href="@{/categories/__${post.category.anchorName}__/posts}"
+                                                th:text="*{post.category.title}"></a></span>
                                         <span class="date" th:text="*{post.createdDate}"></span>
                                         <span class="pos" th:text="#{view.span.by}"></span>
-                                        <a style="color: black; font-weight: bold" th:href="@{/users/__${post.users.username}__}" th:text="${post.users.username}"></a>
+                                        <a style="color: black; font-weight: bold"
+                                           th:href="@{/users/__${post.users.username}__}"
+                                           th:text="${post.users.username}"></a>
                                     </p>
                                     <h2 th:text="*{post.title}"></h2>
                                     <div th:utext="*{post.content}"></div>
@@ -81,40 +67,41 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row row-pb-lg">
-                        <div class="col-md-12">
-                            <h2 class="heading-2">23 Comments</h2>
-                            <div class="review">
-                                <div class="user-img"
-                                     style="background-image: url(../../static/images/person1.jpg)"></div>
-                                <div class="desc">
-                                    <h4>
-                                        <span class="text-left">Jacob Webb</span>
-                                        <span class="text-right">24 March 2018</span>
-                                    </h4>
-                                    <p>When she reached the first hills of the Italic Mountains, she had a last view
-                                        back on the skyline of her hometown Bookmarksgrov</p>
-                                    <p class="star">
-                                        <span class="text-left"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <h2 class="heading-2" th:text="#{view.h2.Comment}"></h2>
-                            <form action="#">
+                            <h2 class="heading-2" style="margin-bottom: 0" th:text="#{view.h2.Comment}"></h2>
+                            <div>
                                 <div class="row form-group">
                                     <div class="col-md-12">
-                                        <textarea name="message" id="message" cols="30" rows="10" class="form-control"
+                                        <label for="comment-content"></label>
+                                        <textarea name="message" id="comment-content" cols="20" rows="5"
+                                                  style="resize: none"
+                                                  class="form-control"
                                                   th:placeholder="#{view.text_area.placeholder.write_a_comment}"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="submit" th:value="#{view.input.post_comment}" class="btn btn-primary">
+                                    <input type="submit" th:value="#{view.input.post_comment}"
+                                           class="btn btn-primary">
                                 </div>
-                            </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-pb-lg">
+                        <div class="col-md-12" id="comment-section">
+                            <h2 class="heading-2"></h2>
+                            <div class="review">
+                                <div class="user-img">
+                                    <img class="user-img" src="" alt="avatar_link">
+                                </div>
+                                <div class="desc">
+                                    <h4>
+                                        <a class="text-left"></a>
+                                        <span class="text-right"></span>
+                                    </h4>
+                                    <p></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -125,10 +112,12 @@
                             <th:block th:each="post : ${recentPostList}">
                                 <div class="f-blog">
                                     <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img">
-                                        <img class="img-responsive" alt="html5 bootstrap template" th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
+                                        <img class="img-responsive" alt="html5 bootstrap template"
+                                             th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
                                     </a>
                                     <div class="desc">
-                                        <h3><a th:href="@{/posts/__${post.anchorName}__}" th:text="*{post.title}"></a></h3>
+                                        <h3><a th:href="@{/posts/__${post.anchorName}__}" th:text="*{post.title}"></a>
+                                        </h3>
                                         <p class="admin"><span th:text="*{post.createdDate}"></span></p>
                                     </div>
                                 </div>
@@ -148,6 +137,89 @@
 <div th:replace="layout :: backToTop"></div>
 
 <div th:replace="layout :: jquery"></div>
+
+<script>
+    $(document).ready(function () {
+        let currentPage = 1;
+        let node = $("#comment-section > .heading-2:first");
+        let clone = $(".review:first").clone();
+        $(".review:last-child").remove();
+        let getComment = function (page) {
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                type: "GET",
+                dataType: 'json',
+                url: "/api/comments/[[${post.anchorName}]]?page=" + page,
+                error: function () {
+                    $(node).text(0 + " Comments")
+                },
+                success: function (data) {
+                    console.log(data)
+                    $(node).text(data.totalElements + " [[#{comment.h2.text}]]");
+                    if (data.content.length !== 0) {
+                        $.each(data.content, function (index) {
+                            $(clone).find("img").attr("src", data.content[index].users.avatarLink);
+                            $(clone).find("h4 > .text-left").text(data.content[index].users.username);
+                            $(clone).find("h4 > .text-left").attr("href", "/users/" + data.content[index].users.username);
+                            $(clone).find("h4 > .text-right").text(data.content[index].createdDate);
+                            $(clone).find("p").text(data.content[index].content);
+                            $(node).after(clone.clone());
+                        })
+                    }
+                    if (!data.empty) {
+                        $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.more.text}]]</button>");
+                    } else {
+                        $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.home.text}]]</button>");
+                        currentPage = 0;
+                    }
+                    $("button[type=button]").click(function () {
+                        $(node).nextAll(".review").remove();
+                        $(node).nextAll("button").remove();
+                        currentPage++;
+                        getComment(currentPage);
+                    })
+                }
+            })
+        }
+
+        getComment(currentPage);
+
+        $("input[type=submit]").click(function (event) {
+            let content = $("#comment-content").val();
+            let json = {
+                "content": content,
+                "users": {
+                    "username": "vanduc2514"
+                }
+            };
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                type: "POST",
+                data: JSON.stringify(json),
+                url: "/api/comments/[[${post.anchorName}]]",
+                error: function () {
+                    alert("Error")
+                },
+                success: function (data) {
+                    $(clone).find("img").attr("src", data.users.avatarLink);
+                    $(clone).find("h4 > .text-left").text(data.users.username);
+                    $(clone).find("h4 > .text-left").attr("/users/" + data.users.username);
+                    $(clone).find("h4 > .text-right").text(data.createdDate);
+                    $(clone).find("p").text(data.content)
+                    $(node).after(clone.clone());
+                    $(".review").last().remove();
+                }
+            });
+            event.preventDefault();
+        })
+    })
+</script>
 
 </body>
 </html>

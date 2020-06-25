@@ -61,6 +61,11 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    public Page<Post> findAllByUsers_Username(String username, Pageable pageable) {
+        return postRepository.findByStatusAndUsers_Username(statusExist, username, pageable);
+    }
+
+    @Override
     public Page<Post> findExistByCategory(Category category, Pageable pageable) {
         return postRepository.findByStatusAndCategory(statusExist, category, pageable);
     }
@@ -95,7 +100,9 @@ public class PostServiceImp implements PostService {
                 postsFoundByContent.add(post);
             }
         }
-        return new PageImpl<>(postsFoundByContent, pageable, postsFoundByContent.size());
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), postsFoundByContent.size());
+        return new PageImpl<>(postsFoundByContent.subList(start, end), pageable, postsFoundByContent.size());
     }
 
     @Override
@@ -168,5 +175,10 @@ public class PostServiceImp implements PostService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int count() {
+        return (int) postRepository.count();
     }
 }

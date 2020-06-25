@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" th:href="@{/images/apple-icon.png}">
+  <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Con cá mập</title>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <!-- CSS Files -->
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/now-ui-dashboard.css}" rel="stylesheet" />
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link th:href="@{/demo/demo.css}" rel="stylesheet" />
+</head>
+
+<body class="user-profile">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="orange">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
+    -->
+      <div class="logo">
+        <a href="http://www.creative-tim.com" class="simple-text logo-normal">CON CÁ MẬP</a>
+      </div>
+      <div class="sidebar-wrapper" id="sidebar-wrapper">
+        <ul class="nav">
+          <li>
+            <a th:href="@{/admin/overview}">
+              <i class="now-ui-icons education_paper"></i>
+              <p>Bài viết</p>
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/admin/categories}">
+              <i class="now-ui-icons design_bullet-list-67"></i>
+              <p>Thể loại</p>
+            </a>
+          </li>
+          <li th:class="active">
+            <a th:href="@{/admin/users}">
+              <i class="now-ui-icons users_single-02"></i>
+              <p>Người dùng</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel" id="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" th:href="@{/admin/users}">Người dùng</a>
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end" id="navigation">
+            <form>
+              <div class="input-group no-border">
+                <input type="text" value="" class="form-control" placeholder="Search...">
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <i class="now-ui-icons ui-1_zoom-bold"></i>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="now-ui-icons location_world"></i>
+                  <p>
+                    <span class="d-lg-none d-md-block">Some Actions</span>
+                  </p>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#pablo">
+                  <i class="now-ui-icons users_single-02"></i>
+                  <p>
+                    <span class="d-lg-none d-md-block">Account</span>
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="panel-header panel-header-sm">
+      </div>
+      <div class="content">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="title">Thông tin chi tiết</h5>
+              </div>
+              <div class="card-body">
+                <form>
+
+                  <div class="row">
+                    <div class="col-md-6 pr-1">
+                      <div class="form-group">
+                        <label>Tên</label>
+                        <input type="text" class="form-control" th:field="*{currentUser.firstName}" disabled>
+                      </div>
+                    </div>
+                    <div class="col-md-6 pl-1">
+                      <div class="form-group">
+                        <label>Họ và tên đệm</label>
+                        <input type="text" class="form-control" th:field="*{currentUser.lastName}" disabled>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-5 pr-1">
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" class="form-control" disabled th:field="*{currentUser.email}">
+                      </div>
+                    </div>
+                    <div class="col-md-3 px-1">
+                      <div class="form-group">
+                        <label>Tên đăng nhập</label>
+                        <input type="text" class="form-control" disabled th:field="*{currentUser.username}">
+                      </div>
+                    </div>
+                    <div class="col-md-4 pl-1">
+                      <div class="form-group">
+                        <label>Mật khẩu</label>
+                        <input type="email" class="form-control" disabled th:field="*{currentUser.password}">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6 pr-1">
+                      <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" class="form-control" th:field="*{currentUser.phone}" disabled>
+                      </div>
+                    </div>
+                    <div class="col-md-6 pl-1">
+                      <div class="form-group">
+                        <label>Loại tài khoản</label>
+                          <input type="text" class="form-control" th:field="*{currentUser.roles.name}" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card card-user">
+              <div class="card-body">
+                <div class="author">
+                    <img class="avatar border-gray" th:src="${currentUser.avatarLink}">
+                    <h5 class="title" th:text="${currentUser.firstName}"></h5>
+                  <p class="description" th:text="${currentUser.username}"></p>
+                </div>
+                <p class="description text-center" th:utext="${currentUser.bio}"></p>
+              </div>
+              <hr>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class=" container-fluid ">
+          <nav>
+            <ul>
+              <li>
+                <a href="https://www.creative-tim.com">CON CÁ MẬP</a>
+              </li>
+            </ul>
+          </nav>
+          <div class="copyright" id="copyright">
+            &copy; <script>
+            document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
+          </script>, Làm bằng cả <a href="https://www.invisionapp.com" target="_blank">Trái tim</a>. Thiết kế bởi <a href="https://www.creative-tim.com" target="_blank">Chú cá bú đá</a>.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script th:src="@{/js/core/jquery.min.js}"></script>
+  <script th:src="@{/js/core/popper.min.js}"></script>
+  <script th:src="@{/js/core/bootstrap.min.js}"></script>
+  <script th:src="@{/js/plugins/perfect-scrollbar.jquery.min.js}"></script>
+  <!--  Google Maps Plugin    -->
+  <script th:src="@{https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE}"></script>
+  <!-- Chart JS -->
+  <script th:src="@{/js/plugins/chartjs.min.js}"></script>
+  <!--  Notifications Plugin    -->
+  <script th:src="@{/js/plugins/bootstrap-notify.js}"></script>
+  <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+  <script th:src="@{/js/now-ui-dashboard.min.js}" type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
+  <script th:src="@{/assets/demo/demo.js}"></script>
+</body>
+
+</html>

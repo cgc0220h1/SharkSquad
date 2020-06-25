@@ -2,6 +2,7 @@ package com.concamap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -46,10 +47,9 @@ public class Post {
 
     @Basic
     @Column(name = "anchor_name", nullable = false, unique = true)
-    @JsonIgnore
     private String anchorName;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @EqualsAndHashCode.Exclude
     private Set<Attachment> attachments;
 
@@ -65,4 +65,7 @@ public class Post {
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     private Set<Comment> comments;
+
+    @Transient
+    private MultipartFile multipartFile;
 }

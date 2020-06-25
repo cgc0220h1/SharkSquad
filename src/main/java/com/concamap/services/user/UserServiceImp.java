@@ -64,7 +64,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Page<Users> findAllExist(Pageable pageable) {
-        return null;
+        return userRepository.findAll(pageable);
     }
 
     @Override

@@ -14,6 +14,8 @@ public interface PostService extends GenericService<Post> {
 
     Page<Post> findExistRecent(int quantity);
 
+    Page<Post> findAllByUsers_Username(String username, Pageable pageable);
+
     Page<Post> findExistByCategory(Category category, Pageable pageable);
 
     Page<Post> findExistWithinTime(Timestamp startDate, Timestamp endDate, Pageable pageable);
@@ -27,4 +29,6 @@ public interface PostService extends GenericService<Post> {
     Page<Post> findExistByTitleOrContent(String query, Pageable pageable);
 
     Post findExistByAnchorName(String anchorName);
+
+    int count();
 }
