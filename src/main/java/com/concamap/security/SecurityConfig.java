@@ -45,17 +45,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                                         "/date/{year}",
                                                         "/date/{year}/{month}",
                                                         "/search",
-                                                        "/posts/{anchor-name}"
-                                                        ).permitAll();
+                                                        "/posts/{anchor-name}").
+                                                        permitAll();
 
         http.authorizeRequests().antMatchers("/users/{username}/profile",
                                                         "/users/**/profile",
                                                         "/users/{username}/posts/create",
-                                                        "/users/posts/create",
+//                                                        "/users/posts/create",
                                                         "/users/{username}/posts/{anchor-name}/edit",
-                                                        "/users/posts/edit",
-                                                        "/users/{username}/posts/{anchor-name}/delete",
-                                                        "/users/{id}/posts/delete").access(CHECKED_USER_NAME);
+//                                                        "/users/posts/edit",
+//                                                        "/users/{id}/posts/delete",
+                                                        "/users/{username}/posts/{anchor-name}/delete").
+                                                        access(CHECKED_USER_NAME);
 //        http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
         http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
 
