@@ -23,7 +23,7 @@
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-12">
-                            <form th:action="@{/users/posts/create}" th:object="${post}" method="post" enctype="multipart/form-data">
+                            <form th:object="${post}" method="post" enctype="multipart/form-data">
                                 <input type="hidden" name="users" th:value="${post.users.username}">
                                 <div class="row form-group">
                                     <div class="col-md-12">

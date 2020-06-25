@@ -96,6 +96,8 @@ public class HomeController {
 
     @GetMapping
     public ModelAndView showHomePage(Pageable pageable) {
+        String path = System.getProperty("user.dir");
+        System.out.println(path);
         ModelAndView modelAndView = new ModelAndView("home/index");
         Page<Post> postPage = postService.findAllExist(pageable);
         for (Post post : postPage) {

@@ -2,6 +2,7 @@ package com.concamap.services.post;
 
 import com.concamap.model.Category;
 import com.concamap.model.Post;
+import com.concamap.model.Users;
 import com.concamap.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

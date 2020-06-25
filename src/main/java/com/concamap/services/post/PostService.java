@@ -2,6 +2,7 @@ package com.concamap.services.post;
 
 import com.concamap.model.Category;
 import com.concamap.model.Post;
+import com.concamap.model.Users;
 import com.concamap.services.GenericService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,4 +32,5 @@ public interface PostService extends GenericService<Post> {
     Post findExistByAnchorName(String anchorName);
 
     int count();
+
 }

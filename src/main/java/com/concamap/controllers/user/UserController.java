@@ -21,12 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.io.File;
 import java.text.Normalizer;
 import java.util.HashSet;
-import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -38,26 +39,26 @@ public class UserController {
     @Value("${homepage.post.summary.words}")
     private int summaryWords;
 
+    private final PostComponent postComponent;
+
     private final UserService userService;
 
     private final PostService postService;
 
-    private final PostComponent postComponent;
+    private final Environment env;
 
     @Autowired
-    Environment env;
-
-    @Autowired
-    public UserController(UserService userService, PostService postService, PostComponent postComponent) {
+    public UserController(UserService userService, PostService postService, Environment env, PostComponent postComponent) {
         this.userService = userService;
         this.postService = postService;
+        this.env = env;
         this.postComponent = postComponent;
     }
 
     private String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(temp).replaceAll("").replace('đ','d').replace('Đ','D').replace(' ', '-');
+        return pattern.matcher(temp).replaceAll("").replace('đ', 'd').replace('Đ', 'D').replace(' ', '-');
     }
 
     @GetMapping("/login")
@@ -67,13 +68,13 @@ public class UserController {
         return modelAndView;
     }
 
-  /*  @PostMapping("/login")
+    @PostMapping("/login")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/login");
         }
         return new RedirectView("/");
-    }*/
+    }
 
     @GetMapping("/signup")
     public ModelAndView showSignUp() {
@@ -128,7 +129,7 @@ public class UserController {
     public ModelAndView showPostByUser(@PathVariable("username") String username, Pageable pageable,
                                        @SessionAttribute("recentPostList") List<Post> recentPosts,
                                        @SessionAttribute("randomPostList") List<Post> randomPosts,
-                                       @SessionAttribute("categoryList") List<Category> categoryList){
+                                       @SessionAttribute("categoryList") List<Category> categoryList) {
         ModelAndView modelAndView = new ModelAndView("post/filter");
         Page<Post> postPage = postService.findAllByUsers_Username(username, pageable);
         for (Post post : postPage) {
@@ -154,20 +155,42 @@ public class UserController {
         return modelAndView;
     }
 
-    @PostMapping("/users/posts/create")
-    public RedirectView savePost(@ModelAttribute("post") Post post) {
-        try {
-            setAttachmentsForPost(post);
-            post.setStatus(1);
-            post.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-            post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-            post.setAnchorName(removeAccent(post.getTitle() +" "+ (postService.count() + 1)));
-            post.setLikes(0);
+    @PostMapping("/users/**/posts/create")
+    public RedirectView savePost(@ModelAttribute("post") Post post) throws IOException {
+        Set<Attachment> attachments = new HashSet<>();
+        Attachment attachment = new Attachment();
+        String username = post.getUsers().getUsername();
+        long now = System.currentTimeMillis();
 
-            postService.save(post);
-        } catch (IOException e) {
-            e.printStackTrace();
+        MultipartFile multipartFile = post.getMultipartFile();
+        String fileName = now + "-" + multipartFile.getOriginalFilename();
+        String folderUploadPath = env.getProperty("upload.path");
+        assert folderUploadPath != null;
+        File folderUpload = new File(folderUploadPath, username);
+        System.out.println(folderUpload.getAbsolutePath());
+        if (!folderUpload.exists()) {
+            if (!folderUpload.mkdirs()) {
+                throw new IOException();
+            }
         }
+
+        File file = new File(folderUpload, fileName);
+        FileCopyUtils.copy(multipartFile.getBytes(), file);
+        attachment.setImageLink("/" + username + "/" + fileName);
+        attachment.setCreatedDate(new Timestamp(now));
+        attachment.setUpdatedDate(new Timestamp(now));
+        attachment.setStatus(1);
+        attachment.setPost(post);
+
+        attachments.add(attachment);
+        post.setAttachments(attachments);
+        post.setStatus(1);
+        post.setCreatedDate(new Timestamp(now));
+        post.setUpdatedDate(new Timestamp(now));
+        post.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
+        post.setLikes(0);
+        postService.save(post);
+
         return new RedirectView("/posts/" + post.getAnchorName());
     }
 
@@ -182,53 +205,49 @@ public class UserController {
 
     @PostMapping("/users/posts/edit")
     public RedirectView updatePost(@ModelAttribute("post") Post post, @SessionAttribute("categoryList") List<Category> categoryList) {
+        int postId = post.getId();
+        Post postFound = postService.findExistById(postId);
+        Set<Attachment> attachments = postFound.getAttachments();
+        Attachment attachment = attachments.iterator().next();
+        String username = postFound.getUsers().getUsername();
+        long now = System.currentTimeMillis();
+
         try {
-            setAttachmentsForPost(post);
-            post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-            post.setStatus(1);
-            post.setAnchorName(removeAccent(post.getTitle() +" "+ (postService.count() + 1)));
+            MultipartFile multipartFile = post.getMultipartFile();
+            if (Objects.equals(multipartFile.getOriginalFilename(), "")) {
+                postFound.setTitle(post.getTitle());
+                postFound.setContent(post.getContent());
+                postFound.setUpdatedDate(new Timestamp(now));
+                postFound.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
+                postService.save(postFound);
+            } else {
 
-            postService.save(post);
+                String fileName = now + "-" + multipartFile.getOriginalFilename();
+                String folderUploadPath = env.getProperty("upload.path");
+                assert folderUploadPath != null;
+                File folderUpload = new File(folderUploadPath, username);
+                if (!folderUpload.exists()) {
+                    if (!folderUpload.mkdirs()) {
+                        throw new IOException();
+                    }
+                }
 
+                File file = new File(folderUpload, fileName);
+                FileCopyUtils.copy(multipartFile.getBytes(), file);
+                attachment.setImageLink("/" + username + "/" + fileName);
+                attachment.setUpdatedDate(new Timestamp(now));
+                attachment.setStatus(1);
+
+                postFound.setContent(post.getContent());
+                postFound.setUpdatedDate(new Timestamp(now));
+                postFound.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
+                postService.save(postFound);
+
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return new RedirectView("/posts/" + post.getAnchorName());
-    }
-
-    private void setAttachmentsForPost(@ModelAttribute("post") Post post) throws IOException {
-        MultipartFile multipartFile;
-        String fileName;
-        String fileUpload;
-        File file;
-        multipartFile = post.getMultipartFile();
-        fileName = multipartFile.getOriginalFilename();
-        fileUpload = env.getProperty("upload.path").toString();
-        file = new File(fileUpload, fileName);
-        FileCopyUtils.copy(multipartFile.getBytes(), file);
-
-        Set<Attachment> attachments = new HashSet<>();
-        Attachment attachment = new Attachment();
-
-        attachment.setImageLink("/uploadFile/" +fileName);
-        attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-        attachment.setStatus(1);
-        attachment.setPost(post);
-        attachments.add(attachment);
-
-        post.setAttachments(attachments);
-    }
-
-    @GetMapping("/users/{username}/posts/{anchor-name}/delete")
-    public ModelAndView showDeleteForm(@PathVariable("username") String username, @PathVariable("anchor-name") String anchorName, @SessionAttribute("categoryList") List<Category> categoryList) {
-        Post post = postService.findExistByAnchorName(anchorName);
-        ModelAndView modelAndView = new ModelAndView("post/delete");
-        modelAndView.addObject("post", post);
-        modelAndView.addObject("anchorName", anchorName);
-        modelAndView.addObject("categoryList", categoryList);
-        return modelAndView;
+        return new RedirectView("/posts/" + postFound.getAnchorName());
     }
 
     @GetMapping("/users/posts/{anchor-name}/delete")
@@ -236,6 +255,6 @@ public class UserController {
         Post post1 = postService.findExistByAnchorName(anchorName);
         post1.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         postService.delete(post1.getId());
-        return new RedirectView("/");
+        return new RedirectView("/users/" + post1.getUsers().getUsername() + "/posts");
     }
 }
