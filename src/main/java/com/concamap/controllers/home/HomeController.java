@@ -48,8 +48,6 @@ public class HomeController {
     private final CategoryService categoryService;
 
     private final PostComponent postComponent;
-    @ModelAttribute
-    private Users
 
     @Autowired
     public HomeController(PostService postService, CategoryService categoryService, PostComponent postComponent) {
