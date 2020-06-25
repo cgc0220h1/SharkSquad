@@ -3,7 +3,6 @@ package com.concamap.controllers.home;
 import com.concamap.component.post.PostComponent;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
-import com.concamap.model.Users;
 import com.concamap.security.UserDetailServiceImp;
 import com.concamap.services.category.CategoryService;
 import com.concamap.services.post.PostService;
