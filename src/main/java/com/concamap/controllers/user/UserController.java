@@ -19,9 +19,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.util.HashSet;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -44,7 +44,7 @@ public class UserController {
     private String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(temp).replaceAll("").replace(' ', '-');
+        return pattern.matcher(temp).replaceAll("").replace('đ','d').replace('Đ','D').replace(' ', '-');
     }
 
     @GetMapping("/login")
@@ -54,13 +54,13 @@ public class UserController {
         return modelAndView;
     }
 
-    @PostMapping("/login")
+  /*  @PostMapping("/login")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/login");
         }
         return new RedirectView("/");
-    }
+    }*/
 
     @GetMapping("/signup")
     public ModelAndView showSignUp() {
@@ -74,13 +74,21 @@ public class UserController {
         if (bindingResult.hasFieldErrors()) {
             return new RedirectView("/signup");
         }
+        users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+        userService.save(users);
+
         return new RedirectView("/login");
     }
 
     @GetMapping("/users/{username}")
-    public ModelAndView showUser(@PathVariable("username") Users user) {
+    public ModelAndView showUser(@PathVariable("username") Users user,
+                                 @SessionAttribute("categoryList") List<Category> categoryList,
+                                 @SessionAttribute("randomPostList") List<Post> randomPosts) {
         ModelAndView modelAndView = new ModelAndView("home/bio");
         modelAndView.addObject("user", user);
+        modelAndView.addObject("categoryList", categoryList);
+        modelAndView.addObject("randomPostList", randomPosts);
         return modelAndView;
     }
 
@@ -116,8 +124,7 @@ public class UserController {
     }
 
     @PostMapping("/users/posts/create")
-    public ModelAndView savePost(@ModelAttribute("post") Post post) {
-        ModelAndView modelAndView = null;
+    public RedirectView savePost(@ModelAttribute("post") Post post) {
         MultipartFile multipartFile;
         String fileName, fileUpload;
         File file;
@@ -146,13 +153,10 @@ public class UserController {
             post.setLikes(0);
 
             postService.save(post);
-
-            modelAndView = new ModelAndView("post/create");
-            modelAndView.addObject("message", "Success");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return modelAndView;
+        return new RedirectView("/posts/" + post.getAnchorName());
     }
 
     @GetMapping("/users/{id}/posts/{anchor-name}/edit")

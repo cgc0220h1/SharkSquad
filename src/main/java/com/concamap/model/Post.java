@@ -47,7 +47,6 @@ public class Post {
 
     @Basic
     @Column(name = "anchor_name", nullable = false, unique = true)
-    @JsonIgnore
     private String anchorName;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})

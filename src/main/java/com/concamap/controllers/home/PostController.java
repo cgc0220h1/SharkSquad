@@ -1,10 +1,13 @@
 package com.concamap.controllers.home;
 
-import com.concamap.component.post.PostComponent;
+import com.concamap.model.Category;
+import com.concamap.model.Comment;
 import com.concamap.model.Post;
+import com.concamap.services.comment.CommentService;
 import com.concamap.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,46 +15,42 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 @Controller
+@PropertySource("classpath:config/status.properties")
 @RequestMapping("/posts")
 public class PostController {
-    @Value("${homepage.random-post.quantity}")
-    private int randomPosts;
-
-    @Value("${homepage.recent-post.quantity}")
-    private int recentPosts;
-
-    @Value("${homepage.post.summary.extend}")
-    private String extendString;
-
-    @Value("${homepage.post.summary.words}")
-    private int summaryWords;
 
     private final PostService postService;
 
-    private final PostComponent postComponent;
+    private final CommentService commentService;
 
     @Autowired
-    public PostController(PostService postService, PostComponent postComponent) {
+    public PostController(PostService postService, CommentService commentService) {
         this.postService = postService;
-        this.postComponent = postComponent;
-    }
-
-    @ModelAttribute("randomPostList")
-    public List<Post> randomPosts() {
-        List<Post> postList = postService.findExistRandom(randomPosts);
-        for (Post post : postList) {
-            post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
-        }
-        return postList;
+        this.commentService = commentService;
     }
 
     @GetMapping("/{anchor-name}")
-    public ModelAndView showPost(@PathVariable("anchor-name") String anchorName, @ModelAttribute("randomPostList") List<Post> randomPosts) {
+    public ModelAndView showPost(@PathVariable("anchor-name") String anchorName,
+                                 @SessionAttribute("recentPostList") List<Post> recentPosts,
+                                 @SessionAttribute("randomPostList") List<Post> randomPosts,
+                                 @SessionAttribute("categoryList") List<Category> categoryList) {
         ModelAndView modelAndView = new ModelAndView("post/detail");
         Post postFound = postService.findExistByAnchorName(anchorName);
+
+        List<Comment> allComment = commentService.findAllExistByPost(postFound);
+
         modelAndView.addObject("post", postFound);
+        modelAndView.addObject("allComment", allComment);
+
+        modelAndView.addObject("recentPostList", recentPosts);
         modelAndView.addObject("randomPostList", randomPosts);
+        modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }
 
+//    @GetMapping("/user/{id}/create")
+//    public ModelAndView showCreatePost (@PathVariable("id") )
+//
+//    @PostMapping("/user/{id}/create")
+//    public ModelAndView create
 }

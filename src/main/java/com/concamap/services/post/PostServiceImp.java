@@ -35,14 +35,15 @@ public class PostServiceImp implements PostService {
     @Override
     public List<Post> findExistRandom(int quantity) {
         int count = 1;
+        int totalPost = (int) postRepository.count();
         Random random = new Random();
         List<Integer> randomId = new ArrayList<>();
         List<Post> postList = new LinkedList<>();
         while (count <= quantity) {
-            if (count > postRepository.count()) {
+            if (count > totalPost) {
                 return postList;
             }
-            int id = random.nextInt((int) postRepository.count()) + 1;
+            int id = random.nextInt(totalPost) + 1;
             if (!randomId.contains(id)) {
                 postList.add(postRepository.findById(id).orElse(null));
                 randomId.add(id);
@@ -94,7 +95,9 @@ public class PostServiceImp implements PostService {
                 postsFoundByContent.add(post);
             }
         }
-        return new PageImpl<>(postsFoundByContent, pageable, postsFoundByContent.size());
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), postsFoundByContent.size());
+        return new PageImpl<>(postsFoundByContent.subList(start, end), pageable, postsFoundByContent.size());
     }
 
     @Override

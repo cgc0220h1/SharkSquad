@@ -1,22 +1,60 @@
 ###Lấy danh sách các bài post hiện tại
-GET http://localhost:8080/api/posts
+GET http://localhost:8888/api/posts
 
 ###Lấy danh sách các bài post hiện tại theo trang và size mặc định (size = 4)
-GET http://localhost:8080/api/posts?page=2
+GET http://localhost:8888/api/posts?page=2
 
 ###Lấy danh sách các bài post hiện tại theo trang và size
-GET http://localhost:8080/api/posts?page=1&size=2
+GET http://localhost:8888/api/posts?page=1&size=2
 
 ###Tìm kiếm Post theo title
-GET http://localhost:8080/api/posts?title=n
+GET http://localhost:8888/api/posts?title=n
 
 ###Tìm kiếm Post theo content
-GET http://localhost:8080/api/posts?content=suy+nghĩ
+GET http://localhost:8888/api/posts?content=suy+nghĩ
 
 ###Tìm kiếm Post theo title và content
-GET http://localhost:8080/api/posts?title=suy+nghĩ&content=mình
+GET http://localhost:8888/api/posts?title=suy+nghĩ&content=mình
 
 ###Tìm kiếm Post theo title hoặc content
-GET http://localhost:8080/api/posts?query=bài+tập
+GET http://localhost:8888/api/posts?query=mình
+
+###Lấy comment
+GET http://localhost:8888/api/comments/minh-co-mot-nguoi-ban-dac-biet-1?page=2
+
+### Thêm comment
+POST http://localhost:8888/api/comments/minh-co-mot-nguoi-ban-dac-biet-1
+Content-Type: application/json
+
+ {
+        "content": "Meo mẻo mèo meo 9",
+        "createdDate": "2020-06-24T02:34:34.341+00:00",
+        "updatedDate": "2020-06-24T02:34:34.341+00:00",
+        "users": {
+            "username": "vanduc2514"
+        }
+}
+
+### Sửa comment
+PUT http://localhost:8888/api/comments/minh-co-mot-nguoi-ban-dac-biet-1
+Content-Type: application/json
+
+{
+  "id": "8",
+  "content": "Sửa Meo mẻo mèo meo 6",
+  "createdDate": "2020-06-24T02:34:34.341+00:00",
+  "updatedDate": "2020-06-24T02:34:34.341+00:00",
+  "users": {
+    "username": "ChuCaBuDa"
+  }
+}
+
+### Xóa comment
+DELETE http://localhost:8888/api/comments/minh-co-mot-nguoi-ban-dac-biet-1
+Content-Type: application/json
+
+{
+  "id": "6"
+}
 
 ###

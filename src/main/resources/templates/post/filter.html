@@ -11,8 +11,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 breadcrumbs text-center">
-                    <h2 th:text="*{category.title}"></h2>
-                    <p><span><a th:href="@{/}" th:text="#{view.a.home}"></a></span> / <span th:text="*{category.title}"></span></p>
+                    <h2 th:text="${message}"></h2>
+                    <a th:href="@{/}" th:text="#{view.a.home}"></a>
                 </div>
             </div>
         </div>
@@ -27,8 +27,7 @@
                                 <div class="blog-entry">
                                     <div class="blog-img">
                                         <a th:href="@{/posts/__${post.anchorName}__}">
-                                            <img class="img-responsive"
-                                                 alt="html5 bootstrap template" src="">
+                                            <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">
                                         </a>
                                     </div>
                                     <div class="desc">
@@ -39,9 +38,8 @@
                                     </span>
                                             <span class="date" th:text="${post.createdDate}"></span>
                                             <br>
-                                            <span class="pos">By
-                                        <a th:href="@{/users/__${post.users.username}__}"
-                                           th:text="${post.users.firstName.concat(' ').concat(post.users.lastName)}"></a>
+                                            <span class="pos" th:text="#{view.span.by}"></span>
+                                            <a style="color: black; font-weight: bold" th:href="@{/users/__${post.users.username}__}" th:text="${post.users.username}"></a>
                                     </span>
                                         </p>
                                         <h2>
@@ -59,33 +57,17 @@
                     <div class="sidebar">
                         <div class="side">
                             <h2 class="sidebar-heading" th:text="#{view.h2.recent_blog}"></h2>
-                            <div class="f-blog">
-                                <a href="blog.html" class="blog-img"
-                                   style="background-image: url(../../static/images/blog-1.jpg);">
-                                </a>
-                                <div class="desc">
-                                    <h3><a href="blog.html">Be a designer</a></h3>
-                                    <p class="admin"><span>25 March 2018</span></p>
+                            <th:block th:each="post : ${recentPostList}">
+                                <div class="f-blog">
+                                    <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img">
+                                        <img class="img-responsive" alt="html5 bootstrap template" th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
+                                    </a>
+                                    <div class="desc">
+                                        <h3><a th:href="@{/posts/__${post.anchorName}__}" th:text="*{post.title}"></a></h3>
+                                        <p class="admin"><span th:text="*{post.createdDate}"></span></p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="f-blog">
-                                <a href="blog.html" class="blog-img"
-                                   style="background-image: url(../../static/images/blog-2.jpg);">
-                                </a>
-                                <div class="desc">
-                                    <h3><a href="blog.html">How to build website</a></h3>
-                                    <p class="admin"><span>24 March 2018</span></p>
-                                </div>
-                            </div>
-                            <div class="f-blog">
-                                <a href="blog.html" class="blog-img"
-                                   style="background-image: url(../../static/images/blog-3.jpg);">
-                                </a>
-                                <div class="desc">
-                                    <h3><a href="blog.html">Create website</a></h3>
-                                    <p class="admin"><span>23 March 2018</span></p>
-                                </div>
-                            </div>
+                            </th:block>
                         </div>
                     </div>
                 </div>
