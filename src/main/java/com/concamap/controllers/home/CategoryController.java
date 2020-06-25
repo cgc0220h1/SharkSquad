@@ -47,12 +47,14 @@ public class CategoryController {
         for (Post post : postPage) {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
         }
+        String anchorName = category.getAnchorName();
         modelAndView.addObject("category", category);
         modelAndView.addObject("message", category.getTitle());
         modelAndView.addObject("postPage", postPage);
         modelAndView.addObject("recentPostList", recentPosts);
         modelAndView.addObject("randomPostList", randomPosts);
         modelAndView.addObject("categoryList", categoryList);
+        modelAndView.addObject("linkPage", "/categories/" + anchorName + "/posts");
         return modelAndView;
     }
 }

@@ -24,7 +24,7 @@
                     <div class="row row-pb-lg">
                         <th:block th:each="post : ${postPage}">
                             <div class="col-md-6">
-                                <div class="blog-entry">
+                                <div class="blog-entry" style="height: 577px">
                                     <div class="blog-img">
                                         <a th:href="@{/posts/__${post.anchorName}__}">
                                             <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">
@@ -40,7 +40,6 @@
                                             <br>
                                             <span class="pos" th:text="#{view.span.by}"></span>
                                             <a style="color: black; font-weight: bold" th:href="@{/users/__${post.users.username}__}" th:text="${post.users.username}"></a>
-                                    </span>
                                         </p>
                                         <h2>
                                             <a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
@@ -76,15 +75,14 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <ul class="pagination">
-                        <li><a th:href="@{/categories/__${category.anchorName}__/posts (page=${postPage.number})}" th:if="${postPage.hasPrevious()}">&laquo;</a></li>
+                        <li><a th:href="@{__${linkPage}__ (page=${postPage.number})}" th:if="${postPage.hasPrevious()}">&laquo;</a></li>
                         <th:block th:each="i : ${#numbers.sequence(1, __${postPage.size}__,1)}">
-                            <li><a th:href="@{/categories/__${category.anchorName}__/posts (page=${i})}" th:text="${i}"></a></li>
+                            <li><a th:href="@{__${linkPage}__ (page=${i})}" th:text="${i}"></a></li>
                         </th:block>
-                        <li><a th:href="@{/categories/__${category.anchorName}__/posts (page=${postPage.number + 2})}">&raquo;</a></li>
+                        <li><a th:href="@{__${linkPage}__ (page=${postPage.number + 2})}">&raquo;</a></li>
                     </ul>
                 </div>
             </div>
-    </div>
     </div>
     <div th:replace="layout :: hotBlog"></div>
     <footer th:replace="layout :: footer"></footer>

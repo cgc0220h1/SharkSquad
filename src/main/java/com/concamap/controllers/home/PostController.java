@@ -47,10 +47,4 @@ public class PostController {
         modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }
-
-//    @GetMapping("/user/{id}/create")
-//    public ModelAndView showCreatePost (@PathVariable("id") )
-//
-//    @PostMapping("/user/{id}/create")
-//    public ModelAndView create
 }

@@ -125,14 +125,21 @@ public class UserController {
     }
 
     @GetMapping("users/{username}/posts")
-    public ModelAndView showPostByUser(@PathVariable("username") String username, Pageable pageable){
-        ModelAndView modelAndView = new ModelAndView("post/filter-user");
+    public ModelAndView showPostByUser(@PathVariable("username") String username, Pageable pageable,
+                                       @SessionAttribute("recentPostList") List<Post> recentPosts,
+                                       @SessionAttribute("randomPostList") List<Post> randomPosts,
+                                       @SessionAttribute("categoryList") List<Category> categoryList){
+        ModelAndView modelAndView = new ModelAndView("post/filter");
         Page<Post> postPage = postService.findAllByUsers_Username(username, pageable);
         for (Post post : postPage) {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
         }
+        modelAndView.addObject("category", categoryList);
         modelAndView.addObject("postPage", postPage);
         modelAndView.addObject("user_name", username);
+        modelAndView.addObject("recentPostList", recentPosts);
+        modelAndView.addObject("randomPostList", randomPosts);
+        modelAndView.addObject("linkPage", "/users/" + username + "/posts");
         return modelAndView;
     }
 
