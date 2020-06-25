@@ -57,8 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                                                        "/users/{id}/posts/delete",
                                                         "/users/{username}/posts/{anchor-name}/delete").
                                                         access(CHECKED_USER_NAME);
-//        http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
-        http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
+        http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
 
         //login
         http.formLogin().
