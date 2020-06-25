@@ -135,6 +135,7 @@ public class UserController {
         String folderUploadPath = env.getProperty("upload.path");
         assert folderUploadPath != null;
         File folderUpload = new File(folderUploadPath, username);
+        System.out.println(folderUpload.getAbsolutePath());
         if (!folderUpload.exists()) {
             if (!folderUpload.mkdirs()) {
                 throw new IOException();
