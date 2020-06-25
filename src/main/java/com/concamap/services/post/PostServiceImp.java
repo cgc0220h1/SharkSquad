@@ -171,4 +171,9 @@ public class PostServiceImp implements PostService {
         }
         return false;
     }
+
+    @Override
+    public int count() {
+        return (int) postRepository.count();
+    }
 }

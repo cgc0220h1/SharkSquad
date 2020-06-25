@@ -1,22 +1,33 @@
 package com.concamap.controllers.user;
 
+import com.concamap.model.Attachment;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
 import com.concamap.model.Users;
 //import com.concamap.services.user.EmailService;
+import com.concamap.services.post.PostService;
 import com.concamap.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.text.Normalizer;
+import java.util.HashSet;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 @Controller
 public class UserController {
@@ -29,9 +40,21 @@ public class UserController {
         this.emailService = emailService;
     }*/
 
+    private final PostService postService;
+
     @Autowired
-    public UserController(UserService userService) {
+    Environment env;
+
+    @Autowired
+    public UserController(UserService userService, PostService postService) {
         this.userService = userService;
+        this.postService = postService;
+    }
+
+    private String removeAccent(String s) {
+        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("").replace('đ','d').replace('Đ','D').replace(' ', '-');
     }
 
     @GetMapping("/login")
@@ -211,17 +234,95 @@ public class UserController {
         return new RedirectView("/users/" + usersFound.getUsername() + "/profile");
     }
 
-    @GetMapping("/users/{id}/create")
-    public ModelAndView showCreateForm(@PathVariable("id") int id, @SessionAttribute("categoryList") List<Category> categoryList){
+    @GetMapping("/users/{username}/posts/create")
+    public ModelAndView showCreateForm(@PathVariable("username") String username, @SessionAttribute("categoryList") List<Category> categoryList) {
+        Users user = userService.findActiveUserByUsername(username);
         Post post = new Post();
+        post.setUsers(user);
         ModelAndView modelAndView = new ModelAndView("post/create");
         modelAndView.addObject("post", post);
         modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }
 
-//    @PostMapping("/users/{id}/create")
-//    public ModelAndView savePost(@ModelAttribute("post")Post post, @PathVariable("id") int id){
-//
-//    }
+    @PostMapping("/users/posts/create")
+    public RedirectView savePost(@ModelAttribute("post") Post post) {
+        try {
+            setAttachmentsForPost(post);
+            post.setStatus(1);
+            post.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+            post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+            post.setAnchorName(removeAccent(post.getTitle() +" "+ (postService.count() + 1)));
+            post.setLikes(0);
+
+            postService.save(post);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new RedirectView("/posts/" + post.getAnchorName());
+    }
+
+    @GetMapping("/users/{username}/posts/{anchor-name}/edit")
+    public ModelAndView showEditForm(@PathVariable("username") String username, @PathVariable("anchor-name") String anchorName, @SessionAttribute("categoryList") List<Category> categoryList) {
+        Post post = postService.findExistByAnchorName(anchorName);
+        ModelAndView modelAndView = new ModelAndView("post/edit");
+        modelAndView.addObject("post", post);
+        modelAndView.addObject("categoryList", categoryList);
+        return modelAndView;
+    }
+
+    @PostMapping("/users/posts/edit")
+    public RedirectView updatePost(@ModelAttribute("post") Post post, @SessionAttribute("categoryList") List<Category> categoryList) {
+        try {
+            setAttachmentsForPost(post);
+            post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+            post.setStatus(1);
+            post.setAnchorName(removeAccent(post.getTitle() +" "+ (postService.count() + 1)));
+
+            postService.save(post);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new RedirectView("/posts/" + post.getAnchorName());
+    }
+
+    private void setAttachmentsForPost(@ModelAttribute("post") Post post) throws IOException {
+        MultipartFile multipartFile;
+        String fileName;
+        String fileUpload;
+        File file;
+        multipartFile = post.getMultipartFile();
+        fileName = multipartFile.getOriginalFilename();
+        fileUpload = env.getProperty("upload.path").toString();
+        file = new File(fileUpload, fileName);
+        FileCopyUtils.copy(multipartFile.getBytes(), file);
+
+        Set<Attachment> attachments = new HashSet<>();
+        Attachment attachment = new Attachment();
+
+        attachment.setImageLink("/uploadFile/" +fileName);
+        attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        attachment.setStatus(1);
+        attachment.setPost(post);
+        attachments.add(attachment);
+
+        post.setAttachments(attachments);
+    }
+
+    @GetMapping("/users/{username}/posts/{anchor-name}/delete")
+    public ModelAndView showDeleteForm(@PathVariable("username") String username, @PathVariable("anchor-name") String anchorName) {
+        Post post = postService.findExistByAnchorName(anchorName);
+        ModelAndView modelAndView = new ModelAndView("post/delete");
+        modelAndView.addObject("post", post);
+        return modelAndView;
+    }
+
+    @PostMapping("/users/{id}/posts/delete")
+    public RedirectView deleteBook(@ModelAttribute("post") Post post) {
+        postService.delete(post.getId());
+        return new RedirectView("/");
+    }
 }
