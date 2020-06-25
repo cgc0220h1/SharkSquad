@@ -23,14 +23,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.io.File;
 import java.text.Normalizer;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Controller
@@ -39,11 +37,8 @@ public class UserController {
 
     private final Environment env;
 
-    @Autowired
-    Environment env;
-
     private final UserService userService;
-    private EmailService emailService;
+    private final EmailService emailService;
 
     private final UserDetailServiceImp userDetailServiceImp;
 
@@ -53,15 +48,13 @@ public class UserController {
     }
 
     @Autowired
-    public UserController(UserService userService, EmailService emailService, UserDetailServiceImp userDetailServiceImp, PostService postService) {
+    public UserController(UserService userService, EmailService emailService, UserDetailServiceImp userDetailServiceImp, PostService postService, Environment env) {
         this.userService = userService;
         this.emailService = emailService;
         this.userDetailServiceImp = userDetailServiceImp;
         this.postService = postService;
+        this.env = env;
     }
-
-
-
 
     private String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
@@ -82,7 +75,6 @@ public class UserController {
             return new RedirectView("/login");
         }
         return new RedirectView("/");
-    }
     }
 
     @GetMapping("/logout")
@@ -105,91 +97,91 @@ public class UserController {
     @PostMapping("/signup")
     public ModelAndView signup(ModelAndView modelAndView, @Validated @ModelAttribute("users") Users users, BindingResult bindingResult, HttpServletRequest request) {
 
-        Users userExists = userService.findByEmail(users.getEmail());
-
-        if (userExists != null) {
-            modelAndView.addObject("alreadyRegisteredMessage", "Oops!  There is already a user registered with the email provided.");
-            modelAndView.setViewName("user/signup");
-            bindingResult.reject("email");
-        }
-
-        if (bindingResult.hasFieldErrors()) {
-            modelAndView.setViewName("user/signup");
-        } else {
-
-            users.setStatus(0);
-
-            users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-            users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
-            users.setRoles(userService.findExistRolesById(2));
-
-            users.setConfirmationToken(UUID.randomUUID().toString());
-
-            userService.save(users);
-
-            String appUrl = request.getScheme() + "://" + request.getServerName();
-
-            SimpleMailMessage registrationEmail = new SimpleMailMessage();
-            registrationEmail.setTo(users.getEmail());
-            registrationEmail.setSubject("Registration Confirmation");
-            registrationEmail.setText("To confirm your e-mail address, please click the link below:\n"
-                    + appUrl + ":8080/confirm?token=" + users.getConfirmationToken());
-            registrationEmail.setFrom("sharksquadteam420@gmail.com");
-
-            emailService.sendEmail(registrationEmail);
-
-            modelAndView.addObject("confirmationMessage", "A confirmation e-mail has been sent to " + users.getEmail());
-            modelAndView.setViewName("user/signup");
-        }
-
-
+//        Users userExists = userService.findByEmail(users.getEmail());
+//
+//        if (userExists != null) {
+//            modelAndView.addObject("alreadyRegisteredMessage", "Oops!  There is already a user registered with the email provided.");
+//            modelAndView.setViewName("user/signup");
+//            bindingResult.reject("email");
+//        }
+//
+//        if (bindingResult.hasFieldErrors()) {
+//            modelAndView.setViewName("user/signup");
+//        } else {
+//
+//            users.setStatus(0);
+//
+//            users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+//            users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+//            users.setRoles(userService.findExistRolesById(2));
+//
+//            users.setConfirmationToken(UUID.randomUUID().toString());
+//
+//            userService.save(users);
+//
+//            String appUrl = request.getScheme() + "://" + request.getServerName();
+//
+//            SimpleMailMessage registrationEmail = new SimpleMailMessage();
+//            registrationEmail.setTo(users.getEmail());
+//            registrationEmail.setSubject("Registration Confirmation");
+//            registrationEmail.setText("To confirm your e-mail address, please click the link below:\n"
+//                    + appUrl + ":8080/confirm?token=" + users.getConfirmationToken());
+//            registrationEmail.setFrom("sharksquadteam420@gmail.com");
+//
+//            emailService.sendEmail(registrationEmail);
+//
+//            modelAndView.addObject("confirmationMessage", "A confirmation e-mail has been sent to " + users.getEmail());
+//            modelAndView.setViewName("user/signup");
+//        }
+//
+//
         return modelAndView;
     }
 
     @GetMapping("/confirm")
     public ModelAndView confirmRegistration(ModelAndView modelAndView, @RequestParam("token") String token) {
 
-        Users user = userService.findByConfirmationToken(token);
-
-        if (user == null) {
-            modelAndView.addObject("invalidToken", "Oops!  This is an invalid confirmation link.");
-        } else {
-            modelAndView.addObject("confirmationToken", user.getConfirmationToken());
-        }
-
-        modelAndView.setViewName("user/confirm");
+//        Users user = userService.findByConfirmationToken(token);
+//
+//        if (user == null) {
+//            modelAndView.addObject("invalidToken", "Oops!  This is an invalid confirmation link.");
+//        } else {
+//            modelAndView.addObject("confirmationToken", user.getConfirmationToken());
+//        }
+//
+//        modelAndView.setViewName("user/confirm");
         return modelAndView;
     }
 
     @PostMapping("/confirm")
     public ModelAndView confirmRegistration(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map<String, String> requestParams, RedirectAttributes redir) {
 
-        modelAndView.setViewName("user/confirm");
-
-        Zxcvbn passwordCheck = new Zxcvbn();
-
-        Strength strength = passwordCheck.measure(requestParams.get("password"));
-
-        if (strength.getScore() < 3) {
-            //modelAndView.addObject("errorMessage", "Your password is too weak.  Choose a stronger one.");
-            bindingResult.reject("password");
-
-            redir.addFlashAttribute("errorMessage", "Your password is too weak.  Choose a stronger one.");
-
-            modelAndView.setViewName("redirect:user/confirm?token=" + requestParams.get("token"));
-            System.out.println(requestParams.get("token"));
-            return modelAndView;
-        }
-
-        Users user = userService.findByConfirmationToken(requestParams.get("token"));
-
-        user.setPassword(requestParams.get("password"));
-
-        user.setStatus(1);
-
-        userService.save(user);
-
-        modelAndView.addObject("successMessage", "Your password has been set!");
+//        modelAndView.setViewName("user/confirm");
+//
+//        Zxcvbn passwordCheck = new Zxcvbn();
+//
+//        Strength strength = passwordCheck.measure(requestParams.get("password"));
+//
+//        if (strength.getScore() < 3) {
+//            //modelAndView.addObject("errorMessage", "Your password is too weak.  Choose a stronger one.");
+//            bindingResult.reject("password");
+//
+//            redir.addFlashAttribute("errorMessage", "Your password is too weak.  Choose a stronger one.");
+//
+//            modelAndView.setViewName("redirect:user/confirm?token=" + requestParams.get("token"));
+//            System.out.println(requestParams.get("token"));
+//            return modelAndView;
+//        }
+//
+//        Users user = userService.findByConfirmationToken(requestParams.get("token"));
+//
+//        user.setPassword(requestParams.get("password"));
+//
+//        user.setStatus(1);
+//
+//        userService.save(user);
+//
+//        modelAndView.addObject("successMessage", "Your password has been set!");
         return modelAndView;
     }
 
