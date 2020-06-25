@@ -4,6 +4,7 @@ import com.concamap.component.post.PostComponent;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
 import com.concamap.model.Users;
+import com.concamap.security.UserDetailServiceImp;
 import com.concamap.services.category.CategoryService;
 import com.concamap.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,14 @@ public class HomeController {
     private final CategoryService categoryService;
 
     private final PostComponent postComponent;
+
+    @Autowired
+    private UserDetailServiceImp userDetailServiceImp;
+
+    @ModelAttribute("user")
+    public Users users(){
+        return userDetailServiceImp.getCurrentUser();
+    }
 
     @Autowired
     public HomeController(PostService postService, CategoryService categoryService, PostComponent postComponent) {
@@ -104,6 +113,7 @@ public class HomeController {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
         }
         modelAndView.addObject("postPage", postPage);
+        modelAndView.addObject("user", userDetailServiceImp.getCurrentUser());
         return modelAndView;
     }
 

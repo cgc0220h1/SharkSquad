@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
 import java.util.Properties;
 
@@ -22,9 +23,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    public void configure(WebSecurity web) throws Exception {
 //        super.configure(web);
 //    }
-
-    @Autowired
-    private LogoutSuccessHandler logoutSuccessHandler;
 
     private final UserDetailsService userDetailsService;
 
@@ -45,9 +43,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                                         "/categories/{anchor-name}/posts",
                                                         "/date/{year}",
                                                         "/date/{year}/{month}",
-                                                        "/search","/posts/{anchor-name}").permitAll();
+                                                        "/search",
+                                                        "/posts/{anchor-name}"
+                                                        ).permitAll();
 
-        http.authorizeRequests().antMatchers("/users/{username}/profile").access(CHECKED_USER_NAME);
+        http.authorizeRequests().antMatchers("/users/{username}/profile",
+                                                        "/users/**/profile",
+                                                        "/users/{username}/posts/create",
+                                                        "/users/posts/create",
+                                                        "/users/{username}/posts/{anchor-name}/edit",
+                                                        "/users/posts/edit",
+                                                        "/users/{username}/posts/{anchor-name}/delete",
+                                                        "/users/{id}/posts/delete").access(CHECKED_USER_NAME);
 //        http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
         http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
 
@@ -63,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //logout
         http.logout().
                 logoutUrl("/logout").
-                logoutSuccessHandler(logoutSuccessHandler);
+                logoutSuccessHandler(new SimpleUrlLogoutSuccessHandler());
 
         http.csrf().disable();
     }

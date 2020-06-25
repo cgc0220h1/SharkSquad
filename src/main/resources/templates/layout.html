@@ -78,10 +78,10 @@
                         </li>
 
                         <li class="has-dropdown" sec:authorize="isAuthenticated()">
-                            <a th:href="@{/user/__${username}__}" sec:authentication="name"></a>
+                            <a th:href="@{/users/__${user.getUsername()}__}" sec:authentication="name"></a>
                             <ul class="dropdown">
                                 <li>
-                                    <a th:href="@{/user/__${username}__/profile}">Xem trang cá nhân</a>
+                                    <a th:href="@{/users/__${user.getUsername()}__/profile}">Xem trang cá nhân</a>
                                 </li>
                                 <li>
                                     <a th:href="@{/logout}">Đăng xuất</a>
