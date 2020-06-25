@@ -61,6 +61,11 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    public Page<Post> findAllByUsers_Username(String username, Pageable pageable) {
+        return postRepository.findByStatusAndUsers_Username(statusExist, username, pageable);
+    }
+
+    @Override
     public Page<Post> findExistByCategory(Category category, Pageable pageable) {
         return postRepository.findByStatusAndCategory(statusExist, category, pageable);
     }

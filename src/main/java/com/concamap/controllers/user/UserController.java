@@ -1,5 +1,6 @@
 package com.concamap.controllers.user;
 
+import com.concamap.component.post.PostComponent;
 import com.concamap.model.Attachment;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
@@ -7,7 +8,10 @@ import com.concamap.model.Users;
 import com.concamap.services.post.PostService;
 import com.concamap.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
@@ -28,17 +32,26 @@ import java.util.regex.Pattern;
 
 @Controller
 public class UserController {
+    @Value("${homepage.post.summary.extend}")
+    private String extendString;
+
+    @Value("${homepage.post.summary.words}")
+    private int summaryWords;
+
     private final UserService userService;
 
     private final PostService postService;
+
+    private final PostComponent postComponent;
 
     @Autowired
     Environment env;
 
     @Autowired
-    public UserController(UserService userService, PostService postService) {
+    public UserController(UserService userService, PostService postService, PostComponent postComponent) {
         this.userService = userService;
         this.postService = postService;
+        this.postComponent = postComponent;
     }
 
     private String removeAccent(String s) {
@@ -109,6 +122,18 @@ public class UserController {
         usersFound.setBio(users.getBio());
         userService.save(usersFound);
         return new RedirectView("/users/" + usersFound.getUsername() + "/profile");
+    }
+
+    @GetMapping("users/{username}/posts")
+    public ModelAndView showPostByUser(@PathVariable("username") String username, Pageable pageable){
+        ModelAndView modelAndView = new ModelAndView("user/posts");
+        Page<Post> postPage = postService.findAllByUsers_Username(username, pageable);
+        for (Post post : postPage) {
+            post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
+        }
+        modelAndView.addObject("postPage", postPage);
+        modelAndView.addObject("user_name", username);
+        return modelAndView;
     }
 
     @GetMapping("/users/{username}/posts/create")
@@ -190,16 +215,20 @@ public class UserController {
     }
 
     @GetMapping("/users/{username}/posts/{anchor-name}/delete")
-    public ModelAndView showDeleteForm(@PathVariable("username") String username, @PathVariable("anchor-name") String anchorName) {
+    public ModelAndView showDeleteForm(@PathVariable("username") String username, @PathVariable("anchor-name") String anchorName, @SessionAttribute("categoryList") List<Category> categoryList) {
         Post post = postService.findExistByAnchorName(anchorName);
         ModelAndView modelAndView = new ModelAndView("post/delete");
         modelAndView.addObject("post", post);
+        modelAndView.addObject("anchorName", anchorName);
+        modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }
 
-    @PostMapping("/users/{id}/posts/delete")
-    public RedirectView deleteBook(@ModelAttribute("post") Post post) {
-        postService.delete(post.getId());
+    @GetMapping("/users/posts/{anchor-name}/delete")
+    public RedirectView deletePost(@ModelAttribute("post") Post post, @PathVariable("anchor-name") String anchorName) {
+        Post post1 = postService.findExistByAnchorName(anchorName);
+        post1.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        postService.delete(post1.getId());
         return new RedirectView("/");
     }
 }
