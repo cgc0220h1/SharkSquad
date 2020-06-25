@@ -1,10 +1,8 @@
 package com.concamap.controllers.user;
 
 import com.concamap.component.post.PostComponent;
-import com.concamap.model.Attachment;
-import com.concamap.model.Category;
-import com.concamap.model.Post;
-import com.concamap.model.Users;
+import com.concamap.model.*;
+import com.concamap.services.comment.CommentService;
 import com.concamap.services.post.PostService;
 import com.concamap.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +39,8 @@ public class UserController {
 
     private final PostComponent postComponent;
 
+    private final CommentService commentService;
+
     private final UserService userService;
 
     private final PostService postService;
@@ -48,11 +48,12 @@ public class UserController {
     private final Environment env;
 
     @Autowired
-    public UserController(UserService userService, PostService postService, Environment env, PostComponent postComponent) {
+    public UserController(UserService userService, PostService postService, Environment env, PostComponent postComponent, CommentService commentService) {
         this.userService = userService;
         this.postService = postService;
         this.env = env;
         this.postComponent = postComponent;
+        this.commentService = commentService;
     }
 
     private String removeAccent(String s) {
@@ -191,7 +192,7 @@ public class UserController {
         post.setLikes(0);
         postService.save(post);
 
-        return new RedirectView("/posts/" + post.getAnchorName());
+        return new RedirectView("/users/" + post.getUsers().getUsername() + "/posts/" + post.getAnchorName());
     }
 
     @GetMapping("/users/{username}/posts/{anchor-name}/edit")
@@ -250,11 +251,30 @@ public class UserController {
         return new RedirectView("/posts/" + postFound.getAnchorName());
     }
 
-    @GetMapping("/users/posts/{anchor-name}/delete")
-    public RedirectView deletePost(@ModelAttribute("post") Post post, @PathVariable("anchor-name") String anchorName) {
+    @GetMapping("/users/{username}/posts/{anchor-name}/delete")
+    public RedirectView deletePost(@ModelAttribute("post") Post post, @PathVariable("username") String username, @PathVariable("anchor-name") String anchorName) {
         Post post1 = postService.findExistByAnchorName(anchorName);
         post1.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         postService.delete(post1.getId());
         return new RedirectView("/users/" + post1.getUsers().getUsername() + "/posts");
+    }
+
+    @GetMapping("/users/{username}/posts/{anchor-name}")
+    public ModelAndView showPostDetail(@PathVariable("anchor-name") String anchorName,
+                                 @PathVariable("username") String username,
+                                 @SessionAttribute("recentPostList") List<Post> recentPosts,
+                                 @SessionAttribute("randomPostList") List<Post> randomPosts,
+                                 @SessionAttribute("categoryList") List<Category> categoryList) {
+        ModelAndView modelAndView = new ModelAndView("user/postDetail");
+        Post postFound = postService.findExistByAnchorName(anchorName);
+
+        List<Comment> allComment = commentService.findAllExistByPost(postFound);
+
+        modelAndView.addObject("post", postFound);
+        modelAndView.addObject("allComment", allComment);
+        modelAndView.addObject("recentPostList", recentPosts);
+        modelAndView.addObject("randomPostList", randomPosts);
+        modelAndView.addObject("categoryList", categoryList);
+        return modelAndView;
     }
 }
