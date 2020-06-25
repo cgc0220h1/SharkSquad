@@ -97,6 +97,14 @@ public class AdminController {
         return new RedirectView("/categories");
     }
 
+    @GetMapping("/categories/{anchor-name}/delete")
+    public RedirectView deleteCategory(@PathVariable("anchor-name") String anchorName) {
+        Category category = categoryService.findByAnchorName(anchorName);
+        category.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        categoryService.save(category);
+        return new RedirectView("/categories");
+    }
+
     @GetMapping("/users")
     ModelAndView loadUsers(Pageable pageable) {
         ModelAndView usersView = new ModelAndView("admin/users");
