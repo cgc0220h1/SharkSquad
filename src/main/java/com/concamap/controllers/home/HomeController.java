@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -50,19 +49,14 @@ public class HomeController {
 
     private final PostComponent postComponent;
 
-    @Autowired
-    private UserDetailServiceImp userDetailServiceImp;
-
-    @ModelAttribute("user")
-    public Users users(){
-        return userDetailServiceImp.getCurrentUser();
-    }
+    private final UserDetailServiceImp userDetailServiceImp;
 
     @Autowired
-    public HomeController(PostService postService, CategoryService categoryService, PostComponent postComponent) {
+    public HomeController(PostService postService, CategoryService categoryService, PostComponent postComponent, UserDetailServiceImp userDetailServiceImp) {
         this.postService = postService;
         this.categoryService = categoryService;
         this.postComponent = postComponent;
+        this.userDetailServiceImp = userDetailServiceImp;
     }
 
     @ModelAttribute("categoryList")
