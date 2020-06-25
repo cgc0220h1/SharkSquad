@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col-md-12 breadcrumbs text-center">
                     <h2 th:text="#{create.h2.new_post}"></h2>
-                    <p><a th:href="@{/}" th:text="#{view.li.a.home}"></a> / <span th:text="#{create.h2.new_post}"></span> </p>
+                    <p><a th:href="@{/}" th:text="#{view.a.index}"></a></p>
                 </div>
             </div>
         </div>
@@ -23,8 +23,17 @@
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-12">
-                            <form th:object="${post}" method="post" enctype="multipart/form-data">
-                                <input type="hidden" name="users" th:value="${post.users.username}">
+                            <form th:action="@{/users/posts/{anchor-name}/delete}" th:object="${post}" method="post" enctype="multipart/form-data">
+
+<!--                                <input type="hidden" name="users" th:value="${post.users.username}">-->
+<!--                                <input type="hidden" name="createdDate" th:value="${post.createdDate}">-->
+<!--                                <input type="hidden" name="likes" th:value="${post.likes}">-->
+                                <input type="hidden" name="anchorName" th:value="${anchorName}">
+<!--                                <div class="blog-img blog-detail">-->
+<!--                                    <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}"-->
+<!--                                         class="img-responsive" alt="html5 bootstrap template" src="">-->
+<!--                                </div>-->
+
                                 <div class="row form-group">
                                     <div class="col-md-12">
                                         <label for="title" th:text="#{create.h2.title}"></label>
@@ -37,10 +46,10 @@
                                     <div class="col-md-6">
                                         <label for="categories" th:text="#{create_blog.label.categories}"></label>
                                         <select th:field="*{category}" id="categories" class="form-control">
-                                                <option value="">---</option>
-                                                <th:block th:each="c : ${categoryList}">
-                                                    <option  th:value="${c.anchorName}" th:text="${c.title}"></option>
-                                                </th:block>
+                                            <option value="">---</option>
+                                            <th:block th:each="c : ${categoryList}">
+                                                <option  th:value="${c.anchorName}" th:text="${c.title}"></option>
+                                            </th:block>
                                         </select>
                                     </div>
                                 </div>

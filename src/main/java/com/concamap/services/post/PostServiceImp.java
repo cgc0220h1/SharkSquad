@@ -2,6 +2,7 @@ package com.concamap.services.post;
 
 import com.concamap.model.Category;
 import com.concamap.model.Post;
+import com.concamap.model.Users;
 import com.concamap.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,6 +59,11 @@ public class PostServiceImp implements PostService {
         Pageable pageable = PageRequest.of(START_INDEX, quantity);
         Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
         return postRepository.findAllByStatusAndCreatedDateBefore(statusExist, currentTime, pageable);
+    }
+
+    @Override
+    public Page<Post> findAllByUsers_Username(String username, Pageable pageable) {
+        return postRepository.findByStatusAndUsers_Username(statusExist, username, pageable);
     }
 
     @Override
@@ -170,5 +176,10 @@ public class PostServiceImp implements PostService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int count() {
+        return (int) postRepository.count();
     }
 }

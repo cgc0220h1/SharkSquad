@@ -2,6 +2,7 @@ package com.concamap.services.post;
 
 import com.concamap.model.Category;
 import com.concamap.model.Post;
+import com.concamap.model.Users;
 import com.concamap.services.GenericService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,8 @@ public interface PostService extends GenericService<Post> {
     List<Post> findExistRandom(int quantity);
 
     Page<Post> findExistRecent(int quantity);
+
+    Page<Post> findAllByUsers_Username(String username, Pageable pageable);
 
     Page<Post> findExistByCategory(Category category, Pageable pageable);
 
@@ -27,4 +30,7 @@ public interface PostService extends GenericService<Post> {
     Page<Post> findExistByTitleOrContent(String query, Pageable pageable);
 
     Post findExistByAnchorName(String anchorName);
+
+    int count();
+
 }

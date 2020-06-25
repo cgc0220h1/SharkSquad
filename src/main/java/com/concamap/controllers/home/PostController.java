@@ -6,7 +6,6 @@ import com.concamap.model.Post;
 import com.concamap.services.comment.CommentService;
 import com.concamap.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -47,10 +46,4 @@ public class PostController {
         modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }
-
-//    @GetMapping("/user/{id}/create")
-//    public ModelAndView showCreatePost (@PathVariable("id") )
-//
-//    @PostMapping("/user/{id}/create")
-//    public ModelAndView create
 }
