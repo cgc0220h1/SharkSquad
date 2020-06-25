@@ -126,7 +126,7 @@ public class UserController {
 
     @GetMapping("users/{username}/posts")
     public ModelAndView showPostByUser(@PathVariable("username") String username, Pageable pageable){
-        ModelAndView modelAndView = new ModelAndView("user/posts");
+        ModelAndView modelAndView = new ModelAndView("post/filter-user");
         Page<Post> postPage = postService.findAllByUsers_Username(username, pageable);
         for (Post post : postPage) {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
