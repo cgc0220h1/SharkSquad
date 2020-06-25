@@ -20,7 +20,7 @@ GET http://localhost:8888/api/posts?title=suy+nghĩ&content=mình
 GET http://localhost:8888/api/posts?query=mình
 
 ###Lấy comment
-GET http://localhost:8888/api/comments/minh-co-mot-nguoi-ban-dac-biet-1?page=2
+GET http://localhost:8888/api/comments/minh-co-mot-nguoi-ban-dac-biet-1?page=6
 
 ### Thêm comment
 POST http://localhost:8888/api/comments/minh-co-mot-nguoi-ban-dac-biet-1

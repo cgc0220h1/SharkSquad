@@ -11,8 +11,7 @@
         <div class="flexslider">
             <ul class="slides">
                 <th:block th:each="post : ${randomPostList}">
-                    <li th:style="'background-image: url('
-                    +${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}
+                    <li th:style="'background-image: url('+${post.attachments.iterator().next().imageLink}
                     +'); width: 100%; float: left; margin-right: -100%; position: relative; opacity: 0; display: block; z-index: 1;'"
                         class="" data-thumb-alt="">
                         <div class="overlay"></div>
@@ -29,7 +28,9 @@
                                                 <span class="date" th:text="${post.createdDate}"></span>
                                                 <br>
                                                 <span class="pos" th:text="#{view.span.by}"></span>
-                                                <a style="color: black; font-weight: bold" th:href="@{/users/__${post.users.username}__}" th:text="${post.users.username}"></a>
+                                                <a style="color: black; font-weight: bold"
+                                                   th:href="@{/users/__${post.users.username}__}"
+                                                   th:text="${post.users.username}"></a>
                                             </p>
                                             <h1>
                                                 <a th:href="@{/posts/__${post.anchorName}__}"
@@ -49,8 +50,8 @@
         <div class="container">
             <div class="row row-pb-md">
                 <th:block th:each="post : ${postPage}">
-                    <div class="col-md-4" >
-                        <div class="blog-entry" style="height: 577px" >
+                    <div class="col-md-4">
+                        <div class="blog-entry" style="height: 577px">
                             <div class="blog-img">
                                 <a th:href="@{/posts/__${post.anchorName}__}">
                                     <img class="img-responsive"
@@ -67,7 +68,9 @@
                                     <span class="date" th:text="${post.createdDate}"></span>
                                     <br>
                                     <span class="pos" th:text="#{view.span.by}"></span>
-                                    <a style="color: black; font-weight: bold" th:href="@{/users/__${post.users.username}__}" th:text="${post.users.username}"></a>
+                                    <a style="color: black; font-weight: bold"
+                                       th:href="@{/users/__${post.users.username}__}"
+                                       th:text="${post.users.username}"></a>
                                 </p>
                                 <h2>
                                     <a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
@@ -81,7 +84,8 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <ul class="pagination">
-                        <li><a th:href="@{/(page=${postPage.number})}" th:if="${postPage.hasPrevious()}">&laquo;</a></li>
+                        <li><a th:href="@{/(page=${postPage.number})}" th:if="${postPage.hasPrevious()}">&laquo;</a>
+                        </li>
                         <th:block th:each="i : ${#numbers.sequence(1, __${postPage.size}__,1)}">
                             <li><a th:href="@{/(page=${i})}" th:text="${i}"></a></li>
                         </th:block>

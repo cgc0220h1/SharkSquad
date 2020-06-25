@@ -3,6 +3,7 @@ package com.concamap.controllers.home;
 import com.concamap.component.post.PostComponent;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
+import com.concamap.security.UserDetailServiceImp;
 import com.concamap.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,10 +31,13 @@ public class CategoryController {
 
     private final PostComponent postComponent;
 
+    private final UserDetailServiceImp userDetailServiceImp;
+
     @Autowired
-    public CategoryController(PostService postService, PostComponent postComponent) {
+    public CategoryController(PostService postService, PostComponent postComponent, UserDetailServiceImp userDetailServiceImp) {
         this.postService = postService;
         this.postComponent = postComponent;
+        this.userDetailServiceImp = userDetailServiceImp;
     }
 
     @GetMapping("/{anchor-name}/posts")
@@ -55,6 +59,7 @@ public class CategoryController {
         modelAndView.addObject("randomPostList", randomPosts);
         modelAndView.addObject("categoryList", categoryList);
         modelAndView.addObject("linkPage", "/categories/" + anchorName + "/posts");
+        modelAndView.addObject("user", userDetailServiceImp.getCurrentUser());
         return modelAndView;
     }
 }

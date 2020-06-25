@@ -31,7 +31,7 @@ public class Post {
     @Basic
     @Column(name = "status", nullable = false)
     @JsonIgnore
-    private int status;
+    private int status = 1;
 
     @Basic
     @Column(name = "likes", nullable = false)

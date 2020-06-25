@@ -8,9 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -38,11 +35,11 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Integer
 
     Page<Post> findAllByStatusAndTitleContainsAndContentContains(int status, String title, String content, Pageable pageable);
 
+    Page<Post> findAllByStatusAndUsers(int status, Users users, Pageable pageable);
+
     Optional<Post> findByStatusAndId(int status, int id);
 
     Optional<Post> findByStatusAndAnchorName(int status, String anchorName);
 
     Optional<Post> findByStatusAndAnchorNameAndUsers(int status, String anchorName, Users users);
-
-    Page<Post> findByStatusAndUsers_Username(int statusExist, String username, Pageable pageable);
 }

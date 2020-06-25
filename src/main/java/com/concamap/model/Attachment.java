@@ -22,7 +22,7 @@ public class Attachment {
     @Basic
     @Column(name = "status", nullable = false)
     @JsonIgnore
-    private int status;
+    private int status = 1;
 
     @Basic
     @Column(name = "created_date", nullable = false)
