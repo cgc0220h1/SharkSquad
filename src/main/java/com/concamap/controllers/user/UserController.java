@@ -128,29 +128,32 @@ public class UserController {
         Set<Attachment> attachments = new HashSet<>();
         Attachment attachment = new Attachment();
         String username = post.getUsers().getUsername();
+        long now = System.currentTimeMillis();
 
         MultipartFile multipartFile = post.getMultipartFile();
-        String fileName = System.currentTimeMillis() + "-" + multipartFile.getOriginalFilename();
+        String fileName = now + "-" + multipartFile.getOriginalFilename();
         String folderUploadPath = env.getProperty("upload.path");
         assert folderUploadPath != null;
         File folderUpload = new File(folderUploadPath, username);
         if (!folderUpload.exists()) {
-            if (folderUpload.mkdirs()) {
-                File file = new File(folderUpload, fileName);
-                FileCopyUtils.copy(multipartFile.getBytes(), file);
-                attachment.setImageLink("/" + username + "/" + fileName);
-                attachment.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-                attachment.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-                attachment.setStatus(1);
-                attachment.setPost(post);
+            if (!folderUpload.mkdirs()) {
+                throw new IOException();
             }
         }
+
+        File file = new File(folderUpload, fileName);
+        FileCopyUtils.copy(multipartFile.getBytes(), file);
+        attachment.setImageLink("/" + username + "/" + fileName);
+        attachment.setCreatedDate(new Timestamp(now));
+        attachment.setUpdatedDate(new Timestamp(now));
+        attachment.setStatus(1);
+        attachment.setPost(post);
 
         attachments.add(attachment);
         post.setAttachments(attachments);
         post.setStatus(1);
-        post.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        post.setCreatedDate(new Timestamp(now));
+        post.setUpdatedDate(new Timestamp(now));
         post.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
         post.setLikes(0);
         postService.save(post);
