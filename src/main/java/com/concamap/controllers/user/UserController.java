@@ -4,11 +4,15 @@ import com.concamap.model.Attachment;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
 import com.concamap.model.Users;
-//import com.concamap.services.user.EmailService;
+import com.concamap.security.UserDetailServiceImp;
+import com.concamap.services.user.EmailService;
 import com.concamap.services.post.PostService;
 import com.concamap.services.user.UserService;
+import com.nulabinc.zxcvbn.Strength;
+import com.nulabinc.zxcvbn.Zxcvbn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
@@ -16,40 +20,41 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.text.Normalizer;
-import java.util.HashSet;
+import java.util.*;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 @Controller
 public class UserController {
     private final UserService userService;
-//    private EmailService emailService;
+    private EmailService emailService;
 
-/*    @Autowired
-    public UserController(UserService userService, EmailService emailService) {
+    private final UserDetailServiceImp userDetailServiceImp;
+
+    @ModelAttribute("user")
+    public Users user() {
+        return userDetailServiceImp.getCurrentUser();
+    }
+
+    @Autowired
+    public UserController(UserService userService, EmailService emailService, UserDetailServiceImp userDetailServiceImp, PostService postService) {
         this.userService = userService;
         this.emailService = emailService;
-    }*/
+        this.userDetailServiceImp = userDetailServiceImp;
+        this.postService = postService;
+    }
 
     private final PostService postService;
 
     @Autowired
     Environment env;
-
-    @Autowired
-    public UserController(UserService userService, PostService postService) {
-        this.userService = userService;
-        this.postService = postService;
-    }
 
     private String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
@@ -89,7 +94,6 @@ public class UserController {
         return modelAndView;
     }
 
-/*
     @PostMapping("/signup")
     public ModelAndView signup(ModelAndView modelAndView, @Validated @ModelAttribute("users") Users users, BindingResult bindingResult, HttpServletRequest request) {
 
@@ -133,29 +137,8 @@ public class UserController {
 
         return modelAndView;
     }
-*/
 
-    @PostMapping("/signup")
-    public ModelAndView signup(ModelAndView modelAndView, @Validated @ModelAttribute("users") Users users, BindingResult bindingResult, HttpServletRequest request) {
-
-        if (bindingResult.hasFieldErrors()) {
-            modelAndView.setViewName("user/signup");
-        } else {
-            users.setStatus(1);
-
-            users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-            users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
-            users.setRoles(userService.findExistRolesById(2));
-
-            userService.save(users);
-
-            modelAndView.setViewName("user/signup");
-        }
-        return modelAndView;
-    }
-
-
-/*    @GetMapping("/confirm")
+    @GetMapping("/confirm")
     public ModelAndView confirmRegistration(ModelAndView modelAndView, @RequestParam("token") String token) {
 
         Users user = userService.findByConfirmationToken(token);
@@ -168,9 +151,8 @@ public class UserController {
 
         modelAndView.setViewName("user/confirm");
         return modelAndView;
-    }*/
+    }
 
-/*
     @PostMapping("/confirm")
     public ModelAndView confirmRegistration(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map<String, String> requestParams, RedirectAttributes redir) {
 
@@ -202,7 +184,6 @@ public class UserController {
         modelAndView.addObject("successMessage", "Your password has been set!");
         return modelAndView;
     }
-*/
 
     @GetMapping("/users/{username}")
     public ModelAndView showUser(@PathVariable("username") Users user,

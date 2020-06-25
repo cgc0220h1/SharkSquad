@@ -19,10 +19,11 @@ import java.util.Properties;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        super.configure(web);
-//    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        super.configure(web);
+    }
 
     private final UserDetailsService userDetailsService;
 
@@ -80,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 
-/*    @Bean
+    @Bean
     public JavaMailSender javaMailSender(){
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
@@ -96,5 +97,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         props.put("mail.debug", "true");
 
         return mailSender;
-    }*/
+    }
 }

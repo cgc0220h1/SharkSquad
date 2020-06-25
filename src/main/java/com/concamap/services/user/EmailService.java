@@ -1,4 +1,3 @@
-/*
 package com.concamap.services.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,4 +25,3 @@ public class EmailService {
     }
 
 }
-*/
