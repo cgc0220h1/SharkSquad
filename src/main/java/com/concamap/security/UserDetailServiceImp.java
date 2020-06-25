@@ -1,4 +1,4 @@
-package com.concamap.config.security;
+package com.concamap.security;
 
 import com.concamap.model.Users;
 import com.concamap.services.user.UserService;

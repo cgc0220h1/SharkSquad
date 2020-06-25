@@ -5,6 +5,7 @@ import lombok.*;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -53,6 +54,7 @@ public class Users {
 
     @NotNull(message = "Email cannot be empty")
     @Size(min = 8, max = 50)
+    @Email(message = "Please provide a valid email")
     @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
     @Basic
     @Column(name = "email", nullable = false, length = 225)
@@ -68,7 +70,6 @@ public class Users {
     private String username;
 
     @NotNull(message = "password cannot be empty")
-    @Size(min = 8, max = 30)
     @Basic
     @Column(name = "password", nullable = false, length = 100)
     @JsonIgnore
@@ -95,6 +96,10 @@ public class Users {
     @Column(name = "status", nullable = false)
     @JsonIgnore
     private int status;
+
+    @Basic
+    @Column(name = "confirmation_token")
+    private String confirmationToken;
 
     @ManyToOne
     @JoinColumn(name = "roles_id", referencedColumnName = "id", nullable = false)
