@@ -62,7 +62,7 @@ public class AdminController {
     }
 
     @GetMapping("/categories/{anchor-name}/edit")
-    public ModelAndView showEditForm(@PathVariable("anchor-name") String anchorName) {
+    public ModelAndView showEditCateForm(@PathVariable("anchor-name") String anchorName) {
         Category category = categoryService.findByAnchorName(anchorName);
         ModelAndView modelAndView = new ModelAndView("admin/categoriesEdit");
         modelAndView.addObject("category", category);
@@ -76,6 +76,24 @@ public class AdminController {
         categoryFound.setUpdatedDate(new Timestamp(now));
         categoryFound.setAnchorName(removeAccent(category.getDescription()));
         categoryService.save(categoryFound);
+        return new RedirectView("/categories");
+    }
+
+    @GetMapping("/categories/create")
+    public ModelAndView showCreateCateForm() {
+        Category category = new Category();
+        ModelAndView modelAndView = new ModelAndView("admin/categoriesCreate");
+        modelAndView.addObject("category", category);
+        return modelAndView;
+    }
+
+    @PostMapping("/categories/create")
+    public RedirectView createCategory(@ModelAttribute("category") Category category) {
+        long now = System.currentTimeMillis();
+        category.setUpdatedDate(new Timestamp(now));
+        category.setCreatedDate(new Timestamp(now));
+        category.setAnchorName(removeAccent(category.getDescription()));
+        categoryService.save(category);
         return new RedirectView("/categories");
     }
 
