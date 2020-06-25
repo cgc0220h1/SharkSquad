@@ -66,7 +66,7 @@ public class UserController {
     private final FileComponent fileComponent;
 
     @Autowired
-    public UserController(UserService userService, PostService postService, PostComponent postComponent, FileComponent fileComponent, EmailService emailService, UserDetailServiceImp userDetailServiceImp) {
+    public UserController(UserService userService, PostService postService, PostComponent postComponent, FileComponent fileComponent, EmailService emailService, UserDetailServiceImp userDetailServiceImp, CommentService commentService) {
         this.userService = userService;
         this.postService = postService;
         this.postComponent = postComponent;

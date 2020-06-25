@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().antMatchers("/users/{username}/profile",
                                                         "users/{username}/posts",
+                                                        "/users/{username}/posts/{anchor-name}",
                                                         "/users/{username}/posts/create",
                                                         "/users/posts/create",
                                                         "/users/{username}/posts/{anchor-name}/edit",

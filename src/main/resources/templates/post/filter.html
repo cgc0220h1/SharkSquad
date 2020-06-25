@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:replace="layout :: head">
     <title>Shark Squad</title>
 </head>
@@ -41,8 +41,11 @@
                                             <span class="pos" th:text="#{view.span.by}"></span>
                                             <a style="color: black; font-weight: bold" th:href="@{/users/__${post.users.username}__}" th:text="${post.users.username}"></a>
                                         </p>
-                                        <h2>
+                                        <h2 sec:authorize="isAnonymous()">
                                             <a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
+                                        </h2>
+                                        <h2 sec:authorize="isAuthenticated()">
+                                            <a th:href="@{/users/__${post.users.username}__/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
                                         </h2>
                                         <p th:text="${post.content}"></p>
                                     </div>
@@ -62,7 +65,12 @@
                                         <img class="img-responsive" alt="html5 bootstrap template" th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
                                     </a>
                                     <div class="desc">
-                                        <h3><a th:href="@{/posts/__${post.anchorName}__}" th:text="*{post.title}"></a></h3>
+                                        <h3 sec:authorize="isAnonymous()">
+                                            <a th:href="@{/posts/__${post.anchorName}__}" th:text="*{post.title}"></a>
+                                        </h3>
+                                        <h3 sec:authorize="isAuthenticated()">
+                                            <a th:href="@{/users/__${post.users.username}__/posts/__${post.anchorName}__}" th:text="*{post.title}"></a>
+                                        </h3>
                                         <p class="admin"><span th:text="*{post.createdDate}"></span></p>
                                     </div>
                                 </div>
