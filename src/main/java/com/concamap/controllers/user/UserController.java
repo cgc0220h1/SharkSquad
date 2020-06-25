@@ -155,7 +155,7 @@ public class UserController {
         post.setLikes(0);
         postService.save(post);
 
-        return new RedirectView("/");
+        return new RedirectView("/posts/" + post.getAnchorName());
     }
 
     @GetMapping("/users/{username}/posts/{anchor-name}/edit")
