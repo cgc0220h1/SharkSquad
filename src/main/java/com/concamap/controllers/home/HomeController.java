@@ -3,6 +3,7 @@ package com.concamap.controllers.home;
 import com.concamap.component.post.PostComponent;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
+import com.concamap.model.Users;
 import com.concamap.services.category.CategoryService;
 import com.concamap.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -46,6 +48,8 @@ public class HomeController {
     private final CategoryService categoryService;
 
     private final PostComponent postComponent;
+    @ModelAttribute
+    private Users
 
     @Autowired
     public HomeController(PostService postService, CategoryService categoryService, PostComponent postComponent) {

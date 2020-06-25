@@ -3,35 +3,35 @@ package com.concamap.controllers.user;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
 import com.concamap.model.Users;
-import com.concamap.services.user.EmailService;
+//import com.concamap.services.user.EmailService;
 import com.concamap.services.user.UserService;
-import com.nulabinc.zxcvbn.Strength;
-import com.nulabinc.zxcvbn.Zxcvbn;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @Controller
 public class UserController {
     private final UserService userService;
-    private EmailService emailService;
+//    private EmailService emailService;
 
-    @Autowired
+/*    @Autowired
     public UserController(UserService userService, EmailService emailService) {
         this.userService = userService;
         this.emailService = emailService;
+    }*/
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/login")
@@ -49,6 +49,16 @@ public class UserController {
         return new RedirectView("/");
     }
 
+    @GetMapping("/logout")
+    public RedirectView logout() {
+        return new RedirectView("/");
+    }
+
+    @GetMapping("/403")
+    public String findNotFound() {
+        return "error/error403";
+    }
+
     @GetMapping("/signup")
     public ModelAndView showSignUp(Users users) {
         ModelAndView modelAndView = new ModelAndView("user/signup");
@@ -56,6 +66,7 @@ public class UserController {
         return modelAndView;
     }
 
+/*
     @PostMapping("/signup")
     public ModelAndView signup(ModelAndView modelAndView, @Validated @ModelAttribute("users") Users users, BindingResult bindingResult, HttpServletRequest request) {
 
@@ -99,8 +110,29 @@ public class UserController {
 
         return modelAndView;
     }
+*/
 
-    @GetMapping("/confirm")
+    @PostMapping("/signup")
+    public ModelAndView signup(ModelAndView modelAndView, @Validated @ModelAttribute("users") Users users, BindingResult bindingResult, HttpServletRequest request) {
+
+        if (bindingResult.hasFieldErrors()) {
+            modelAndView.setViewName("user/signup");
+        } else {
+            users.setStatus(1);
+
+            users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+            users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+            users.setRoles(userService.findExistRolesById(2));
+
+            userService.save(users);
+
+            modelAndView.setViewName("user/signup");
+        }
+        return modelAndView;
+    }
+
+
+/*    @GetMapping("/confirm")
     public ModelAndView confirmRegistration(ModelAndView modelAndView, @RequestParam("token") String token) {
 
         Users user = userService.findByConfirmationToken(token);
@@ -113,8 +145,9 @@ public class UserController {
 
         modelAndView.setViewName("user/confirm");
         return modelAndView;
-    }
+    }*/
 
+/*
     @PostMapping("/confirm")
     public ModelAndView confirmRegistration(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map<String, String> requestParams, RedirectAttributes redir) {
 
@@ -146,6 +179,7 @@ public class UserController {
         modelAndView.addObject("successMessage", "Your password has been set!");
         return modelAndView;
     }
+*/
 
     @GetMapping("/users/{username}")
     public ModelAndView showUser(@PathVariable("username") Users user,

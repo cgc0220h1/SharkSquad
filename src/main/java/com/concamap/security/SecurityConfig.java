@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import java.util.Properties;
 
@@ -21,6 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    public void configure(WebSecurity web) throws Exception {
 //        super.configure(web);
 //    }
+
+    @Autowired
+    private LogoutSuccessHandler logoutSuccessHandler;
 
     private final UserDetailsService userDetailsService;
 
@@ -33,10 +37,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/", "/login").permitAll();
+        //authorize requests
+        http.authorizeRequests().antMatchers("/",
+                                                        "/login",
+                                                        "signup",
+                                                        "users/{username}",
+                                                        "/categories/{anchor-name}/posts",
+                                                        "/date/{year}",
+                                                        "/date/{year}/{month}",
+                                                        "/search","/posts/{anchor-name}").permitAll();
+
         http.authorizeRequests().antMatchers("/users/{username}/profile").access(CHECKED_USER_NAME);
-        http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
-        http.formLogin().loginPage("/login").usernameParameter("username").passwordParameter("password");
+//        http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
+        http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
+
+        //login
+        http.formLogin().
+                loginPage("/login").
+                usernameParameter("username").
+                passwordParameter("password").
+                and().
+                exceptionHandling().
+                accessDeniedPage("/403");
+
+        //logout
+        http.logout().
+                logoutUrl("/logout").
+                logoutSuccessHandler(logoutSuccessHandler);
+
         http.csrf().disable();
     }
 
@@ -45,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 
-    @Bean
+/*    @Bean
     public JavaMailSender javaMailSender(){
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
@@ -61,5 +89,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         props.put("mail.debug", "true");
 
         return mailSender;
-    }
+    }*/
 }
