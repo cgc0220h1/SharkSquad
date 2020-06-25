@@ -1,5 +1,6 @@
 package com.concamap.controllers.user;
 
+import com.concamap.component.file.FileComponent;
 import com.concamap.component.post.PostComponent;
 import com.concamap.model.Attachment;
 import com.concamap.model.Category;
@@ -9,11 +10,10 @@ import com.concamap.services.post.PostService;
 import com.concamap.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +24,12 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.io.File;
-import java.text.Normalizer;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 @Controller
+@PropertySource({"classpath:config/homepage.properties", "classpath:config/post.properties"})
 public class UserController {
     @Value("${homepage.post.summary.extend}")
     private String extendString;
@@ -39,26 +37,24 @@ public class UserController {
     @Value("${homepage.post.summary.words}")
     private int summaryWords;
 
+    @Value("${cover.image.default-source}")
+    private String imageLink;
+
     private final PostComponent postComponent;
 
     private final UserService userService;
 
     private final PostService postService;
 
-    private final Environment env;
+
+    private final FileComponent fileComponent;
 
     @Autowired
-    public UserController(UserService userService, PostService postService, Environment env, PostComponent postComponent) {
+    public UserController(UserService userService, PostService postService, PostComponent postComponent, FileComponent fileComponent) {
         this.userService = userService;
         this.postService = postService;
-        this.env = env;
         this.postComponent = postComponent;
-    }
-
-    private String removeAccent(String s) {
-        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
-        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(temp).replaceAll("").replace('đ', 'd').replace('Đ', 'D').replace(' ', '-');
+        this.fileComponent = fileComponent;
     }
 
     @GetMapping("/login")
@@ -126,21 +122,21 @@ public class UserController {
     }
 
     @GetMapping("users/{username}/posts")
-    public ModelAndView showPostByUser(@PathVariable("username") String username, Pageable pageable,
+    public ModelAndView showPostByUser(@PathVariable("username") Users users, Pageable pageable,
                                        @SessionAttribute("recentPostList") List<Post> recentPosts,
                                        @SessionAttribute("randomPostList") List<Post> randomPosts,
                                        @SessionAttribute("categoryList") List<Category> categoryList) {
         ModelAndView modelAndView = new ModelAndView("post/filter");
-        Page<Post> postPage = postService.findAllByUsers_Username(username, pageable);
+        Page<Post> postPage = postService.findAllByUsers(users, pageable);
         for (Post post : postPage) {
             post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
         }
-        modelAndView.addObject("category", categoryList);
+        modelAndView.addObject("categoryList", categoryList);
         modelAndView.addObject("postPage", postPage);
-        modelAndView.addObject("user_name", username);
+        modelAndView.addObject("message", users.getUsername());
         modelAndView.addObject("recentPostList", recentPosts);
         modelAndView.addObject("randomPostList", randomPosts);
-        modelAndView.addObject("linkPage", "/users/" + username + "/posts");
+        modelAndView.addObject("linkPage", "/users/" + users.getUsername() + "/posts");
         return modelAndView;
     }
 
@@ -159,102 +155,69 @@ public class UserController {
     public RedirectView savePost(@ModelAttribute("post") Post post) throws IOException {
         Set<Attachment> attachments = new HashSet<>();
         Attachment attachment = new Attachment();
-        String username = post.getUsers().getUsername();
+        Users users = post.getUsers();
         long now = System.currentTimeMillis();
 
         MultipartFile multipartFile = post.getMultipartFile();
-        String fileName = now + "-" + multipartFile.getOriginalFilename();
-        String folderUploadPath = env.getProperty("upload.path");
-        assert folderUploadPath != null;
-        File folderUpload = new File(folderUploadPath, username);
-        System.out.println(folderUpload.getAbsolutePath());
-        if (!folderUpload.exists()) {
-            if (!folderUpload.mkdirs()) {
-                throw new IOException();
-            }
+        if (!multipartFile.isEmpty()) {
+            File uploadedFile = fileComponent.copyFile(multipartFile, users);
+            imageLink = fileComponent.getImageLink(uploadedFile);
         }
-
-        File file = new File(folderUpload, fileName);
-        FileCopyUtils.copy(multipartFile.getBytes(), file);
-        attachment.setImageLink("/" + username + "/" + fileName);
+        attachment.setImageLink(imageLink);
         attachment.setCreatedDate(new Timestamp(now));
         attachment.setUpdatedDate(new Timestamp(now));
-        attachment.setStatus(1);
         attachment.setPost(post);
-
         attachments.add(attachment);
+
         post.setAttachments(attachments);
-        post.setStatus(1);
         post.setCreatedDate(new Timestamp(now));
         post.setUpdatedDate(new Timestamp(now));
-        post.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
-        post.setLikes(0);
+        post.setAnchorName(postComponent.toAnchorName(post.getTitle()));
         postService.save(post);
 
         return new RedirectView("/posts/" + post.getAnchorName());
     }
 
     @GetMapping("/users/{username}/posts/{anchor-name}/edit")
-    public ModelAndView showEditForm(@PathVariable("username") String username, @PathVariable("anchor-name") String anchorName, @SessionAttribute("categoryList") List<Category> categoryList) {
-        Post post = postService.findExistByAnchorName(anchorName);
+    public ModelAndView showEditForm(@PathVariable("username") Users users, @PathVariable("anchor-name") String anchorName, @SessionAttribute("categoryList") List<Category> categoryList) {
+        Post post = postService.findExistByAnchorNameAndUser(anchorName, users);
         ModelAndView modelAndView = new ModelAndView("post/edit");
         modelAndView.addObject("post", post);
         modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }
 
-    @PostMapping("/users/posts/edit")
-    public RedirectView updatePost(@ModelAttribute("post") Post post, @SessionAttribute("categoryList") List<Category> categoryList) {
+    @PostMapping("/users/**/posts/**/edit")
+    public RedirectView updatePost(@ModelAttribute("post") Post post, @SessionAttribute("categoryList") List<Category> categoryList) throws IOException {
         int postId = post.getId();
         Post postFound = postService.findExistById(postId);
         Set<Attachment> attachments = postFound.getAttachments();
         Attachment attachment = attachments.iterator().next();
-        String username = postFound.getUsers().getUsername();
+        Users users = postFound.getUsers();
         long now = System.currentTimeMillis();
 
-        try {
-            MultipartFile multipartFile = post.getMultipartFile();
-            if (Objects.equals(multipartFile.getOriginalFilename(), "")) {
-                postFound.setTitle(post.getTitle());
-                postFound.setContent(post.getContent());
-                postFound.setUpdatedDate(new Timestamp(now));
-                postFound.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
-                postService.save(postFound);
-            } else {
-
-                String fileName = now + "-" + multipartFile.getOriginalFilename();
-                String folderUploadPath = env.getProperty("upload.path");
-                assert folderUploadPath != null;
-                File folderUpload = new File(folderUploadPath, username);
-                if (!folderUpload.exists()) {
-                    if (!folderUpload.mkdirs()) {
-                        throw new IOException();
-                    }
-                }
-
-                File file = new File(folderUpload, fileName);
-                FileCopyUtils.copy(multipartFile.getBytes(), file);
-                attachment.setImageLink("/" + username + "/" + fileName);
-                attachment.setUpdatedDate(new Timestamp(now));
-                attachment.setStatus(1);
-
-                postFound.setContent(post.getContent());
-                postFound.setUpdatedDate(new Timestamp(now));
-                postFound.setAnchorName(removeAccent(post.getTitle() + " " + (postService.count() + 1)));
-                postService.save(postFound);
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        MultipartFile multipartFile = post.getMultipartFile();
+        if (!multipartFile.isEmpty()) {
+            File uploadedFile = fileComponent.copyFile(multipartFile, users);
+            imageLink = fileComponent.getImageLink(uploadedFile);
+            attachment.setImageLink(imageLink);
+            attachment.setUpdatedDate(new Timestamp(now));
         }
+
+        postFound.setTitle(post.getTitle());
+        postFound.setContent(post.getContent());
+        postFound.setUpdatedDate(new Timestamp(now));
+        postFound.setAnchorName(postComponent.toAnchorName(post.getTitle()));
+        postService.save(postFound);
+
         return new RedirectView("/posts/" + postFound.getAnchorName());
     }
 
-    @GetMapping("/users/posts/{anchor-name}/delete")
-    public RedirectView deletePost(@ModelAttribute("post") Post post, @PathVariable("anchor-name") String anchorName) {
-        Post post1 = postService.findExistByAnchorName(anchorName);
-        post1.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-        postService.delete(post1.getId());
-        return new RedirectView("/users/" + post1.getUsers().getUsername() + "/posts");
+    @GetMapping("/users/{username}/posts/{anchor-name}/delete")
+    public RedirectView deletePost(@PathVariable("username") Users users, @PathVariable("anchor-name") String anchorName) {
+        Post postFound = postService.findExistByAnchorNameAndUser(anchorName, users);
+        postFound.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        postService.delete(postFound.getId());
+        return new RedirectView("/users/" + postFound.getUsers().getUsername() + "/posts");
     }
 }

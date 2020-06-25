@@ -62,8 +62,8 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public Page<Post> findAllByUsers_Username(String username, Pageable pageable) {
-        return postRepository.findByStatusAndUsers_Username(statusExist, username, pageable);
+    public Page<Post> findAllByUsers(Users users, Pageable pageable) {
+        return postRepository.findAllByStatusAndUsers(statusExist, users, pageable);
     }
 
     @Override
@@ -181,5 +181,10 @@ public class PostServiceImp implements PostService {
     @Override
     public int count() {
         return (int) postRepository.count();
+    }
+
+    @Override
+    public Post findExistByAnchorNameAndUser(String anchorName, Users users) {
+        return postRepository.findByStatusAndAnchorNameAndUsers(statusExist, anchorName, users).orElse(null);
     }
 }

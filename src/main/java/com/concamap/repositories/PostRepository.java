@@ -38,11 +38,11 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Integer
 
     Page<Post> findAllByStatusAndTitleContainsAndContentContains(int status, String title, String content, Pageable pageable);
 
+    Page<Post> findAllByStatusAndUsers(int status, Users users, Pageable pageable);
+
     Optional<Post> findByStatusAndId(int status, int id);
 
     Optional<Post> findByStatusAndAnchorName(int status, String anchorName);
 
     Optional<Post> findByStatusAndAnchorNameAndUsers(int status, String anchorName, Users users);
-
-    Page<Post> findByStatusAndUsers_Username(int statusExist, String username, Pageable pageable);
 }

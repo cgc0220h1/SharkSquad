@@ -4,4 +4,6 @@ public interface PostComponent {
     String summary(String content, int numberOfWords, String extendString);
 
     String toPlainText(String html);
+
+    String toAnchorName(String title);
 }
