@@ -67,7 +67,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" sec:authorize="isAuthenticated()">
                         <div class="col-md-12">
                             <h2 class="heading-2" style="margin-bottom: 0" th:text="#{view.h2.Comment}"></h2>
                             <div>
