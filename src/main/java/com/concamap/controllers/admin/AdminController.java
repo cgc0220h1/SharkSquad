@@ -129,9 +129,8 @@ public class AdminController {
         return new RedirectView("/admin/overview");
     }
 
-    @GetMapping("/users/{username}/posts/{anchor-name}")
+    @GetMapping("/posts/{anchor-name}")
     public ModelAndView adminViewPost(@PathVariable("anchor-name") String anchorName,
-                                      @PathVariable("username") String username,
                                       @SessionAttribute("recentPostList") List<Post> recentPosts,
                                       @SessionAttribute("randomPostList") List<Post> randomPosts,
                                       @SessionAttribute("categoryList") List<Category> categoryList){
