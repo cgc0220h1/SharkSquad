@@ -127,7 +127,7 @@
                       <tr>
                         <td><a th:href="@{/admin/users/__${post.users.username}__/posts/__${post.anchorName}__}" th:text="*{post.title}"></a></td>
                         <td><a th:href="@{/admin/category/__${post.category.id}__}" th:text="*{post.category.title}"></a></td>
-                        <td><a th:href="@{/admin/user/__${post.users.id}__}" th:text="*{post.users.username}"></a></td>
+                        <td><a th:href="@{/admin/users/__${post.users.id}__}" th:text="*{post.users.username}"></a></td>
 <!--                        <td><a th:href="@{/admin/edit/post/__${post.id}__}"><i class="now-ui-icons ui-2_settings-90"></i></a></td>-->
                         <td><a th:href="@{/admin/users/posts/__${post.anchorName}__/delete}"><i class="now-ui-icons ui-1_simple-remove" ></i></a></td>
                       </tr>
