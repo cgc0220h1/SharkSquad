@@ -55,6 +55,7 @@
                                 <a th:href="@{/posts/__${post.anchorName}__}">
                                     <img class="img-responsive"
                                          alt="html5 bootstrap template"
+                                         style="width: 470px; height: 350px"
                                          th:src="@{${post.attachments.iterator().hasNext() ?  post.attachments.iterator().next().getImageLink() : '#'}}">
                                 </a>
                             </div>

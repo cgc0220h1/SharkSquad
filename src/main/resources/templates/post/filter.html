@@ -27,7 +27,7 @@
                                 <div class="blog-entry" style="height: 577px">
                                     <div class="blog-img">
                                         <a th:href="@{/posts/__${post.anchorName}__}">
-                                            <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">
+                                            <img style="width: 470px; height: 350px" th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">
                                         </a>
                                     </div>
                                     <div class="desc">
