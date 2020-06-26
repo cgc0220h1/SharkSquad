@@ -57,7 +57,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                                         "/users/{username}/posts/{anchor-name}/edit",
                                                         "/users/{username}/posts/{anchor-name}/delete").
                                                         access(CHECKED_USER_NAME);
-        http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
+        http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')").
+                and().
+                formLogin().
+                loginPage("/login").
+                usernameParameter("username").
+                passwordParameter("password").
+                defaultSuccessUrl("/admin/overview");
 
         //login
         http.formLogin().

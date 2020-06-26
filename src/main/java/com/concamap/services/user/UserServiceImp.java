@@ -20,7 +20,13 @@ import java.util.Optional;
 @PropertySource("classpath:config/status.properties")
 public class UserServiceImp implements UserService {
     @Value("${user.active}")
-    private int activeUserStatus;
+    private int activeUser;
+
+    @Value("${user.nonActive}")
+    private int nonActiveUser;
+
+    @Value("${user.deleted}")
+    private int deletedUser;
 
     private final UserRepository userRepository;
 
@@ -34,7 +40,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Users findActiveUserByUsername(String username) {
-        return userRepository.findByStatusAndUsername(activeUserStatus, username).orElse(null);
+        return userRepository.findByStatusAndUsername(activeUser, username).orElse(null);
     }
 
     @Override
@@ -53,6 +59,12 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public Users findById(int id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+
+    @Override
     public List<Users> findAllExist() {
         return null;
     }
@@ -64,12 +76,12 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Page<Users> findAllExist(Pageable pageable) {
-        return userRepository.findAll(pageable);
+        return userRepository.findAllByStatusIsNot(deletedUser, pageable);
     }
 
     @Override
     public Users findExistById(int id) {
-        return userRepository.findByStatusAndId(activeUserStatus, id).orElse(null);
+        return userRepository.findByStatusAndId(activeUser, id).orElse(null);
     }
 
     @Override

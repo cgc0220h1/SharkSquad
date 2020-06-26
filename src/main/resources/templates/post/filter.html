@@ -26,9 +26,23 @@
                             <div class="col-md-6">
                                 <div class="blog-entry" style="height: 577px">
                                     <div class="blog-img">
-                                        <a th:href="@{/posts/__${post.anchorName}__}">
-                                            <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">
-                                        </a>
+                                        <th:block sec:authorize="isAnonymous()">
+                                            <a th:href="@{/posts/__${post.anchorName}__}">
+                                                <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">
+                                            </a>
+                                        </th:block>
+                                        <th:block sec:authorize="isAuthenticated()">
+                                            <th:block th:if="${post.users.username.compareToIgnoreCase(user.username) > 0}">
+                                                <a th:href="@{/posts/__${post.anchorName}__}" >
+                                                    <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">
+                                                </a>
+                                            </th:block>
+                                            <th:block th:if="${post.users.username.compareToIgnoreCase(user.username) == 0}">
+                                                <a th:href="@{/users/__${user.username}__/posts/__${post.anchorName}__}" >
+                                                    <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}" class="img-responsive" alt="html5 bootstrap template">
+                                                </a>
+                                            </th:block>
+                                        </th:block>
                                     </div>
                                     <div class="desc">
                                         <p class="meta">
@@ -44,8 +58,14 @@
                                         <h2 sec:authorize="isAnonymous()">
                                             <a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
                                         </h2>
+
                                         <h2 sec:authorize="isAuthenticated()">
-                                            <a th:href="@{/users/__${post.users.username}__/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
+                                            <th:block th:if="${post.users.username.compareToIgnoreCase(user.username) > 0}">
+                                                <a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
+                                            </th:block>
+                                            <th:block th:if="${post.users.username.compareToIgnoreCase(user.username) == 0}">
+                                                <a th:href="@{/users/__${user.username}__/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
+                                            </th:block>
                                         </h2>
                                         <p th:text="${post.content}"></p>
                                     </div>
@@ -92,6 +112,7 @@
                 </div>
             </div>
     </div>
+</div>
     <div th:replace="layout :: hotBlog"></div>
     <footer th:replace="layout :: footer"></footer>
 <div th:replace="layout :: backToTop"></div>

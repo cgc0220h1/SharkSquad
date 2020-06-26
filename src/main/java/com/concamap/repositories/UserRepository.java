@@ -1,6 +1,8 @@
 package com.concamap.repositories;
 
 import com.concamap.model.Users;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +17,13 @@ public interface UserRepository extends PagingAndSortingRepository<Users, Intege
 
     Optional<Users> findByStatusAndId(int status, int id);
 
+    Optional<Users> findById(int id);
+
     Users findByEmail(String email);
 
     Users findByConfirmationToken(String confirmationToken);
+
+    Page<Users> findAllByStatus(int status, Pageable pageable);
+
+    Page<Users> findAllByStatusIsNot(int status, Pageable pageable);
 }
