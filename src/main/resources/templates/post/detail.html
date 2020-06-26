@@ -47,7 +47,7 @@
                             <div class="blog-entry">
                                 <input type="hidden" id="idPost" th:field="*{post.id}">
                                 <div class="blog-img blog-detail">
-                                    <img th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}"
+                                    <img th:src="${post.attachments.iterator().next().imageLink}"
                                          class="img-responsive" alt="html5 bootstrap template" src="">
                                 </div>
                                 <div class="desc">
@@ -55,7 +55,7 @@
                                         <span class="cat"><a
                                                 th:href="@{/categories/__${post.category.anchorName}__/posts}"
                                                 th:text="*{post.category.title}"></a></span>
-                                        <span class="date" th:text="*{post.createdDate}"></span>
+                                        <span class="date" th:text="*{post.getCreatedDate()}"></span>
                                         <span class="pos" th:text="#{view.span.by}"></span>
                                         <a style="color: black; font-weight: bold"
                                            th:href="@{/users/__${post.users.username}__}"
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div sec:authorize="isAuthenticated()" class="col-md-12">
                             <h2 class="heading-2" style="margin-bottom: 0" th:text="#{view.h2.Comment}"></h2>
                             <div>
                                 <div class="row form-group">
@@ -85,6 +85,9 @@
                                            class="btn btn-primary">
                                 </div>
                             </div>
+                        </div>
+                        <div sec:authorize="isAnonymous()" class="col-md-12">
+                            <h2 class="nav-link"><a href="/login" th:text="#{comment.button.a}"></a></h2>
                         </div>
                     </div>
                     <div class="row row-pb-lg">
@@ -138,84 +141,141 @@
 
 <div th:replace="layout :: jquery"></div>
 
-<script>
-    $(document).ready(function () {
-        let currentPage = 1;
-        let node = $("#comment-section > .heading-2");
-        let clone = $(".review:first").clone();
-        $(".review:last-child").remove();
-        let getComment = function (page) {
-            $.ajax({
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                type: "GET",
-                dataType: 'json',
-                url: "/api/comments/[[${post.anchorName}]]?page=" + page,
-                error: function () {
-                    $(node).text(0 + " Comments")
-                },
-                success: function (data) {
-                    $(node).nextAll(".review").remove();
-                    $(node).nextAll("button").remove();
-                    $(node).text(data.totalElements + " [[#{comment.h2.text}]]");
-                    if (data.empty) {
-                        return;
-                    }
-                    if (data.content.length !== 0) {
-                        $.each(data.content, function (index) {
-                            $(clone).find("img").attr("src", data.content[index].users.avatarLink);
-                            $(clone).find("h4 > .text-left").text(data.content[index].users.username);
-                            $(clone).find("h4 > .text-left").attr("href", "/users/" + data.content[index].users.username);
-                            $(clone).find("h4 > .text-right").text(data.content[index].createdDate);
-                            $(clone).find("p").text(data.content[index].content);
-                            $(node).after(clone.clone());
+<th:block sec:authorize="isAnonymous()">
+    <script>
+        $(document).ready(function () {
+            let currentPage = 1;
+            let node = $("#comment-section > .heading-2");
+            let clone = $(".review:first").clone();
+            $(".review:last-child").remove();
+            let getComment = function (page) {
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    type: "GET",
+                    dataType: 'json',
+                    url: "/api/comments/[[${post.anchorName}]]?page=" + page,
+                    error: function () {
+                        $(node).text(0 + " Comments")
+                    },
+                    success: function (data) {
+                        $(node).nextAll(".review").remove();
+                        $(node).nextAll("button").remove();
+                        $(node).text(data.totalElements + " [[#{comment.h2.text}]]");
+                        if (data.empty) {
+                            return;
+                        }
+                        if (data.content.length !== 0) {
+                            $.each(data.content, function (index) {
+                                $(clone).find("img").attr("src", data.content[index].users.avatarLink);
+                                $(clone).find("h4 > .text-left").text(data.content[index].users.username);
+                                $(clone).find("h4 > .text-left").attr("href", "/users/" + data.content[index].users.username);
+                                $(clone).find("h4 > .text-right").text(data.content[index].createdDate);
+                                $(clone).find("p").text(data.content[index].content);
+                                $(node).after(clone.clone());
+                            })
+                        }
+                        if (data.numberOfElements === 5 && data.totalElements > 5) {
+                            $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.more.text}]]</button>");
+                        } else if (data.totalElements > 5) {
+                            $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.home.text}]]</button>");
+                            currentPage = 0;
+                        }
+                        $("button[type=button]").click(function () {
+                            currentPage++;
+                            getComment(currentPage);
                         })
                     }
-                    if (data.numberOfElements === 5 && data.totalElements > 5) {
-                        $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.more.text}]]</button>");
-                    } else if (data.totalElements > 5) {
-                        $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.home.text}]]</button>");
-                        currentPage = 0;
-                    }
-                    $("button[type=button]").click(function () {
-                        currentPage++;
-                        getComment(currentPage);
-                    })
-                }
-            })
-        }
-
-        getComment(currentPage);
-
-        $("input[type=submit]").click(function (event) {
-            let content = $("#comment-content").val();
-            let json = {
-                "content": content,
-                "users": {
-                    "username": "vanduc2514"
-                }
-            };
-            $.ajax({
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                type: "POST",
-                data: JSON.stringify(json),
-                url: "/api/comments/[[${post.anchorName}]]",
-                error: function () {
-                    alert("Error")
-                },
-                success: function () {
-                    getComment(currentPage);
-                }
-            });
-            event.preventDefault();
+                })
+            }
+            getComment(currentPage);
         })
-    })
-</script>
+    </script>
+</th:block>
+
+<th:block sec:authorize="isAuthenticated()">
+    <script>
+        $(document).ready(function () {
+            let currentPage = 1;
+            let node = $("#comment-section > .heading-2");
+            let clone = $(".review:first").clone();
+            $(".review:last-child").remove();
+            let getComment = function (page) {
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    type: "GET",
+                    dataType: 'json',
+                    url: "/api/comments/[[${post.anchorName}]]?page=" + page,
+                    error: function () {
+                        $(node).text(0 + " Comments")
+                    },
+                    success: function (data) {
+                        $(node).nextAll(".review").remove();
+                        $(node).nextAll("button").remove();
+                        $(node).text(data.totalElements + " [[#{comment.h2.text}]]");
+                        if (data.empty) {
+                            return;
+                        }
+                        if (data.content.length !== 0) {
+                            $.each(data.content, function (index) {
+                                $(clone).find("img").attr("src", data.content[index].users.avatarLink);
+                                $(clone).find("h4 > .text-left").text(data.content[index].users.username);
+                                $(clone).find("h4 > .text-left").attr("href", "/users/" + data.content[index].users.username);
+                                $(clone).find("h4 > .text-right").text(data.content[index].createdDate);
+                                $(clone).find("p").text(data.content[index].content);
+                                $(node).after(clone.clone());
+                            })
+                        }
+                        if (data.numberOfElements === 5 && data.totalElements > 5) {
+                            $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.more.text}]]</button>");
+                        } else if (data.totalElements > 5) {
+                            $("#comment-section").append("<button type='button' class='btn btn-primary'>[[#{comment.button.home.text}]]</button>");
+                            currentPage = 0;
+                        }
+                        $("button[type=button]").click(function () {
+                            currentPage++;
+                            getComment(currentPage);
+                        })
+                    }
+                })
+            }
+
+            getComment(currentPage);
+
+            $("input[type=submit]").click(function (event) {
+
+                let content = $("#comment-content").val();
+                let json = {
+                    "content": content,
+                    "users": {
+                        "username": "[[${user.username}]]"
+                    }
+                };
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    type: "POST",
+                    data: JSON.stringify(json),
+                    url: "/api/comments/[[${post.anchorName}]]",
+                    error: function () {
+                        alert("Error")
+                    },
+                    success: function () {
+                        getComment(currentPage);
+                    }
+                });
+                event.preventDefault();
+            })
+        })
+    </script>
+</th:block>
 
 <script type="text/javascript">
     function confirmDialog() {
