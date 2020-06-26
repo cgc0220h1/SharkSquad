@@ -131,7 +131,7 @@
                 <th:block th:each="post : ${randomPostList}">
                     <div class="f-blog">
                         <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img" th:style="'background-image: url('
-                    +${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}
+                    +${post.attachments.iterator().next().imageLink}
                     +');'" data-thumb-alt="">
                         </a>
                         <div class="desc">

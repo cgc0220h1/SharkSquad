@@ -85,13 +85,13 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <ul class="pagination">
-                        <li><a th:href="@{/(page=${postPage.number})}" th:if="${postPage.hasPrevious()}">&laquo;</a>
-                        </li>
-                        <th:block th:each="i : ${#numbers.sequence(1, __${postPage.size}__,1)}">
+<!--                        <li><a th:href="@{/(page=${postPage.number - 1})}" th:if="${postPage.hasPrevious()}">&laquo;</a>-->
+<!--                        </li>-->
+                        <th:block th:each="i : ${#numbers.sequence(1, postPage.totalPages)}">
                             <li><a th:href="@{/(page=${i})}" th:text="${i}"></a></li>
                         </th:block>
-                        <li><a th:href="@{/(page=${postPage.number + 2})}">&raquo;</a></li>
-                    </ul>
+<!--                        <li><a th:href="@{/(page=${postPage.number + 1})}" th:if="${postPage.hasPrevious()}">&raquo;</a></li>-->
+<!--                    </ul>-->
                 </div>
             </div>
         </div>
