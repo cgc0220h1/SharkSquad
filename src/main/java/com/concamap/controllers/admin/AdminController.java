@@ -27,13 +27,13 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Value("${user.active}")
+    @Value("1")
     private int activeStatus;
 
-    @Value("${user.non-active}")
+    @Value("2")
     private int nonActiveStatus;
 
-    @Value("${user.deleted}")
+    @Value("0")
     private int deletedStatus;
 
     private final PostService postService;

@@ -31,7 +31,11 @@
 	
 	<div class="limiter">
 		<div class="container-login100">
+
+
 			<div class="wrap-login100 p-l-85 p-r-85 p-t-55 p-b-55">
+				<div th:if="${confirmationMessage}" class="alert alert-success"
+					 role="alert" th:text="${confirmationMessage}"></div>
 				<form th:object="${users}" method="post" class="login100-form validate-form flex-sb flex-w" name="userForm" onsubmit="return validate();">
 					<span class="login100-form-title p-b-32" th:text="#{sign-up.span.sign-up}"></span>
 
