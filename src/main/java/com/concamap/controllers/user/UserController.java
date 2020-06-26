@@ -1,21 +1,18 @@
 package com.concamap.controllers.user;
 
-import com.concamap.component.post.PostComponent;
 import com.concamap.model.Attachment;
 import com.concamap.model.Category;
 import com.concamap.model.Post;
 import com.concamap.model.Users;
+import com.concamap.security.UserDetailServiceImp;
 import com.concamap.services.user.EmailService;
 import com.concamap.services.post.PostService;
 import com.concamap.services.user.UserService;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
@@ -26,43 +23,43 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.text.Normalizer;
-import java.util.HashSet;
-import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.Map;
-import java.util.UUID;
 
 @Controller
+@PropertySource("classpath:config/status.properties")
 public class UserController {
-    @Value("${homepage.post.summary.extend}")
-    private String extendString;
-
-    @Value("${homepage.post.summary.words}")
-    private int summaryWords;
-
     private final UserService userService;
     private EmailService emailService;
 
-    private final PostService postService;
+    private final UserDetailServiceImp userDetailServiceImp;
 
-    private final PostComponent postComponent;
+    @Value("1")
+    private int activeStatus;
+
+    @Value("2")
+    private int nonActiveStatus;
+
+    @Value("0")
+    private int deletedStatus;
+
+    @Autowired
+    public UserController(UserService userService, EmailService emailService, UserDetailServiceImp userDetailServiceImp, PostService postService) {
+        this.userService = userService;
+        this.emailService = emailService;
+        this.userDetailServiceImp = userDetailServiceImp;
+        this.postService = postService;
+    }
+
+    private final PostService postService;
 
     @Autowired
     Environment env;
-
-    @Autowired
-    public UserController(UserService userService, PostService postService, PostComponent postComponent, EmailService emailService) {
-        this.userService = userService;
-        this.emailService = emailService;
-        this.postService = postService;
-        this.postComponent = postComponent;
-    }
 
     private String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
@@ -85,6 +82,16 @@ public class UserController {
         return new RedirectView("/");
     }
 
+    @GetMapping("/logout")
+    public RedirectView logout() {
+        return new RedirectView("/");
+    }
+
+    @GetMapping("/403")
+    public String findNotFound() {
+        return "error/error403";
+    }
+
     @GetMapping("/signup")
     public ModelAndView showSignUp(Users users) {
         ModelAndView modelAndView = new ModelAndView("user/signup");
@@ -95,19 +102,19 @@ public class UserController {
     @PostMapping("/signup")
     public ModelAndView signup(ModelAndView modelAndView, @Validated @ModelAttribute("users") Users users, BindingResult bindingResult, HttpServletRequest request) {
 
-        Users userExists = userService.findByEmail(users.getEmail());
-
-        if (userExists != null) {
-            modelAndView.addObject("alreadyRegisteredMessage", "Oops!  There is already a user registered with the email provided.");
-            modelAndView.setViewName("user/signup");
-            bindingResult.reject("email");
-        }
+//        Users userExists = userService.findByEmail(users.getEmail());
+//
+//        if (userExists != null) {
+//            modelAndView.addObject("alreadyRegisteredMessage", "Oops!  There is already a user registered with the email provided.");
+//            modelAndView.setViewName("user/signup");
+//            bindingResult.reject("email");
+//        }
 
         if (bindingResult.hasFieldErrors()) {
             modelAndView.setViewName("user/signup");
         } else {
 
-            users.setStatus(0);
+            users.setStatus(nonActiveStatus);
 
             users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
             users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
@@ -121,9 +128,9 @@ public class UserController {
 
             SimpleMailMessage registrationEmail = new SimpleMailMessage();
             registrationEmail.setTo(users.getEmail());
-            registrationEmail.setSubject("Registration Confirmation");
+            registrationEmail.setSubject("REGISTRATION CONFIRMATION");
             registrationEmail.setText("To confirm your e-mail address, please click the link below:\n"
-                    + appUrl + ":8080/confirm?token=" + users.getConfirmationToken());
+                    + appUrl + ":8888/confirm?token=" + users.getConfirmationToken());
             registrationEmail.setFrom("sharksquadteam420@gmail.com");
 
             emailService.sendEmail(registrationEmail);
@@ -156,30 +163,19 @@ public class UserController {
 
         modelAndView.setViewName("user/confirm");
 
-        Zxcvbn passwordCheck = new Zxcvbn();
+        Users user = userService.findByConfirmationToken(requestParams.get("confirmationToken"));
 
-        Strength strength = passwordCheck.measure(requestParams.get("password"));
+       if (user.getPassword().equals(requestParams.get("password"))) {
+           modelAndView.addObject("successMessage", "Your account and password has been confirm!");
+           user.setStatus(activeStatus);
+           userService.save(user);
+       } else {
+           modelAndView.addObject("errorMessage", "Your password is wrong");
 
-        if (strength.getScore() < 3) {
-            //modelAndView.addObject("errorMessage", "Your password is too weak.  Choose a stronger one.");
-            bindingResult.reject("password");
+           String token = user.getConfirmationToken();
+           modelAndView.addObject("confirmationToken", token);
+       }
 
-            redir.addFlashAttribute("errorMessage", "Your password is too weak.  Choose a stronger one.");
-
-            modelAndView.setViewName("redirect:user/confirm?token=" + requestParams.get("token"));
-            System.out.println(requestParams.get("token"));
-            return modelAndView;
-        }
-
-        Users user = userService.findByConfirmationToken(requestParams.get("token"));
-
-        user.setPassword(requestParams.get("password"));
-
-        user.setStatus(1);
-
-        userService.save(user);
-
-        modelAndView.addObject("successMessage", "Your password has been set!");
         return modelAndView;
     }
 
@@ -211,18 +207,6 @@ public class UserController {
         usersFound.setBio(users.getBio());
         userService.save(usersFound);
         return new RedirectView("/users/" + usersFound.getUsername() + "/profile");
-    }
-
-    @GetMapping("users/{username}/posts")
-    public ModelAndView showPostByUser(@PathVariable("username") String username, Pageable pageable){
-        ModelAndView modelAndView = new ModelAndView("post/filter-user");
-        Page<Post> postPage = postService.findAllByUsers_Username(username, pageable);
-        for (Post post : postPage) {
-            post.setContent(postComponent.summary(post.getContent(), summaryWords, extendString));
-        }
-        modelAndView.addObject("postPage", postPage);
-        modelAndView.addObject("user_name", username);
-        return modelAndView;
     }
 
     @GetMapping("/users/{username}/posts/create")
@@ -304,20 +288,16 @@ public class UserController {
     }
 
     @GetMapping("/users/{username}/posts/{anchor-name}/delete")
-    public ModelAndView showDeleteForm(@PathVariable("username") String username, @PathVariable("anchor-name") String anchorName, @SessionAttribute("categoryList") List<Category> categoryList) {
+    public ModelAndView showDeleteForm(@PathVariable("username") String username, @PathVariable("anchor-name") String anchorName) {
         Post post = postService.findExistByAnchorName(anchorName);
         ModelAndView modelAndView = new ModelAndView("post/delete");
         modelAndView.addObject("post", post);
-        modelAndView.addObject("anchorName", anchorName);
-        modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
     }
 
-    @GetMapping("/users/posts/{anchor-name}/delete")
-    public RedirectView deletePost(@ModelAttribute("post") Post post, @PathVariable("anchor-name") String anchorName) {
-        Post post1 = postService.findExistByAnchorName(anchorName);
-        post1.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
-        postService.delete(post1.getId());
+    @PostMapping("/users/{id}/posts/delete")
+    public RedirectView deleteBook(@ModelAttribute("post") Post post) {
+        postService.delete(post.getId());
         return new RedirectView("/");
     }
 }
