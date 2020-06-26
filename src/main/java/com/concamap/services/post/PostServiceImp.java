@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Matcher;
 
 @Service
 @PropertySource("classpath:config/status.properties")
@@ -36,7 +37,7 @@ public class PostServiceImp implements PostService {
     @Override
     public List<Post> findExistRandom(int quantity) {
         int count = 1;
-        int totalPost = (int) postRepository.count();
+        int totalPost = Math.toIntExact(postRepository.count());
         Random random = new Random();
         List<Integer> randomId = new ArrayList<>();
         List<Post> postList = new LinkedList<>();
