@@ -45,7 +45,12 @@
                                             <a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
                                         </h2>
                                         <h2 sec:authorize="isAuthenticated()">
-                                            <a th:href="@{/users/__${post.users.username}__/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
+                                            <!--<div th:if="${post.users.username == user.username}">
+                                                <a th:href="@{/users/__${post.users.username}__/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
+                                            </div>-->
+                                            <div th:unless="${post.users.username}">
+                                                <a th:href="@{/posts/__${post.anchorName}__}" th:text="${post.title}"></a>
+                                            </div>
                                         </h2>
                                         <p th:text="${post.content}"></p>
                                     </div>
@@ -92,6 +97,7 @@
                 </div>
             </div>
     </div>
+</div>
     <div th:replace="layout :: hotBlog"></div>
     <footer th:replace="layout :: footer"></footer>
 <div th:replace="layout :: backToTop"></div>
