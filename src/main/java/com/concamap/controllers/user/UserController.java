@@ -48,6 +48,12 @@ public class UserController {
     @Value("0")
     private int deletedStatus;
 
+
+    @ModelAttribute("user")
+    public Users user() {
+        return userDetailServiceImp.getCurrentUser();
+    }
+
     @Autowired
     public UserController(UserService userService, EmailService emailService, UserDetailServiceImp userDetailServiceImp, PostService postService) {
         this.userService = userService;
