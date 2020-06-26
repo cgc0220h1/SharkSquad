@@ -58,7 +58,7 @@ public class PostServiceImp implements PostService {
     @Override
     public Page<Post> findExistRecent(int quantity) {
         Pageable pageable = PageRequest.of(START_INDEX, quantity);
-        Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         return postRepository.findAllByStatusAndCreatedDateBefore(statusExist, currentTime, pageable);
     }
 
