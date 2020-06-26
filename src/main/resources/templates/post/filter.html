@@ -82,7 +82,7 @@
                             <th:block th:each="post : ${recentPostList}">
                                 <div class="f-blog">
                                     <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img">
-                                        <img class="img-responsive" alt="html5 bootstrap template" th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
+                                        <img class="img-responsive" alt="html5 bootstrap template" th:src="${post.attachments.iterator().next().imageLink}">
                                     </a>
                                     <div class="desc">
                                         <h3 sec:authorize="isAnonymous()">

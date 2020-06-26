@@ -116,7 +116,7 @@
                                 <div class="f-blog">
                                     <a th:href="@{/posts/__${post.anchorName}__}" class="blog-img">
                                         <img class="img-responsive" alt="html5 bootstrap template"
-                                             th:src="${post.attachments.iterator().hasNext() ? post.attachments.iterator().next().imageLink : '#'}">
+                                             th:src="${post.attachments.iterator().next().imageLink}" src="">
                                     </a>
                                     <div class="desc">
                                         <h3><a th:href="@{/posts/__${post.anchorName}__}" th:text="*{post.title}"></a>
