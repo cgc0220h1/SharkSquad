@@ -29,7 +29,7 @@
 <div class="middle-box text-center loginscreen animated fadeInDown">
     <div>
         <hr/>
-        <h4>Set Your Password</h4>
+        <h4>Confirm your password</h4>
 
         <div th:if="${successMessage}" class="alert alert-success"
              role="alert" th:text="${successMessage}"></div>
@@ -43,7 +43,7 @@
         <form th:if="!${invalidToken}" class="m-t" id="passwordForm" role="form"
               th:action="@{/confirm}" method="post">
 
-            <input type="hidden" name="token" th:value="${confirmationToken}">
+            <input type="hidden" name="confirmationToken" th:value="${confirmationToken}">
 
             <div class="form-group input-group">
           <span class="input-group-addon">
@@ -53,19 +53,6 @@
                        placeholder="Password" class="form-control" required/>
                 <span class="glyphicon"
                       aria-hidden="true"></span>
-            </div>
-            <div class="form-group input-group has-feedback">
-          <span class="input-group-addon">
-            <span class="glyphicon glyphicon-lock"></span>
-          </span>
-                <input type="password" class="form-control" id="signup-password-confirm" placeholder="Confirm Password"
-                       name="ConfirmPassword" data-fv-notempty="true"
-                       data-fv-notempty-message="Please confirm password"
-                       data-fv-identical="true"
-                       data-fv-identical-field="password"
-                       data-fv-identical-message="Both passwords must be identical"/>
-
-                <div class="help-block with-errors"></div>
             </div>
 
             <button type="submit"
