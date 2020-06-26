@@ -12,8 +12,6 @@ import com.concamap.model.*;
 import com.concamap.services.comment.CommentService;
 import com.concamap.services.post.PostService;
 import com.concamap.services.user.UserService;
-import com.nulabinc.zxcvbn.Strength;
-import com.nulabinc.zxcvbn.Zxcvbn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -60,25 +58,30 @@ public class UserController {
 
     private final UserDetailServiceImp userDetailServiceImp;
 
-    private final PostService postService;
-
-
     private final FileComponent fileComponent;
 
-    @Autowired
-    public UserController(UserService userService, PostService postService, PostComponent postComponent, FileComponent fileComponent, EmailService emailService, UserDetailServiceImp userDetailServiceImp, CommentService commentService) {
-        this.userService = userService;
-        this.postService = postService;
-        this.postComponent = postComponent;
-        this.commentService = commentService;
-        this.fileComponent = fileComponent;
-        this.emailService = emailService;
-        this.userDetailServiceImp = userDetailServiceImp;
-    }
+    private final PostService postService;
+
+    @Value("1")
+    private int activeStatus;
+
+    @Value("2")
+    private int nonActiveStatus;
 
     @ModelAttribute("user")
     public Users user() {
         return userDetailServiceImp.getCurrentUser();
+    }
+
+    @Autowired
+    public UserController(PostComponent postComponent, CommentService commentService, UserService userService, EmailService emailService, UserDetailServiceImp userDetailServiceImp, FileComponent fileComponent, PostService postService) {
+        this.postComponent = postComponent;
+        this.commentService = commentService;
+        this.userService = userService;
+        this.emailService = emailService;
+        this.userDetailServiceImp = userDetailServiceImp;
+        this.fileComponent = fileComponent;
+        this.postService = postService;
     }
 
     @GetMapping("/login")
@@ -116,19 +119,11 @@ public class UserController {
     @PostMapping("/signup")
     public ModelAndView signup(ModelAndView modelAndView, @Validated @ModelAttribute("users") Users users, BindingResult bindingResult, HttpServletRequest request) {
 
-        Users userExists = userService.findByEmail(users.getEmail());
-
-        if (userExists != null) {
-            modelAndView.addObject("alreadyRegisteredMessage", "Oops!  There is already a user registered with the email provided.");
-            modelAndView.setViewName("user/signup");
-            bindingResult.reject("email");
-        }
-
         if (bindingResult.hasFieldErrors()) {
             modelAndView.setViewName("user/signup");
         } else {
 
-            users.setStatus(0);
+            users.setStatus(nonActiveStatus);
 
             users.setCreatedDate(new Timestamp(System.currentTimeMillis()));
             users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
@@ -142,9 +137,9 @@ public class UserController {
 
             SimpleMailMessage registrationEmail = new SimpleMailMessage();
             registrationEmail.setTo(users.getEmail());
-            registrationEmail.setSubject("Registration Confirmation");
+            registrationEmail.setSubject("REGISTRATION CONFIRMATION");
             registrationEmail.setText("To confirm your e-mail address, please click the link below:\n"
-                    + appUrl + ":8080/confirm?token=" + users.getConfirmationToken());
+                    + appUrl + ":8888/confirm?token=" + users.getConfirmationToken());
             registrationEmail.setFrom("sharksquadteam420@gmail.com");
 
             emailService.sendEmail(registrationEmail);
@@ -177,30 +172,19 @@ public class UserController {
 
         modelAndView.setViewName("user/confirm");
 
-        Zxcvbn passwordCheck = new Zxcvbn();
+        Users user = userService.findByConfirmationToken(requestParams.get("confirmationToken"));
 
-        Strength strength = passwordCheck.measure(requestParams.get("password"));
+       if (user.getPassword().equals(requestParams.get("password"))) {
+           modelAndView.addObject("successMessage", "Your account and password has been confirm!");
+           user.setStatus(activeStatus);
+           userService.save(user);
+       } else {
+           modelAndView.addObject("errorMessage", "Your password is wrong");
 
-        if (strength.getScore() < 3) {
-            //modelAndView.addObject("errorMessage", "Your password is too weak.  Choose a stronger one.");
-            bindingResult.reject("password");
+           String token = user.getConfirmationToken();
+           modelAndView.addObject("confirmationToken", token);
+       }
 
-            redir.addFlashAttribute("errorMessage", "Your password is too weak.  Choose a stronger one.");
-
-            modelAndView.setViewName("redirect:user/confirm?token=" + requestParams.get("token"));
-            System.out.println(requestParams.get("token"));
-            return modelAndView;
-        }
-
-        Users user = userService.findByConfirmationToken(requestParams.get("token"));
-
-        user.setPassword(requestParams.get("password"));
-
-        user.setStatus(1);
-
-        userService.save(user);
-
-        modelAndView.addObject("successMessage", "Your password has been set!");
         return modelAndView;
     }
 
@@ -351,5 +335,13 @@ public class UserController {
         modelAndView.addObject("randomPostList", randomPosts);
         modelAndView.addObject("categoryList", categoryList);
         return modelAndView;
+    }
+
+    @GetMapping("/users/posts/{anchor-name}/delete")
+    public RedirectView deletePost(@ModelAttribute("post") Post post, @PathVariable("anchor-name") String anchorName) {
+        Post post1 = postService.findExistByAnchorName(anchorName);
+        post1.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        postService.delete(post1.getId());
+        return new RedirectView("/");
     }
 }

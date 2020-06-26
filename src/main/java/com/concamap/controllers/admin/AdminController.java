@@ -3,12 +3,15 @@ package com.concamap.controllers.admin;
 import com.concamap.model.Category;
 import com.concamap.model.Comment;
 import com.concamap.model.Post;
+import com.concamap.model.Roles;
 import com.concamap.model.Users;
 import com.concamap.services.category.CategoryService;
 import com.concamap.services.comment.CommentService;
 import com.concamap.services.post.PostService;
+import com.concamap.services.role.RoleService;
 import com.concamap.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,11 +25,24 @@ import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 @Controller
-@PropertySource("classpath:config/homepage.properties")
+@PropertySource({"classpath:config/homepage.properties", "classpath:config/status.properties"})
 @RequestMapping("/admin")
 public class AdminController {
+
+    @Value("${user.active}")
+    private int activeStatus;
+
+    @Value("${user.non-active}")
+    private int nonActiveStatus;
+
+    @Value("${user.deleted}")
+    private int deletedStatus;
 
     private final PostService postService;
 
@@ -36,12 +52,15 @@ public class AdminController {
 
     private final CommentService commentService;
 
+    private final RoleService roleService;
+
     @Autowired
-    public AdminController(PostService postService, CategoryService categoryService, UserService userService, CommentService commentService) {
+    public AdminController(PostService postService, CategoryService categoryService, UserService userService, CommentService commentService, RoleService roleService) {
         this.postService = postService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.commentService = commentService;
+        this.roleService = roleService;
     }
 
     private String removeAccent(String s) {
@@ -49,6 +68,7 @@ public class AdminController {
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("").replace('đ', 'd').replace('Đ', 'D').replace(' ', '-');
     }
+
 
     @GetMapping("/overview")
     public ModelAndView loadDashboard(Pageable pageable) throws Exception {
@@ -144,20 +164,77 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    ModelAndView loadUsers(Pageable pageable) {
+    public ModelAndView loadUsers(Pageable pageable) {
         ModelAndView usersView = new ModelAndView("admin/users");
         Page<Users> users = userService.findAllExist(pageable);
         usersView.addObject("users", users);
         return usersView;
     }
 
-    @GetMapping("/user/{id}")
-    ModelAndView loadDetailUser(@PathVariable("id") Integer id) {
+    @GetMapping("/users/create")
+    public ModelAndView shoCreateForm(ModelAndView modelAndView,Users createUser){
+        modelAndView.setViewName("admin/createUser");
+        modelAndView.addObject("createUser", createUser);
+        List<Roles> rolesList = roleService.findAllExist();
+        modelAndView.addObject("roleList", rolesList);
+        return modelAndView;
+    }
+
+    @PostMapping("/users/create")
+    public RedirectView saveUser(@ModelAttribute("createUser") Users createUser) {
+        createUser.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        createUser.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+        createUser.setStatus(activeStatus);
+        userService.save(createUser);
+        return new RedirectView("/admin/users");
+    }
+
+
+    @GetMapping("/users/{id}")
+    public ModelAndView loadDetailUser(@PathVariable("id") Integer id) {
         ModelAndView detailUser = new ModelAndView("admin/detailUser");
-        Users currentUser = userService.findExistById(id);
+        Users currentUser = userService.findById(id);
         detailUser.addObject("currentUser", currentUser);
         return detailUser;
     }
+
+    @GetMapping("/users/edit/{id}")
+    public ModelAndView showEdit(@PathVariable("id") Integer id, ModelAndView modelAndView) {
+        modelAndView.setViewName("admin/editUser");
+        Users editUsers = userService.findById(id);
+        List<Roles> rolesList = roleService.findAllExist();
+        modelAndView.addObject("roleList", rolesList);
+        modelAndView.addObject("editUser", editUsers);
+        return modelAndView;
+    }
+
+    @PostMapping("/users/edit/{id}")
+    public RedirectView editUser(@ModelAttribute("editUser") Users editUsers) {
+        int id = editUsers.getId();
+        Users users = userService.findById(id);
+        users.setFirstName(editUsers.getFirstName());
+        users.setLastName(editUsers.getLastName());
+        users.setPhone(editUsers.getPhone());
+        users.setRoles(editUsers.getRoles());
+        users.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+        userService.save(users);
+        return new RedirectView("/admin/users");
+    }
+
+    @GetMapping("/users/delete/{id}")
+    public RedirectView showDelete(@PathVariable("id") Integer id) {
+        Users deleteUser = userService.findById(id);
+        deleteUser.setStatus(deletedStatus);
+        userService.save(deleteUser);
+        return new RedirectView("/admin/users");
+    }
+
+//    @PostMapping("/users/delete/{id}")
+//    public RedirectView deleteUser(@ModelAttribute("deleteUser") Users deleteUser) {
+//        deleteUser.setStatus(deletedStatus);
+//        return new RedirectView("/admin/users");
+//    }
+
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
