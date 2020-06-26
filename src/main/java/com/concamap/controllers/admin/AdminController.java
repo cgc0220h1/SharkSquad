@@ -47,7 +47,12 @@ public class AdminController {
     private String removeAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(temp).replaceAll("").replace('đ', 'd').replace('Đ', 'D').replace(' ', '-');
+        String result = pattern.matcher(temp).replaceAll("").replaceAll("[^a-zA-Z0-9 ]", "").replace('đ', 'd').replace('Đ', 'D').replace(' ', '-');
+        char firstChar = result.charAt(0);
+        if(Character.toString(firstChar).equals("-")){
+            result = result.substring(1);
+        }
+        return result;
     }
 
     @GetMapping("/overview")
