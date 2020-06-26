@@ -22,7 +22,7 @@ public class UserServiceImp implements UserService {
     @Value("${user.active}")
     private int activeUser;
 
-    @Value("${user.nonActive}")
+    @Value("${user.non-active}")
     private int nonActiveUser;
 
     @Value("${user.deleted}")
