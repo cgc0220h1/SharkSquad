@@ -31,10 +31,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.Normalizer;
 import java.util.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 @Controller
 @PropertySource({"classpath:config/homepage.properties", "classpath:config/post.properties"})
