@@ -17,7 +17,7 @@ GET http://localhost:8888/api/posts?content=suy+nghĩ
 GET http://localhost:8888/api/posts?title=suy+nghĩ&content=mình
 
 ###Tìm kiếm Post theo title hoặc content
-GET http://localhost:8888/api/posts?query=mình
+GET http://localhost:8888/api/posts?query=a&page=2
 
 ###Lấy comment
 GET http://localhost:8888/api/comments/minh-co-mot-nguoi-ban-dac-biet-1?page=6

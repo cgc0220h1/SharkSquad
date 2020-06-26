@@ -122,10 +122,10 @@
                             $(node).find("a > img").attr("src", data[index].attachments[0].imageLink);
                             $(node).find(".desc > h3 > a").attr("href", '/posts/' + data[index].anchorName);
                             $(node).find(".desc > h3 > a").html(data[index].title);
-                            $(node).find(".desc > #post-time ").html(data[index].createdDate);
-                            $(node).find(".desc > #post-content").html(data[index].content);
+                            $(node).find("#post-time").text(data[index].createdDate);
+                            $(node).find("#post-content").text(data[index].content);
                             $(".side").append(node.clone());
-                            index++;
+                            // index++;
                         })
                     }
                 })

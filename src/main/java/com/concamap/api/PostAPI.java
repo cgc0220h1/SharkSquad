@@ -1,5 +1,6 @@
 package com.concamap.api;
 
+import com.concamap.component.post.PostComponent;
 import com.concamap.model.Post;
 import com.concamap.services.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,12 @@ import java.util.List;
 public class PostAPI {
     private final PostService postService;
 
+    private final PostComponent postComponent;
+
     @Autowired
-    public PostAPI(PostService postService) {
+    public PostAPI(PostService postService, PostComponent postComponent) {
         this.postService = postService;
+        this.postComponent = postComponent;
     }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,6 +55,10 @@ public class PostAPI {
     @GetMapping(value = "", params = "query", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Post> findAllExistPostByTitleOrContent(@PageableDefault(size = 3) Pageable pageable,
                                                        @RequestParam("query") String query) {
-        return postService.findExistByTitleOrContent(query, pageable).getContent();
+        List<Post> postList = postService.findExistByTitleOrContent(query, pageable).getContent();
+        for (Post post : postList) {
+            post.setContent(postComponent.summary(post.getContent(), 36,"..."));
+        }
+        return postList;
     }
 }
