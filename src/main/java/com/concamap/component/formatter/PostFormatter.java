@@ -12,7 +12,7 @@ import java.util.Locale;
 @Component
 public class PostFormatter implements Formatter<Post> {
 
-    private PostService postService;
+    private final PostService postService;
 
     @Autowired
     public PostFormatter(PostService postService) {

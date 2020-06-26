@@ -92,7 +92,7 @@ public class CommentAPI {
     @GetMapping(value = "/{anchor-name}", params = "page", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Page<Comment> getComment(@PathVariable("anchor-name") String anchorName,
-                                    @PageableDefault(sort = "createdDate", direction = Sort.Direction.ASC, size = 5)
+                                    @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC, size = 5)
                                             Pageable pageable) {
         Post postFound = postService.findExistByAnchorName(anchorName);
         return commentService.findAllExistByPost(postFound, pageable);
