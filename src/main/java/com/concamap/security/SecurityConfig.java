@@ -45,7 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                                         "/date/{year}",
                                                         "/date/{year}/{month}",
                                                         "/search",
-                                                        "/posts/{anchor-name}").
+                                                        "/posts/{anchor-name}",
+                                                        "/api/**").
                                                         permitAll();
 
         http.authorizeRequests().antMatchers("/users/{username}/profile",
