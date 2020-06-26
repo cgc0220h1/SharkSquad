@@ -18,7 +18,7 @@
   <link th:href="@{/demo/demo.css}" rel="stylesheet" />
 </head>
 
-<body class="">
+<body class="user-profile">
   <div class="wrapper ">
     <div class="sidebar" data-color="orange">
       <!--
@@ -62,7 +62,7 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" th:href="@{/admin/users}">Danh sách tài khoản</a>
+            <a class="navbar-brand" th:href="@{/admin/users}">Người dùng</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -111,43 +111,85 @@
       </div>
       <div class="content">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-8">
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title">Danh sách người dùng</h4>
+                <h5 class="title">Thông tin chi tiết</h5>
               </div>
               <div class="card-body">
-                <div><a href="/admin/users/create"><button>Create new User</button></a></div>
-                <div class="table-responsive">
-                  <table class="table">
-                      <td class="text-uppercase">Mã người dùng</td>
-                      <td class="text-uppercase">Tên</td>
-                      <td class="text-uppercase">Tên đăng nhập</td>
-                      <td class="text-uppercase">Email</td>
-                      <td class="text-uppercase" colspan="2">Tùy chọn</td>
-                    <th:block th:each="user : ${users}">
-                      <tr>
-                        <td th:text="*{user.id}"></td>
-                        <td th:text="*{user.firstName}"></td>
-                        <td><a th:href="@{/admin/users/__${user.id}__}" th:text="*{user.username}"></a></td>
-                        <td th:text="*{user.email}"></td>
-                        <td><a th:href="@{/admin/users/edit/__${user.id}__}"><i class="now-ui-icons ui-2_settings-90"></i></a></td>
-                        <td><a th:href="@{/admin/users/delete/__${user.id}__}"><i class="now-ui-icons ui-1_simple-remove" ></i></a></td>
-                      </tr>
-                    </th:block>
-                  </table>
-                </div>
+                <form method="post" th:object="${editUser}">
+                  <input type="hidden" name="userId" th:value="${editUser.id}"/>
+                  <div class="row">
+                    <div class="col-md-6 pr-1">
+                      <div class="form-group">
+                        <label>Tên</label>
+                        <input type="text" class="form-control" th:field="*{firstName}"/>
+                      </div>
+                    </div>
+                    <div class="col-md-6 pl-1">
+                      <div class="form-group">
+                        <label>Họ và tên đệm</label>
+                        <input type="text" class="form-control" th:field="*{lastName}"/>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-5 pr-1">
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" class="form-control" th:field="*{email}"/>
+                      </div>
+                    </div>
+                    <div class="col-md-3 px-1">
+                      <div class="form-group">
+                        <label>Tên đăng nhập</label>
+                        <input type="text" class="form-control" th:field="*{username}"/>
+                      </div>
+                    </div>
+                    <div class="col-md-4 pl-1">
+                      <div class="form-group">
+                        <label>Mật khẩu</label>
+                        <input type="text" class="form-control" th:field="*{password}"/>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6 pr-1">
+                      <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" class="form-control" th:field="*{phone}"/>
+                      </div>
+                    </div>
+                    <div class="col-md-6 pl-1">
+                      <div class="form-group">
+                        <label>Loại tài khoản</label>
+                        <select th:field="*{roles}">
+                            <option th:each="role : ${roleList}" th:value="${role.id}" th:text="${role.name}"></option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                    <div>
+                      <input type="submit" value="Update">
+                    </div>
+                </form>
               </div>
             </div>
           </div>
-          <div class="col-md-12 text-center">
-            <ul class="pagination">
-              <li><a th:href="@{/admin/users (page=${users.number})}" th:if="${users.hasPrevious()}">&laquo;</a></li>
-              <th:block th:each="i : ${#numbers.sequence(1, __${users.size}__,1)}">
-                <li><a th:href="@{/admin/users (page=${i})}" th:text="${i}"></a></li>
-              </th:block>
-              <li><a th:href="@{/admin/users (page=${users.number + 2})}">&raquo;</a></li>
-            </ul>
+          <div class="col-md-4">
+            <div class="card card-user">
+              <div class="card-body">
+                <div class="author">
+                    <img class="avatar border-gray" th:src="${editUser.avatarLink}">
+                    <h5 class="title" th:text="${editUser.firstName}"></h5>
+                  <p class="description" th:text="${editUser.username}"></p>
+                </div>
+                <p class="description text-center" th:utext="${editUser.bio}"></p>
+              </div>
+              <hr>
+            </div>
           </div>
         </div>
       </div>
@@ -162,8 +204,8 @@
           </nav>
           <div class="copyright" id="copyright">
             &copy; <script>
-              document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
-            </script>, Làm bằng cả <a href="https://www.invisionapp.com" target="_blank">Trái tim</a>. Thiết kế bởi <a href="https://www.creative-tim.com" target="_blank">Chú cá bú đá</a>.
+            document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
+          </script>, Làm bằng cả <a href="https://www.invisionapp.com" target="_blank">Trái tim</a>. Thiết kế bởi <a href="https://www.creative-tim.com" target="_blank">Chú cá bú đá</a>.
           </div>
         </div>
       </footer>

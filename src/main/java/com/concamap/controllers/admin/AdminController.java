@@ -1,5 +1,6 @@
 package com.concamap.controllers.admin;
 
+import com.concamap.component.post.PostComponent;
 import com.concamap.model.Category;
 import com.concamap.model.Comment;
 import com.concamap.model.Post;
@@ -25,6 +26,7 @@ import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.sql.Timestamp;
@@ -35,13 +37,13 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Value("${user.active}")
+    @Value("1")
     private int activeStatus;
 
-    @Value("${user.non-active}")
+    @Value("2")
     private int nonActiveStatus;
 
-    @Value("${user.deleted}")
+    @Value("0")
     private int deletedStatus;
 
     private final PostService postService;
@@ -54,21 +56,17 @@ public class AdminController {
 
     private final RoleService roleService;
 
+    private final PostComponent postComponent;
+
     @Autowired
-    public AdminController(PostService postService, CategoryService categoryService, UserService userService, CommentService commentService, RoleService roleService) {
+    public AdminController(PostService postService, CategoryService categoryService, UserService userService, CommentService commentService, RoleService roleService, PostComponent postComponent) {
         this.postService = postService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.commentService = commentService;
         this.roleService = roleService;
+        this.postComponent = postComponent;
     }
-
-    private String removeAccent(String s) {
-        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
-        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(temp).replaceAll("").replace('đ', 'd').replace('Đ', 'D').replace(' ', '-');
-    }
-
 
     @GetMapping("/overview")
     public ModelAndView loadDashboard(Pageable pageable) throws Exception {
@@ -102,7 +100,7 @@ public class AdminController {
         categoryFound.setDescription(category.getDescription());
         categoryFound.setTitle(category.getTitle());
         categoryFound.setUpdatedDate(new Timestamp(now));
-        categoryFound.setAnchorName(removeAccent(category.getDescription()));
+        categoryFound.setAnchorName(postComponent.toAnchorName(category.getDescription()));
         categoryService.save(categoryFound);
         return new RedirectView("/admin/categories");
     }
@@ -121,7 +119,7 @@ public class AdminController {
         category.setStatus(1);
         category.setUpdatedDate(new Timestamp(now));
         category.setCreatedDate(new Timestamp(now));
-        category.setAnchorName(removeAccent(category.getDescription()));
+        category.setAnchorName(postComponent.toAnchorName(category.getDescription()));
         categoryService.save(category);
         return new RedirectView("/admin/categories");
     }
@@ -136,7 +134,7 @@ public class AdminController {
     }
 
     @GetMapping("/users/posts/{anchor-name}/delete")
-    public RedirectView adminDeletePost(@PathVariable("anchor-name") String anchorName){
+    public RedirectView adminDeletePost(@PathVariable("anchor-name") String anchorName) {
         Post post = postService.findExistByAnchorName(anchorName);
         post.setStatus(0);
         post.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
@@ -149,7 +147,7 @@ public class AdminController {
                                       @PathVariable("username") String username,
                                       @SessionAttribute("recentPostList") List<Post> recentPosts,
                                       @SessionAttribute("randomPostList") List<Post> randomPosts,
-                                      @SessionAttribute("categoryList") List<Category> categoryList){
+                                      @SessionAttribute("categoryList") List<Category> categoryList) {
         ModelAndView modelAndView = new ModelAndView("admin/viewDetailPost");
         Post postFound = postService.findExistByAnchorName(anchorName);
 
@@ -172,7 +170,7 @@ public class AdminController {
     }
 
     @GetMapping("/users/create")
-    public ModelAndView shoCreateForm(ModelAndView modelAndView,Users createUser){
+    public ModelAndView shoCreateForm(ModelAndView modelAndView, Users createUser) {
         modelAndView.setViewName("admin/createUser");
         modelAndView.addObject("createUser", createUser);
         List<Roles> rolesList = roleService.findAllExist();

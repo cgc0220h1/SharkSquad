@@ -21,7 +21,7 @@ public class RoleServiceImpl implements RoleService {
     @Value("${user.active}")
     private int activeStatus;
 
-    @Value("${user.non-active}")
+    @Value("2")
     private int nonActiveStatus;
 
     @Value("${user.deleted}")

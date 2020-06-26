@@ -31,10 +31,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.Normalizer;
 import java.util.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 @Controller
 @PropertySource({"classpath:config/homepage.properties", "classpath:config/post.properties"})
@@ -85,19 +87,30 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public ModelAndView showLogin() {
+    public ModelAndView showLogin(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView("user/login");
         modelAndView.addObject("users", new Users());
+        modelAndView.addObject(bindingResult);
         return modelAndView;
     }
 
+/*
     @PostMapping("/login")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
+//        RedirectView redirectView = null;
         if (bindingResult.hasFieldErrors()) {
-            return new RedirectView("/login");
+            return  new RedirectView("/login");
         }
+       */
+/* if (users.getRoles().getId() == 2) {
+            redirectView = new RedirectView("/");
+        } else if (users.getRoles().getId() == 3) {
+            redirectView = new RedirectView("/admin/overview");
+        }*//*
+
         return new RedirectView("/");
     }
+*/
 
     @GetMapping("/logout")
     public RedirectView logout() {

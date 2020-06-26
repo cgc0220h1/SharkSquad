@@ -9,10 +9,11 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
 import java.util.Properties;
@@ -25,12 +26,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         super.configure(web);
     }
 
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
+
     private final UserDetailsService userDetailsService;
 
     public static final String CHECKED_USER_NAME = "@userSecurity.checkUsername(authentication, #username)";
 
     @Autowired
-    public SecurityConfig(@Qualifier("userDetailServiceImp") UserDetailsService userDetailsService) {
+    public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler, @Qualifier("userDetailServiceImp") UserDetailsService userDetailsService) {
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.userDetailsService = userDetailsService;
     }
 
@@ -57,17 +61,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                                         "/users/{username}/posts/{anchor-name}/edit",
                                                         "/users/{username}/posts/{anchor-name}/delete").
                                                         access(CHECKED_USER_NAME);
-        http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')").
-                and().
-                formLogin().
-                loginPage("/login").
-                usernameParameter("username").
-                passwordParameter("password").
-                defaultSuccessUrl("/admin/overview");
+        http.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')");
 
         //login
         http.formLogin().
                 loginPage("/login").
+                successHandler(authenticationSuccessHandler).
                 usernameParameter("username").
                 passwordParameter("password").
                 and().
