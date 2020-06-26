@@ -87,19 +87,30 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public ModelAndView showLogin() {
+    public ModelAndView showLogin(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView("user/login");
         modelAndView.addObject("users", new Users());
+        modelAndView.addObject(bindingResult);
         return modelAndView;
     }
 
+/*
     @PostMapping("/login")
     public RedirectView login(@Validated @ModelAttribute("users") Users users, BindingResult bindingResult) {
+//        RedirectView redirectView = null;
         if (bindingResult.hasFieldErrors()) {
-            return new RedirectView("/login");
+            return  new RedirectView("/login");
         }
+       */
+/* if (users.getRoles().getId() == 2) {
+            redirectView = new RedirectView("/");
+        } else if (users.getRoles().getId() == 3) {
+            redirectView = new RedirectView("/admin/overview");
+        }*//*
+
         return new RedirectView("/");
     }
+*/
 
     @GetMapping("/logout")
     public RedirectView logout() {
