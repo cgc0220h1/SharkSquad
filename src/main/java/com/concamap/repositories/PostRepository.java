@@ -42,4 +42,7 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Integer
     Optional<Post> findByStatusAndAnchorName(int status, String anchorName);
 
     Optional<Post> findByStatusAndAnchorNameAndUsers(int status, String anchorName, Users users);
+
+    @Override
+    <S extends Post> S save(S entity);
 }

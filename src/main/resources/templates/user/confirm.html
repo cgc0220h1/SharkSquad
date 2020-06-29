@@ -32,7 +32,9 @@
         <h4>Confirm your password</h4>
 
         <div th:if="${successMessage}" class="alert alert-success"
-             role="alert" th:text="${successMessage}"></div>
+             role="alert" th:text="${successMessage}">
+            <a href="/">Return to homepage</a>
+        </div>
 
         <div th:if="${errorMessage}" class="alert alert-danger"
              role="alert" th:text="${errorMessage}"></div>
