@@ -152,7 +152,7 @@ public class UserController {
             registrationEmail.setTo(users.getEmail());
             registrationEmail.setSubject("REGISTRATION CONFIRMATION");
             registrationEmail.setText("To confirm your e-mail address, please click the link below:\n"
-                    + appUrl + ":8888/confirm?token=" + users.getConfirmationToken());
+                    + appUrl + "/confirm?token=" + users.getConfirmationToken());
             registrationEmail.setFrom("sharksquadteam420@gmail.com");
 
             emailService.sendEmail(registrationEmail);
